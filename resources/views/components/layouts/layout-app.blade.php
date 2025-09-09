@@ -9,6 +9,8 @@
     @vite('resources/css/app.css')
 </head>
 <body>
-    @yield('content')
+    <div class="w-screen h-screen font-prompt">
+        @yield('content')
+    </div>
 </body>
 </html>
