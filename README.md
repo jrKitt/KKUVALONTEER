@@ -7,12 +7,14 @@
 ```
 2. Setup laravel
 ```bash
+  npm install
   composer install
   cp .env.example .env
   php artisan key:generate
 ```
     
-3. Running
+3. Running (npm and php togeter)
 ```bash
+  npm run dev
   php artisan serve
 ```
