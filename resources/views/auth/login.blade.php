@@ -28,12 +28,10 @@
                     @endif
 
                     <div class="flex flex-col gap-3 mt-4">
-                        <label for="email" class=" inline-block">อีเมล : </label>
-                        <input id="email" name="email" type="email" placeholder="student@kkumail.com"
+                        <input id="email" name="email" type="email" placeholder="student.s@kkumail.com"
                                value="{{ old('email') }}" required
                                class="border-1 border-black p-2 rounded-lg">
 
-                        <label for="password" class=" inline-block">รหัสผ่าน : </label>
                         <input id="password" name="password" type="password" placeholder="••••••••" required
                                class="border-1 border-black p-2 rounded-lg">
 
