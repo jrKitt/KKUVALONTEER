@@ -15,6 +15,6 @@
     </div>
 
     <script src="../../../js/carousel.js">
-       
+
     </script>
 </div>
