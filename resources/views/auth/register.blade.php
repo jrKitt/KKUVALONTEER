@@ -33,15 +33,18 @@
 @endpush
 
 @section('content')
-    <div class="w-full h-full flex flex-col md:flex-row">
-        <div class="hidden md:block md:w-1/2">
-            <x-sliders.slider-auth/>
+    <div class="w-full h-screen flex flex-col md:flex-row">
+        <div class="hidden md:flex md:w-1/2 h-full">
+            <x-sliders.slider-auth class="w-full h-full"/>
         </div>
 
         <div class="w-full md:w-1/2 h-full flex justify-center items-center p-4 md:p-0 overflow-y-auto">
             <div class="w-full max-w-[600px] px-4 md:px-0 py-4 md:py-8">
                 <form method="POST" action="{{ route('auth.register') }}">
                     @csrf
+                    <div class="flex items-center  w-100">
+                            <img src="{{asset('images/app_icon_2.png')}}">
+                    </div>
                     <h1 class="text-xl md:text-2xl font-semibold text-gray-900 tracking-wide">ลงทะเบียน</h1>
                     <div class="w-12 h-1 bg-sky-500 mt-2"></div>
                     <p class="mt-1 text-sm md:text-base">หากมีบัญชีผู้ใช้แล้ว <a href="{{ route('auth.login') }}" class="text-sky-500 underline">เข้าสู่ระบบ</a></p>
