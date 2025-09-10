@@ -13,8 +13,10 @@
   php artisan key:generate
 ```
     
-3. Running (npm and php togeter)
+3. Running (npm and php together)
 ```bash
   npm run dev
   php artisan serve
 ```
+
+<img src='/public/images/test-login.png'/>
