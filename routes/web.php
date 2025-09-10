@@ -25,6 +25,12 @@ Route::get('/home', function () {
 Route::get('/index', function () {
     return view('index');
 });
+Route::get('/event', function () {
+    return view('event');
+});
+Route::get('/about', function () {
+    return view('about-us');
+});
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
 Route::post('/login', [AuthController::class, 'login']);

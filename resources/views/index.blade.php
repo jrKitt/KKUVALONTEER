@@ -13,6 +13,6 @@
     </script>
 </head>
 <body>
-    <div class="w-screen h-screen bg-black"></div>
+    <div class="w-screen h-screen bg-black text-white">what is this</div>
 </body>
 </html>

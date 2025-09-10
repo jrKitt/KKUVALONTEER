@@ -9,7 +9,7 @@
     @vite('resources/css/app.css')
 </head>
 <body>
-    <div class="w-screen h-screen font-prompt">
+    <div class="h-screen font-prompt">
         @yield('content')
     </div>
 </body>
