@@ -19,4 +19,4 @@
   php artisan serve
 ```
 
-<img src='/public/images/test-login.png'/>
+<img src='/public/images/loginPage.png'/>
