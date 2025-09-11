@@ -15,7 +15,12 @@
                         <a href="/about" class="text-gray-700 hover:text-blue-600">อื่นๆ/เกี่ยวกับเรา</a>
                     </nav>
                     <div class="flex items-center space-x-4">
-                        <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                        <div class="w-full h-full">
+                            <a href="/profile">
+                                <img class="rounded-full w-10 h-10" src="{{ asset('images/profileTemp.png') }}"
+                                    alt="img" width="100" height="100">
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

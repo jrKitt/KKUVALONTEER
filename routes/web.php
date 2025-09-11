@@ -19,7 +19,7 @@ Route::get('/', function () {
 });
 
 Route::get('/home', function () {
-    return view('home');
+    return redirect('/dashboard');
 })->name('home');
 
 Route::get('/index', function () {
@@ -30,6 +30,9 @@ Route::get('/event', function () {
 });
 Route::get('/about', function () {
     return view('about-us');
+});
+Route::get('/profile', function () {
+    return view('profile');
 });
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
