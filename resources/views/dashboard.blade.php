@@ -14,6 +14,8 @@
                 </div>
             </div>
 
+            <hr class="my-8 text-gray-400">
+
             <section class="mb-8">
                 <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-6">กิจกรรมแนะนำ</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

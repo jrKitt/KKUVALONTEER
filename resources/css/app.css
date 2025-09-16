@@ -9,3 +9,39 @@
 @theme {
     --font-prompt: "Prompt", san-serif;
 }
+
+@keyframes slide {
+  0%, 20% {
+    transform: translateX(0%);
+  }
+  33%, 53% {
+    transform: translateX(-33.3333%);
+  }
+  66%, 86% {
+    transform: translateX(-66.6666%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-slide {
+  animation: slide 12s infinite;
+}
+
+@keyframes indicator {
+  0%, 33%   { width: 2rem; background-color: rgb(19, 111, 248); }
+  34%, 100% { width: 1.5rem; background-color: rgb(255, 255, 255); }
+}
+
+.animate-indicator1 {
+  animation: indicator 12s infinite;
+}
+.animate-indicator2 {
+  animation: indicator 12s infinite;
+  animation-delay: 4s;
+}
+.animate-indicator3 {
+  animation: indicator 12s infinite;
+  animation-delay: 8s;
+}
