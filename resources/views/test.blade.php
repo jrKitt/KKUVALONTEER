@@ -16,8 +16,9 @@
         <div class=" w-80 h-80 border flex items-center justify-center bg-white z-1000">MODAL</div>
     </div>
 
-    <div class='bg-zinc-600 flex justify-center items-end h-screen pb-40'>
+    <div class='bg-zinc-600 flex flex-col gap-5 justify-center items-center h-screen pb-40'>
         <button class="btn border bg-white hover:bg-gray-300" id='btnModal' onclick="toggle()">btn</button>
+        <progress value="40" max="100" class="progress w-64 h-3 rounded-full"></progress>
     </div>
 
     <script>

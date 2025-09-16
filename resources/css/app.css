@@ -54,3 +54,29 @@
     transition: all;
 }
 
+
+progress.progress {
+  -webkit-appearance: none;
+  appearance: none;
+  overflow: hidden;
+  border-radius: 9999px; 
+}
+
+
+progress.progress::-webkit-progress-bar {
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+}
+
+progress.progress::-webkit-progress-value {
+  background-color: #41ea47;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+progress.progress::-moz-progress-bar {
+  background-color: #41ea47;
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
