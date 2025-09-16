@@ -48,3 +48,11 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 });
+
+
+
+
+
+Route::get('/test', function () {
+    return view('test');
+});
