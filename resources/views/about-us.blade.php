@@ -45,18 +45,18 @@
                         </div>
                     </div>
 
-                    <div class="my-6 flex justify-between p-4 shadow-sm rounded-md">
+                    <div class="my-6 flex justify-between p-4 shadow-md rounded-md">
                         <div class="flex gap-5">
                             <section class="w-80">
-                                <img src="{{ asset('/images/test.jpg') }}" alt="img" class="rounded-md">
+                                <img src="{{ asset('/images/event_1.png') }}" alt="img" class="rounded-md">
                             </section>
                             <section class="flex flex-col justify-between">
                                 <div class="flex flex-col gap-2">
-                                    <h1 class="text-2xl font-bold">เล่นน้ำกับกระบือ</h1>
+                                    <h1 class="text-2xl font-bold">ประกอบคอมให้ i have gpu</h1>
                                     <div class="flex gap-2">
                                         <div
                                             class="border px-4 py-1 text-sm flex items-center rounded-full bg-[#a73b24] text-white">
-                                            #วิดคอม</div>
+                                            #แพทศ์</div>
                                         <div
                                             class="border px-4 py-1 text-sm flex items-center rounded-full bg-gray-400 text-white">
                                             #ลงมือ</div>
