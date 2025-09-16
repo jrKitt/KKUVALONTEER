@@ -5,7 +5,7 @@
 @endsection
 
 @section('layout-content')
-    <div >
+    <div class="min-h-screen">
         กิจกรรมอาสาสมัคร
     </div>
 @endsection
