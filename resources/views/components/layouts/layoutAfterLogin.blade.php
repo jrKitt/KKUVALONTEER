@@ -2,7 +2,7 @@
 @extends('components/layouts/layout-app')
 
 @section('content')
-    <div class="w-full">
+    <div class="w-full ">
         <header class="bg-white shadow-sm fixed w-full z-1000">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
@@ -27,7 +27,7 @@
                 </div>
             </div>
         </header>
-        <div class="pt-16">
+        <div class="pt-16 bg-gray-50">
             @yield('layout-content')
         </div>
 
