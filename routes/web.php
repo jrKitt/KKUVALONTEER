@@ -49,6 +49,15 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 });
 
+Route::get('/admin/dashboard' , function(){
+    return view('admin/admin-dashboard');
+});
+Route::get('/admin/event' , function(){
+    return view('admin/admin-event');
+});
+Route::get('/admin' , function(){
+    return view('admin/index');
+});
 
 
 
