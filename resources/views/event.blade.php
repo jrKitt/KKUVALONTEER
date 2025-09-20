@@ -8,12 +8,11 @@
     <div class="min-h-screen bg-gray-50">
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="relative w-full max-w-6xl mx-auto overflow-hidden rounded-md">
-
                 {{-- text on image --}}
-                <div class="absolute z-1 p-6 w-2/3">
+                <div class="absolute z-1 p-6 w-2/3 max-md:w-2/5 max-sm:w-2/3">
                     <div>
                         <h1 class="text-2xl md:text-5xl font-bold text-white mb-4">ค่ายปลุกฝันสอนน้อง</h1>
-                        <div class="text-white">
+                        <div class="text-white max-md:hidden">
                             ค่ายปลุกฝันสอนน้อง จัดขึ้นเพื่อเป็นเวทีให้เยาวชนได้ค้นพบความฝันและศักยภาพของตนเอง
                             ผ่านกิจกรรมการเรียนรู้ การสอนทักษะ และการแนะแนวทางการพัฒนาตัวเองอย่างสร้างสรรค์
                             โดยมุ่งเน้นการสร้างแรงบันดาลใจ ปลูกฝังทัศนคติที่ดี
@@ -21,8 +20,8 @@
                             รวมถึงการเรียนรู้การทำงานเป็นทีมและการรับผิดชอบต่อสังคมในบรรยากาศที่สนุกสนานและเป็นมิตร
                         </div>
                     </div>
-                    <div>
-                        <button class="bg-sky-400 text-white btn hover:bg-sky-600">สมัครเข้าร่วม</button>
+                    <div class="flex gap-2 max-md:flex-col">
+                        <button class="bg-sky-400 text-white btn hover:bg-sky-600 text-nowrap">สมัครเข้าร่วม</button>
                         <button class="bg-white text-sky-400 btn hover:bg-gray-300">รายละเอียด</button>
                     </div>
                 </div>
@@ -54,20 +53,23 @@
 
             <main>
                 <section class="mb-8">
-                    <div class="my-6 flex justify-between items-center">
+                    <div class="my-6 flex justify-between items-center max-md:flex-col">
                         <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">กิจกรรมทั้งหมด</h3>
                         <div class="flex flex-col gap-5 items-end">
                             <div>
-                                <input type="search" class="border rounded-xl border-gray-400 px-2 w-70 py-1" placeholder="ค้นหา">
+                                <input type="search" class="border rounded-xl border-gray-400 px-2 w-70  py-1"
+                                    placeholder="ค้นหา">
                             </div>
-                            <div class="flex gap-5">
-                                <select name="" id="" class="border rounded-xl border-gray-400 px-2 w-50 py-1 " >
+                            <div class="flex gap-5 max-md:flex-col">
+                                <select name="" id=""
+                                    class="border rounded-xl border-gray-400 px-2 w-50 max-md:w-70 py-1 ">
                                     <option value="" disabled selected># แท็ก</option>
                                     <option value="">a</option>
                                     <option value="">b</option>
                                     <option value="">c</option>
                                 </select>
-                                <select name="" id="" class="border rounded-xl border-gray-400 px-2 w-50 py-1">
+                                <select name="" id=""
+                                    class="border rounded-xl border-gray-400 px-2 w-50 py-1 max-md:w-70">
                                     <option value="" disabled selected>คณะ / สาขา</option>
                                     <option value="">a</option>
                                     <option value="">b</option>
