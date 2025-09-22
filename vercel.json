@@ -1,10 +1,15 @@
 {
   "version": 2,
   "builds": [
-    { "src": "public/index.php", "use": "vercel-php@0.5.0" }
+    {
+      "src": "Dockerfile",
+      "use": "@vercel/docker"
+    }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "public/index.php" }
-  ],
-  "buildCommand": "composer install --no-dev --optimize-autoloader && npm install && npm run build && php artisan config:cache && php artisan route:cache"
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.php"
+    }
+  ]
 }
