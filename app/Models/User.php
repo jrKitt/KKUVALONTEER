@@ -47,4 +47,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function volunteerHours()
+    {
+        return $this->hasMany(VolunteerHour::class);
+    }
 }
