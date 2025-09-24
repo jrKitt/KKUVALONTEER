@@ -6,6 +6,8 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@plugin "daisyui";
+
 @theme {
     --font-prompt: "Prompt", san-serif;
 }
