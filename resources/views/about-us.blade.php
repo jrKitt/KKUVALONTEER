@@ -1,7 +1,7 @@
 @extends("components/layouts/layoutAfterLogin")
 
 @section("title")
-    อื่นๆ/เกี่ยวกับเรา | KKU VOLUNTEER
+    ชั่วโมงจิตอาสา | KKU VOLUNTEER
 @endsection
 
 @section("layout-content")

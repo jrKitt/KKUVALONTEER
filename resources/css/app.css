@@ -58,7 +58,7 @@ progress.progress {
   -webkit-appearance: none;
   appearance: none;
   overflow: hidden;
-  border-radius: 9999px; 
+  border-radius: 9999px;
 }
 
 
@@ -78,4 +78,5 @@ progress.progress::-moz-progress-bar {
   border-radius: 9999px;
   transition: width 0.3s ease;
 }
+
 
