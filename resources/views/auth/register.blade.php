@@ -6,16 +6,8 @@
 
 @push('styles')
 <style>
-    /* Custom dropdown arrow */
-    .custom-select {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-        background-position: right 0.5rem center;
-        background-repeat: no-repeat;
-        background-size: 1.5em 1.5em;
-        padding-right: 2.5rem;
-    }
 
-    /* Mobile optimizations */
+
     @media (max-width: 640px) {
         .custom-select {
             background-size: 1.2em 1.2em;
@@ -23,7 +15,6 @@
         }
     }
 
-    /* Ensure proper scrolling on mobile */
     @media (max-height: 700px) {
         .overflow-y-auto {
             max-height: 100vh;
@@ -62,25 +53,25 @@
                     <div class="flex flex-col gap-3 md:gap-4 mt-4 md:mt-6">
                         <div class="flex flex-col sm:flex-row gap-3">
                             <div class="flex-1">
-                                <input id="firstname" name="firstname" type="text" placeholder="Firstname"
+                                <input id="firstname" name="firstname" type="text" placeholder="ชื่อจริง"
                                        value="{{ old('firstname') }}" required
                                        class="w-full border-2 border-gray-300 p-3 rounded-lg focus:border-sky-500 outline-none text-sm md:text-base">
                             </div>
                             <div class="flex-1">
-                                <input id="lastname" name="lastname" type="text" placeholder="Lastname"
+                                <input id="lastname" name="lastname" type="text" placeholder="นามสกุล"
                                        value="{{ old('lastname') }}" required
                                        class="w-full border-2 border-gray-300 p-3 rounded-lg focus:border-sky-500 outline-none text-sm md:text-base">
                             </div>
                         </div>
 
-                        <input id="major" name="major" type="text" placeholder="Faculty"
+                        <input id="major" name="major" type="text" placeholder="สาขา"
                                value="{{ old('major') }}" required
                                class="border-2 border-sky-500 p-3 rounded-lg focus:border-sky-600 outline-none text-sm md:text-base">
 
                         <div class="flex flex-col sm:flex-row gap-3">
                             <div class="flex-1">
                                 <select id="faculty" name="faculty" required class="w-full border-2 border-gray-300 p-3 rounded-lg focus:border-sky-500 outline-none appearance-none bg-white custom-select text-sm md:text-base">
-                                    <option value="">Faculty</option>
+                                    <option value=""> เลือกคณะ </option>
                                     <optgroup label="กลุ่มสาขาวิชาวิทยาศาสตร์เทคโนโลยี">
                                         <option value="คณะเกษตรศาสตร์" {{ old('faculty') == 'คณะเกษตรศาสตร์' ? 'selected' : '' }}>คณะเกษตรศาสตร์</option>
                                         <option value="คณะเทคโนโลยี" {{ old('faculty') == 'คณะเทคโนโลยี' ? 'selected' : '' }}>คณะเทคโนโลยี</option>
@@ -117,7 +108,7 @@
                             </div>
                             <div class="flex-1">
                                 <select id="year" name="year" required class="w-full border-2 border-gray-300 p-3 rounded-lg focus:border-sky-500 outline-none appearance-none bg-white custom-select text-sm md:text-base">
-                                    <option value="">Year</option>
+                                    <option value="">ชั้นปี</option>
                                     <option value="1" {{ old('year') == '1' ? 'selected' : '' }}>ปี 1</option>
                                     <option value="2" {{ old('year') == '2' ? 'selected' : '' }}>ปี 2</option>
                                     <option value="3" {{ old('year') == '3' ? 'selected' : '' }}>ปี 3</option>
@@ -126,21 +117,21 @@
                             </div>
                         </div>
 
-                        <input id="email" name="email" type="email" placeholder="Email (KKU Mail)"
+                        <input id="email" name="email" type="email" placeholder="อีเมล์ (KKU Mail)"
                                value="{{ old('email') }}" required
                                class="border-2 border-gray-300 p-3 rounded-lg focus:border-sky-500 outline-none text-sm md:text-base">
 
-                        <input id="phone" name="phone" type="text" placeholder="Phone"
+                        <input id="phone" name="phone" type="text" placeholder="เบอร์โทรศัพท์"
                                value="{{ old('phone') }}" required maxlength="10"
                                class="border-2 border-gray-300 p-3 rounded-lg focus:border-sky-500 outline-none text-sm md:text-base">
 
                         <div class="flex flex-col sm:flex-row gap-3">
                             <div class="flex-1">
-                                <input id="password" name="password" type="password" placeholder="Password" required
+                                <input id="password" name="password" type="password" placeholder="รหัสผ่าน" required
                                        class="w-full border-2 border-gray-300 p-3 rounded-lg focus:border-sky-500 outline-none text-sm md:text-base">
                             </div>
                             <div class="flex-1">
-                                <input id="password_confirmation" name="password_confirmation" type="password" placeholder="Confirm Password" required
+                                <input id="password_confirmation" name="password_confirmation" type="password" placeholder="ยืนยันรหัสผ่าน" required
                                        class="w-full border-2 border-gray-300 p-3 rounded-lg focus:border-sky-500 outline-none text-sm md:text-base">
                             </div>
                         </div>
