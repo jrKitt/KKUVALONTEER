@@ -14,6 +14,7 @@
     },
     "dependencies": {
         "@tailwindcss/vite": "^4.1.13",
+        "cally": "^0.8.0",
         "tailwindcss": "^4.1.13"
     }
 }

@@ -6,17 +6,21 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>test</title>
         @vite("resources/css/app.css")
+        @vite('resources/js/app.js')
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     </head>
 
     <body>
-        <div class="mx-auto flex h-screen max-w-6xl items-center">
-            <canvas id="myChart"></canvas>
+        <div class="mx-auto flex h-screen max-w-6xl items-center w-full">
+
+            <calendar-range months="2">
+                <calendar-month></calendar-month>
+            </calendar-range>
+
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
         <script>
+           import "cally";
             const ctx = document.getElementById('myChart');
 
             const month = [

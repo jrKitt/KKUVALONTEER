@@ -7,12 +7,8 @@
 @source '../**/*.js';
 
  @plugin "daisyui" {
-   themes: light --default;
+  themes: light --default;
  }
-
-@theme {
-    --font-prompt: "Prompt", san-serif;
-}
 
 @keyframes slide {
   0%, 20% {
