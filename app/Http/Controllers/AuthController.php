@@ -30,7 +30,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/home');
+            return redirect()->intended('/dashboard')->with('success', 'เข้าสู่ระบบสำเร็จ!');
         }
 
         return back()->withErrors([
@@ -64,7 +64,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return redirect('/dashboard')->with('success', 'สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!');
     }
 
     public function logout(Request $request)

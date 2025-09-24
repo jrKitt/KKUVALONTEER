@@ -14,7 +14,7 @@
                     <nav class="hidden md:flex space-x-8">
                         <a href="/dashboard" class="text-gray-700 hover:text-blue-600">หน้าแรก</a>
                         <a href="/event" class="text-gray-700 hover:text-blue-600">กิจกรรมอาสาสมัคร</a>
-                        <a href="/about" class="text-gray-700 hover:text-blue-600">อื่นๆ/เกี่ยวกับเรา</a>
+                        <a href="/about" class="text-gray-700 hover:text-blue-600">ชั่วโมงจิตอาสา</a>
                     </nav>
                     <div class="flex items-center space-x-4">
                         <div class="w-full h-full">
@@ -27,6 +27,9 @@
                 </div>
             </div>
         </header>
+
+        @include('components.alert')
+
         <div class="pt-16 bg-gray-50">
             @yield('layout-content')
         </div>
