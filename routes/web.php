@@ -16,9 +16,7 @@ use App\Http\Controllers\DashboardController;
 |
 */
 
-Route::get('/', function () {
-    return view('login');
-});
+Route::get('/', [AuthController::class, 'showLogin'])->name('auth.login');
 
 Route::get('/home', function () {
     return redirect('/dashboard');
@@ -47,7 +45,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
     Route::resource('volunteer-hours', VolunteerHourController::class);
 });
 
@@ -60,8 +57,6 @@ Route::get('/admin/event' , function(){
 Route::get('/admin' , function(){
     return view('admin/index');
 });
-
-
 
 
 Route::get('/test', function () {

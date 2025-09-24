@@ -62,7 +62,7 @@
                             </div>
                             <div class="flex gap-5 max-md:flex-col">
                                 <select name="" id=""
-                                    class="border rounded-xl border-gray-400 px-2 w-50 max-md:w-70 py-1 ">
+                                    class="border rounded-xl border-gray-400 px-2 w-50 max-md:w-70 py-1">
                                     <option value="" disabled selected># แท็ก</option>
                                     <option value="">a</option>
                                     <option value="">b</option>

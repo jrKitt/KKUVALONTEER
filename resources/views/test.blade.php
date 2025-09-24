@@ -1,36 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>test</title>
+        @vite("resources/css/app.css")
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>test</title>
-    @vite('resources/css/app.css')
-</head>
+    <body>
+        <div class="mx-auto flex h-screen max-w-6xl items-center">
+            <canvas id="myChart"></canvas>
+        </div>
 
-<body>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <div class="w-full h-full fixed hidden items-center justify-center" id='modal'>
-        <div class="bg-black opacity-30 w-full h-full fixed" onclick="toggle()"></div>
-        <div class=" w-80 h-80 border flex items-center justify-center bg-white z-1000">MODAL</div>
-    </div>
+        <script>
+            const ctx = document.getElementById('myChart');
 
-    <div class='bg-zinc-600 flex flex-col gap-5 justify-center items-center h-screen pb-40'>
-        <button class="btn border bg-white hover:bg-gray-300" id='btnModal' onclick="toggle()">btn</button>
-        <progress value="40" max="100" class="progress w-64 h-3 rounded-full"></progress>
-    </div>
+            const month = [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December',
+            ];
 
-    <script>
-        const toggle = () => {
-            var modal = document.getElementById('modal')
-            if (modal.style.display === "none") {
-                modal.style.display = "flex";
-            } else {
-                modal.style.display = "none";
-            }
-        }
-    </script>
-</body>
-
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: month.filter((e, index) => index < 9 && e),
+                    datasets: [
+                        {
+                            data: [1, 4, 2, 8, 10, 15, 20, 17, 24, 30, 27, 37],
+                            borderWidth: 5,
+                            tension: 0,
+                        },
+                        {
+                            data: [1, 0, 2, 8, 10, 15, 20, 17, 24, 30, 27, 37],
+                            borderWidth: 5,
+                            tension: 0,
+                        },
+                        {
+                            data: [1, 4, 2, 1, 10, 15, 50, 17, 24, 30, 27, 37],
+                            borderWidth: 5,
+                            tension: 0,
+                        }
+                    ],
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                    },
+                },
+            });
+        </script>
+    </body>
 </html>
