@@ -20,7 +20,6 @@
                 </div>
             </div>
 
-            <!-- Volunteer Hours Summary -->
             <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
                 <div class="rounded-xl bg-white p-6 shadow-md">
                     <div class="flex items-center justify-between">
