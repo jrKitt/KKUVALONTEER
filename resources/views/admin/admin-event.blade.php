@@ -5,12 +5,16 @@
 @endsection
 
 @section("layout-content")
-    <div class="min-h-screen bg-gray-50 text-black mx-4">
+    <div class="mx-4 min-h-screen bg-gray-50 text-black">
         <div class="mx-auto aspect-auto max-w-6xl px-2">
-            <div class="my-6 flex w-full items-center max-md:flex-col justify-between">
+            <div
+                class="my-6 flex w-full items-center justify-between max-md:flex-col"
+            >
                 <div class="my-6 text-5xl font-bold">จัดการกิจกรรม</div>
                 <div class="flex flex-col gap-5">
-                    <section class="flex w-full items-center justify-end gap-5 max-sm:justify-center">
+                    <section
+                        class="flex w-full items-center justify-end gap-5 max-sm:justify-center"
+                    >
                         <div
                             class="cursor-pointer rounded-lg border-2 border-gray-400 p-1 transition-all hover:bg-stone-500/20 active:scale-90"
                         >
@@ -18,6 +22,7 @@
                         </div>
                         <button
                             class="cursor-pointer rounded-md bg-green-500/80 px-4 py-1 text-white transition-all hover:bg-green-600/80 active:scale-90"
+                            onclick="my_modal_1.showModal()"
                         >
                             + เพิ่มกิจกรรม
                         </button>
@@ -45,7 +50,9 @@
         <main>
             <div class="mx-auto grid w-full max-w-6xl grid-cols-12 gap-5">
                 @foreach ([1, 2, 3] as $arr)
-                    <div class="col-span-4 w-full rounded-xl shadow-md max-lg:col-span-6 max-md:col-span-12">
+                    <div
+                        class="col-span-4 w-full rounded-xl shadow-md max-lg:col-span-6 max-md:col-span-12"
+                    >
                         <div class="p-4">
                             <section>
                                 <div
@@ -106,6 +113,7 @@
                             <section class="flex gap-5">
                                 <button
                                     class="w-full rounded-xl bg-amber-400/80 py-2 text-white"
+                                    onclick="my_modal_1.showModal()"
                                 >
                                     จัดการ
                                 </button>
@@ -120,5 +128,138 @@
                 @endforeach
             </div>
         </main>
+
+        {{-- modal --}}
+        {{-- <form class="w-full"> --}}
+        <dialog id="my_modal_1" class="modal">
+            <div
+                class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
+            >
+                <div class="card">
+                    <div class="card-title mb-4">+ สร้างกิจกรรมใหม่่</div>
+                    <hr class="text-gray-300" />
+                    <div class="card-body grid grid-cols-12 gap-5">
+                        <div class="fieldset col-span-6 max-md:col-span-12">
+                            <label class="">ชื่อกิจกรรม</label>
+                            <input
+                                type="text"
+                                class="rounded-md border border-gray-400 px-4 py-2"
+                                placeholder="ชื่อกิจกรรม"
+                            />
+                        </div>
+
+                        <div class="fieldset col-span-6 max-md:col-span-12">
+                            <label class="">หมวดหมู่</label>
+                            <select
+                                class="w-full rounded-md border-1 border-gray-400 px-4 py-2 text-lg"
+                            >
+                                <option value="" disabled selected>
+                                    เลือกหมวดหมู่
+                                </option>
+                                <option value="">a</option>
+                                <option value="">b</option>
+                                <option value="">c</option>
+                            </select>
+                        </div>
+
+                        <div class="fieldset col-span-6 max-md:col-span-12">
+                            <label class="">หมวดหมู่</label>
+                            <input
+                                type="date"
+                                class="rounded-md border border-gray-400 px-4 py-2"
+                            />
+                        </div>
+
+                        <div class="fieldset col-span-6 max-md:col-span-12">
+                            <label class="">จำนวนชั่วโมง</label>
+                            <input
+                                type="number"
+                                class="rounded-md border border-gray-400 px-4 py-2"
+                            />
+                        </div>
+
+                        <div class="fieldset col-span-6 max-md:col-span-12">
+                            <label class="">สถานที่</label>
+                            <input
+                                type="text"
+                                class="rounded-md border border-gray-400 px-4 py-2"
+                            />
+                        </div>
+
+                        <div class="fieldset col-span-6 max-md:col-span-12">
+                            <label class="">จำนวนผู้เข้าร่วมสูงสุด</label>
+                            <input
+                                type="number"
+                                class="rounded-md border border-gray-400 px-4 py-2"
+                            />
+                        </div>
+
+                        <div class="fieldset col-span-12">
+                            <label class="">รายละเอียดกิจกรรม</label>
+                            <textarea
+                                name=""
+                                id=""
+                                cols="30"
+                                rows="10"
+                                class="rounded-md border border-gray-400 px-4 py-2"
+                            ></textarea>
+                        </div>
+
+                        <div class="fieldset col-span-12">
+                            <div
+                                class="flex items-center space-x-2 rounded-md border border-gray-300"
+                            >
+                                <label
+                                    for="file-upload"
+                                    class="cursor-pointer bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200"
+                                >
+                                    Browse...
+                                </label>
+
+                                <input
+                                    id="file-upload"
+                                    type="file"
+                                    class="hidden"
+                                    onchange="updateFileName(this)"
+                                />
+
+                                <span
+                                    id="file-name"
+                                    class="text-sm text-gray-500"
+                                >
+                                    No file selected.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="text-gray-300" />
+                <div class="modal-action">
+                    <form method="dialog">
+                        <button
+                            class="cursor-pointer rounded-xl border-2 border-sky-400 px-12 py-2 text-sky-400 transition-all hover:bg-gray-100 active:scale-90"
+                        >
+                            ยกเลิก
+                        </button>
+                    </form>
+                    <input
+                        type="submit"
+                        value="ยืนยัน"
+                        class="cursor-pointer rounded-xl border-2 bg-sky-400 px-12 py-2 text-white transition-all hover:bg-sky-500 active:scale-90"
+                    />
+                </div>
+            </div>
+        </dialog>
+        {{-- </form> --}}
     </div>
+
+    <script>
+        const = updateFileName = (input) => {
+            const fileName =
+                input.files.length > 0
+                    ? input.files[0].name
+                    : 'No file selected.';
+            document.getElementById('file-name').textContent = fileName;
+        }
+    </script>
 @endsection
