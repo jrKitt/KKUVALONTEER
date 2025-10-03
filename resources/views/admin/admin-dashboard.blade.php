@@ -156,7 +156,7 @@
                         <div class="flex h-fit w-1/3 justify-center">
                             <div>
                                 <calendar-date
-                                    class="cally rounded-box bg-zinc-100 shadow-lg"
+                                    class="cally rounded-box shadow-lg"
                                 >
                                     <svg
                                         aria-label="Previous"
