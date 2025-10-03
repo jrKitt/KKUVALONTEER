@@ -5,7 +5,7 @@
 @endsection
 
 @section("layout-content")
-    <div class="min-h-screen bg-gray-50 text-black">
+    <div class="min-h-screen bg-gray-50 text-black mx-4">
         <div class="mx-auto aspect-auto max-w-6xl px-2">
             <div class="my-6 flex w-full items-center max-md:flex-col justify-between">
                 <div class="my-6 text-5xl font-bold">จัดการกิจกรรม</div>
