@@ -50,14 +50,6 @@
   animation-delay: 8s;
 }
 
-.btn{
-    padding-block: 5px;
-    padding-inline: 30px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-
 progress.progress {
   -webkit-appearance: none;
   appearance: none;

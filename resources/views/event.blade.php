@@ -30,12 +30,12 @@
                     </div>
                     <div class="flex gap-2 max-md:flex-col">
                         <button
-                            class="btn bg-sky-400 text-nowrap text-white hover:bg-sky-600"
+                            class="cursor-pointer rounded-xl bg-sky-400 px-6 py-2 text-nowrap text-white hover:bg-sky-600"
                         >
                             สมัครเข้าร่วม
                         </button>
                         <button
-                            class="btn bg-white text-sky-400 hover:bg-gray-300"
+                            class="cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 hover:bg-gray-300"
                         >
                             รายละเอียด
                         </button>
