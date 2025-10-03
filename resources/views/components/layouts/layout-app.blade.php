@@ -14,7 +14,7 @@
 
 </head>
 <body>
-    <div class="h-screen font-prompt">
+    <div class="h-screen">
         @include('components.alert')
 
         @yield('content')

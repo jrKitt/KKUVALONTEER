@@ -75,4 +75,32 @@ progress.progress::-moz-progress-bar {
   transition: width 0.3s ease;
 }
 
+calendar-month::part(day):hover {
+  background:#1AA8F8;
+  color: white;
+}
+
+calendar-month {
+
+  &::part(button) {
+    border-radius: 10px;
+    /* background: black; */
+  }
+  
+  &::part(today) {
+    border-radius: 10px;
+    background:transparent;
+    color: #1AA8F8;
+    border: 2px solid #1AA8F8;
+  }
+  &::part(selected) {
+    border-radius: 10px;
+    background:transparent;
+    color: red;
+    border: 2px solid red;
+  }
+  &::part(head) {
+    height:35px;
+  }
+}
 
