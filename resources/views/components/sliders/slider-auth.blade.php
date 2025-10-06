@@ -78,7 +78,6 @@
                 const translateX = -currentSlide * 33.333;
                 slider.style.transform = `translateX(${translateX}%)`;
 
-                // Update indicators
                 indicators.forEach((indicator, index) => {
                     if (index === currentSlide) {
                         indicator.classList.add('active');

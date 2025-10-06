@@ -14,7 +14,6 @@ class AboutController extends Controller
     {
         $user = Auth::user();
 
-        // Get activities that user has registered for
         $registeredActivities = DB::table('activity_participants')
             ->join('activities', 'activity_participants.activity_id', '=', 'activities.id')
             ->where('activity_participants.user_id', $user->id)
@@ -28,14 +27,12 @@ class AboutController extends Controller
             ->orderBy('activity_participants.created_at', 'desc')
             ->get();
 
-        // Calculate hours from registered activities
         $totalHours = $registeredActivities->sum('total_hour');
         $completedHours = $registeredActivities->where('registration_status', 'completed')->sum('total_hour');
         $ongoingHours = $registeredActivities->where('registration_status', 'registered')->sum('total_hour');
 
-        // Transform registered activities for view
         $userActivities = $registeredActivities->map(function ($activity) {
-            // Calculate progress based on current date vs activity dates
+
             $progress = 0;
             if ($activity->registration_status === 'completed') {
                 $progress = 100;
@@ -65,7 +62,7 @@ class AboutController extends Controller
                 'status' => $activity->registration_status,
                 'progress' => round($progress),
                 'image_file_name' => $activity->image_file_name,
-                'tags' => ['#กิจกรรมอาสา', '#มข.'] // You can expand this to use real tags from database
+                'tags' => ['#กิจกรรมอาสา', '#มข.']
             ];
         });
 
