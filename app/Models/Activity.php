@@ -14,4 +14,8 @@ class Activity extends Model
      * @var string
      */
     protected $table = 'activities';
+
+    protected $casts = [
+        'tags' => 'array',
+    ];
 }
