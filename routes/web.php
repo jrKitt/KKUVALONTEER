@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VolunteerHourController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AboutController;
 use Illuminate\Routing\RouteRegistrar;
 
 /*
@@ -31,9 +32,7 @@ Route::get('/index', function () {
 Route::get('/event', function () {
     return view('event');
 });
-Route::get('/about', function () {
-    return view('about-us');
-});
+Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 Route::get('/detail', function () {
     return view('valunteerdetails');
 });
@@ -102,6 +101,7 @@ Route::get('/admin/event' , [ActivityController::class, "showAdminActivity"])->n
 
 Route::get('/activities', [ActivityController::class, "showUserActivity"])->name('user.activities');
 Route::post('/activities/register', [ActivityController::class, "registerActivity"])->name('activities.register');
+Route::post('/activities/cancel', [ActivityController::class, "cancelRegistration"])->name('activities.cancel');
 Route::get('/detail/{id}', [ActivityController::class, "showActivityDetail"])->name('activity.detail');
 
 Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");

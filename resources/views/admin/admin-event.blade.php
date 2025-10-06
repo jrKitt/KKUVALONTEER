@@ -49,12 +49,12 @@
 
         <div class="mx-auto aspect-auto max-w-6xl px-2">
             <div
-                class="my-6 flex w-full items-center justify-between max-md:flex-col"
+                class="my-6 flex w-full items-center justify-between max-md:flex-col gap-4"
             >
-                <div class="my-6 text-5xl font-bold">จัดการกิจกรรม</div>
-                <div class="flex flex-col gap-5">
+                <div class="text-3xl sm:text-4xl md:text-5xl font-bold">จัดการกิจกรรม</div>
+                <div class="flex flex-col gap-3 sm:gap-5 w-full md:w-auto">
                     <section
-                        class="flex w-full items-center justify-end gap-5 max-sm:justify-center"
+                        class="flex w-full items-center justify-end gap-3 sm:gap-5"
                     >
                         <div
                             class="cursor-pointer rounded-lg border-2 border-gray-400 p-1 transition-all hover:bg-stone-500/20 active:scale-90"
@@ -62,15 +62,15 @@
                             <i class="fa-solid fa-calendar"></i>
                         </div>
                         <button
-                            class="cursor-pointer rounded-md bg-green-500/80 px-4 py-1 text-white transition-all hover:bg-green-600/80 active:scale-90"
+                            class="cursor-pointer rounded-md bg-green-500/80 px-3 sm:px-4 py-1 text-sm sm:text-base text-white transition-all hover:bg-green-600/80 active:scale-90 whitespace-nowrap"
                             onclick="my_modal_1.showModal()"
                         >
                             + เพิ่มกิจกรรม
                         </button>
                     </section>
-                    <section class="flex max-sm:flex-col">
+                    <section class="flex flex-col sm:flex-row gap-2">
                         <select
-                            class="mr-5 w-50 rounded-xl border-2 border-gray-400 px-2 py-1 max-md:w-70"
+                            class="w-full sm:w-auto rounded-xl border-2 border-gray-400 px-2 py-1 text-sm"
                         >
                             <option value="" disabled selected>
                                 -- ทุกคณะ --
@@ -82,9 +82,9 @@
                         <input
                             type="text"
                             placeholder="ชื่อกิจกรรม..."
-                            class="rounded-xl border-2 border-gray-400 px-2 py-1"
+                            class="w-full sm:w-auto rounded-xl border-2 border-gray-400 px-2 py-1 text-sm"
                         />
-                        <button class="btn">ค้นหา</button>
+                        <button class="btn btn-sm sm:btn-md">ค้นหา</button>
                     </section>
                 </div>
             </div>
@@ -92,10 +92,10 @@
         </div>
 
         <main>
-            <div class="mx-auto grid w-full max-w-6xl grid-cols-12 gap-5 pb-6">
+            <div class="mx-auto grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-6">
                 @foreach ($rec as $activity)
                     <div
-                        class="col-span-4 w-full rounded-xl shadow-md max-lg:col-span-6 max-md:col-span-12"
+                        class="w-full rounded-xl shadow-md"
                     >
                         <div class="p-4">
                             <section>
@@ -158,15 +158,15 @@
                                     </div>
                                 </div>
                             </section>
-                            <section class="flex gap-5">
+                            <section class="flex flex-col sm:flex-row gap-2 sm:gap-5">
                                 <button
-                                    class="w-full rounded-xl bg-amber-400/80 py-2 text-white"
+                                    class="w-full rounded-xl bg-amber-400/80 py-2 text-sm sm:text-base text-white"
                                     onclick="my_modal_1.showModal()"
                                 >
                                     แก้ไขข้อมูล
                                 </button>
                                 <button
-                                    class="w-full rounded-xl border border-red-400 py-2 text-red-400 shadow"
+                                    class="w-full rounded-xl border border-red-400 py-2 text-sm sm:text-base text-red-400 shadow"
                                 >
                                     ลบข้อมูล
                                 </button>

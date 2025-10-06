@@ -117,32 +117,40 @@
                     <div
                         class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
                     >
-                        @foreach ($recentActivities->take(6) as $activity)
+                        @foreach ($recentActivities as $activity)
                             <div
                                 class="overflow-hidden rounded-xl bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl"
                             >
                                 <div class="relative">
-                                    <img
-                                        src="{{ asset("images/carousel_" . (($loop->index % 3) + 1) . ".jpg") }}"
-                                        alt="{{ $activity->activity_name }}"
-                                        class="h-48 w-full object-cover"
-                                    />
+                                    @if ($activity->image_file_name)
+                                        <img
+                                            src="{{ asset("uploads/activities/" . $activity->image_file_name) }}"
+                                            alt="{{ $activity->activity_name }}"
+                                            class="h-48 w-full object-cover"
+                                        />
+                                    @else
+                                        <img
+                                            src="{{ asset("images/carousel_" . (($loop->index % 3) + 1) . ".jpg") }}"
+                                            alt="{{ $activity->activity_name }}"
+                                            class="h-48 w-full object-cover"
+                                        />
+                                    @endif
                                     <div class="absolute top-4 right-4">
                                         <span
-                                            class="@if ($activity->status === "approved")
+                                            class="@if ($activity->status === "completed")
                                                 bg-green-500
-                                            @elseif ($activity->status === "rejected")
+                                            @elseif ($activity->status === "cancelled")
                                                 bg-red-500
                                             @else
                                                 bg-yellow-500
                                             @endif rounded-full px-3 py-1 text-sm font-medium text-white shadow-lg"
                                         >
-                                            @if ($activity->status === "approved")
-                                                อนุมัติแล้ว
-                                            @elseif ($activity->status === "rejected")
-                                                ไม่อนุมัติ
+                                            @if ($activity->status === "completed")
+                                                เสร็จสิ้น
+                                            @elseif ($activity->status === "cancelled")
+                                                ยกเลิก
                                             @else
-                                                    รออนุมัติ
+                                                    สมัครแล้ว
                                             @endif
                                         </span>
                                     </div>
@@ -158,12 +166,12 @@
                                         <span
                                             class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
                                         >
-                                            #เกษตรศาสตร์
+                                            #กิจกรรมอาสา
                                         </span>
                                         <span
                                             class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800"
                                         >
-                                            ปี 1-4
+                                            #มข.
                                         </span>
                                     </div>
 
@@ -190,7 +198,7 @@
                                                     clip-rule="evenodd"
                                                 />
                                             </svg>
-                                            มหาวิทยาลัยขอนแก่น
+                                            {{ $activity->location ?? "มหาวิทยาลัยขอนแก่น" }}
                                         </div>
                                         <div
                                             class="flex items-center text-sm text-gray-500"
@@ -206,7 +214,7 @@
                                                     clip-rule="evenodd"
                                                 />
                                             </svg>
-                                            {{ $activity->date->format("d M Y", "th") }}
+                                            {{ $activity->date->format("d M Y") }}
                                         </div>
                                         <div
                                             class="flex items-center text-sm text-gray-500"
@@ -228,18 +236,18 @@
 
                                     <div class="flex gap-2">
                                         <a
-                                            href="{{ route("volunteer-hours.show", $activity) }}"
+                                            href="{{ route("activity.detail", $activity->id) }}"
                                             class="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-blue-700"
                                         >
                                             ดูรายละเอียด
                                         </a>
-                                        @if ($activity->status === "pending")
-                                            <a
-                                                href="{{ route("volunteer-hours.edit", $activity) }}"
-                                                class="rounded-lg border border-blue-600 px-4 py-2 font-medium text-blue-600 transition-colors hover:bg-blue-50"
+                                        @if ($activity->status === "registered")
+                                            <button
+                                                class="rounded-lg border border-red-600 px-4 py-2 font-medium text-red-600 transition-colors hover:bg-red-50"
+                                                onclick="cancelRegistration({{ $activity->id }})"
                                             >
-                                                แก้ไข
-                                            </a>
+                                                ยกเลิก
+                                            </button>
                                         @endif
                                     </div>
                                 </div>
@@ -264,10 +272,27 @@
                         >
                             <div class="relative">
                                 <img
-                                    src="{{ asset("images/" . $event["image"]) }}"
+                                    src="{{ asset($event["image"]) }}"
                                     alt="{{ $event["title"] }}"
                                     class="h-48 w-full object-cover"
                                 />
+                                @if ($event["is_registered"])
+                                    <div class="absolute top-4 right-4">
+                                        <span
+                                            class="rounded-full bg-green-500 px-3 py-1 text-sm font-medium text-white shadow-lg"
+                                        >
+                                            สมัครแล้ว
+                                        </span>
+                                    </div>
+                                @elseif ($event["is_full"])
+                                    <div class="absolute top-4 right-4">
+                                        <span
+                                            class="rounded-full bg-red-500 px-3 py-1 text-sm font-medium text-white shadow-lg"
+                                        >
+                                            เต็มแล้ว
+                                        </span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="p-6">
                                 <h4
@@ -289,7 +314,7 @@
                                 <p
                                     class="mb-4 text-sm leading-relaxed text-gray-600"
                                 >
-                                    {{ $event["description"] }}
+                                    {{ Str::limit($event["description"] ?? "ไม่มีรายละเอียด", 80) }}
                                 </p>
 
                                 <div class="mb-4 space-y-2">
@@ -344,16 +369,41 @@
                                 </div>
 
                                 <div class="flex gap-2">
-                                    <button
-                                        class="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-blue-700"
-                                    >
-                                        สมัครเลย
-                                    </button>
-                                    <button
+                                    @if ($event["is_registered"])
+                                        <button
+                                            class="flex-1 cursor-not-allowed rounded-lg bg-green-500 px-4 py-2 text-center font-medium text-white"
+                                            disabled
+                                        >
+                                            สมัครแล้ว
+                                        </button>
+                                    @elseif ($event["is_full"])
+                                        <button
+                                            class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-center font-medium text-white"
+                                            disabled
+                                        >
+                                            เต็มแล้ว
+                                        </button>
+                                    @elseif ($event["can_register"])
+                                        <button
+                                            class="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-blue-700"
+                                            onclick="registerForActivity({{ $event["id"] }}, '{{ $event["title"] }}')"
+                                        >
+                                            สมัครเลย
+                                        </button>
+                                    @else
+                                        <button
+                                            class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-center font-medium text-white"
+                                            disabled
+                                        >
+                                            ปิดรับสมัคร
+                                        </button>
+                                    @endif
+                                    <a
+                                        href="{{ route("activity.detail", $event["id"]) }}"
                                         class="rounded-lg border border-blue-600 px-4 py-2 font-medium text-blue-600 transition-colors hover:bg-blue-50"
                                     >
                                         ดูรายละเอียด
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -363,3 +413,71 @@
         </main>
     </div>
 @endsection
+
+@push("scripts")
+    <script>
+        function registerForActivity(activityId, activityName) {
+            if (!confirm(`คุณต้องการสมัครกิจกรรม "${activityName}" หรือไม่?`)) {
+                return;
+            }
+
+            fetch('/activities/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content'),
+                },
+                body: JSON.stringify({
+                    activity_id: activityId,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        alert('ลงทะเบียนสำเร็จ!');
+                        location.reload();
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                });
+        }
+
+        function cancelRegistration(activityId) {
+            if (!confirm('คุณต้องการยกเลิกการสมัครกิจกรรมนี้หรือไม่?')) {
+                return;
+            }
+
+            fetch('/activities/cancel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content'),
+                },
+                body: JSON.stringify({
+                    activity_id: activityId,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        alert('ยกเลิกการสมัครสำเร็จ!');
+                        location.reload();
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                });
+        }
+    </script>
+@endpush

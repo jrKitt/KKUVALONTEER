@@ -10,13 +10,13 @@
             <div class="my-6 text-5xl font-bold">Dashboard</div>
             <div class="flex h-fit gap-5 p-4 max-lg:flex-col">
                 <div class="w-full rounded-lg shadow-md shadow-zinc-400/80">
-                    <div class="p-4">
+                    <div class="p-2 sm:p-4">
                         <section
-                            class="flex w-full items-center justify-between"
+                            class="flex w-full items-center justify-between flex-wrap gap-2"
                         >
-                            <h3>สถิติการเข้าร่วมกิจกรรม</h3>
+                            <h3 class="text-sm sm:text-base">สถิติการเข้าร่วมกิจกรรม</h3>
                             <select
-                                class="w-50 rounded-xl border-2 border-gray-400 px-2 py-1 max-md:w-70"
+                                class="w-full sm:w-50 rounded-xl border-2 border-gray-400 px-2 py-1 text-sm"
                             >
                                 <option value="" disabled selected>
                                     รายเดือน
@@ -30,13 +30,13 @@
                     </div>
                 </div>
                 <div class="w-full rounded-lg shadow-md shadow-zinc-400/80">
-                    <div class="p-4">
+                    <div class="p-2 sm:p-4">
                         <section
-                            class="flex w-full items-center justify-between"
+                            class="flex w-full items-center justify-between flex-wrap gap-2"
                         >
-                            <h3>สัดส่วนการเข้าร่วมกิจกรรม</h3>
+                            <h3 class="text-sm sm:text-base">สัดส่วนการเข้าร่วมกิจกรรม</h3>
                             <select
-                                class="w-50 rounded-xl border-2 border-gray-400 px-2 py-1 max-md:w-70"
+                                class="w-full sm:w-50 rounded-xl border-2 border-gray-400 px-2 py-1 text-sm"
                             >
                                 <option value="" disabled selected>
                                     รายเดือน
@@ -58,10 +58,10 @@
                 class="mx-auto w-full max-w-6xl rounded p-4 shadow shadow-zinc-400/80"
             >
                 <div>
-                    <section class="flex items-start justify-between max-sm:flex-col my-2 gap-5 max-md:items-center max-sm:gap-0">
-                        <h1 class="my-3 text-4xl font-bold">กิจกรรม</h1>
+                    <section class="flex items-start justify-between max-sm:flex-col my-2 gap-3 sm:gap-5">
+                        <h1 class="my-3 text-2xl sm:text-3xl md:text-4xl font-bold">กิจกรรม</h1>
                         <select
-                            class="w-50 rounded-xl border-2 border-gray-400 px-2 py-1 max-md:w-full"
+                            class="w-full sm:w-50 rounded-xl border-2 border-gray-400 px-2 py-1 text-sm"
                         >
                             <option value="" disabled selected>ทั้งหมด</option>
                             <option value="">a</option>
@@ -154,10 +154,10 @@
                         {{-- slot --}}
 
                         {{-- calendar --}}
-                        <div class="flex h-fit w-1/3 justify-center">
-                            <div>
+                        <div class="flex h-fit w-full md:w-1/3 justify-center">
+                            <div class="w-full max-w-sm">
                                 <calendar-date
-                                    class="cally bg-base-100 shadow-lg rounded-box"
+                                    class="cally bg-base-100 shadow-lg rounded-box w-full"
                                 >
                                     <svg
                                         aria-label="Previous"

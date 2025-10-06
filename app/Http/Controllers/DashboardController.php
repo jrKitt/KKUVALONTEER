@@ -3,28 +3,73 @@
 namespace App\Http\Controllers;
 
 use App\Models\VolunteerHour;
-use App\Models\Event;
+use App\Models\Activity;
+use App\Models\ActivityParticipant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $volunteerHours = VolunteerHour::where('user_id', $user->id)->get();
 
-        $totalHours = $volunteerHours->sum('hours');
-        $approvedHours = $volunteerHours->where('status', 'approved')->sum('hours');
-        $pendingHours = $volunteerHours->where('status', 'pending')->sum('hours');
-        $rejectedHours = $volunteerHours->where('status', 'rejected')->sum('hours');
-        $recentActivities = $volunteerHours->sortByDesc('created_at')->take(6);
+        $registeredActivities = DB::table('activity_participants')
+            ->join('activities', 'activity_participants.activity_id', '=', 'activities.id')
+            ->where('activity_participants.user_id', $user->id)
+            ->select(
+                'activities.*',
+                'activity_participants.status as registration_status',
+                'activity_participants.registered_at',
+                'activity_participants.created_at as participation_created_at'
+            )
+            ->orderBy('activity_participants.created_at', 'desc')
+            ->get();
 
-        // ดึงข้อมูลกิจกรรมจากฐานข้อมูลแบบสุ่ม 3 รายการ
-        $upcomingEvents = Event::where('is_active', true)
-                              ->inRandomOrder()
-                              ->take(3)
-                              ->get();
+        $totalHours = $registeredActivities->where('registration_status', '!=', 'cancelled')->sum('total_hour');
+        $approvedHours = $registeredActivities->where('registration_status', 'completed')->sum('total_hour');
+        $pendingHours = $registeredActivities->where('registration_status', 'registered')->sum('total_hour');
+        $rejectedHours = $registeredActivities->where('registration_status', 'cancelled')->sum('total_hour');
+
+        $recentActivities = $registeredActivities->take(6)->map(function ($activity) {
+            return (object) [
+                'id' => $activity->id,
+                'activity_name' => $activity->name_th,
+                'description' => $activity->description,
+                'location' => $activity->location,
+                'date' => \Carbon\Carbon::parse($activity->start_time),
+                'hours' => $activity->total_hour ?? 0,
+                'status' => $activity->registration_status,
+                'image_file_name' => $activity->image_file_name
+            ];
+        });
+
+        $upcomingEvents = Activity::where('status', '!=', 'finished')
+            ->where('start_time', '>', now())
+            ->orderBy('start_time', 'asc')
+            ->take(6)
+            ->get()
+            ->map(function ($activity) use ($user) {
+                $participantCount = ActivityParticipant::where('activity_id', $activity->id)->count();
+                $isRegistered = ActivityParticipant::where('activity_id', $activity->id)
+                    ->where('user_id', $user->id)
+                    ->exists();
+
+                return [
+                    'id' => $activity->id,
+                    'title' => $activity->name_th,
+                    'description' => $activity->description,
+                    'location' => $activity->location ?? 'มหาวิทยาลัยขอนแก่น',
+                    'date' => $activity->start_time ? $activity->start_time->format('d M Y') : 'ไม่ระบุ',
+                    'hours' => ($activity->total_hour ?? 0) . ' ชั่วโมง',
+                    'image' => $activity->image_file_name ? "uploads/activities/" . $activity->image_file_name : "carousel_1.jpg",
+                    'tags' => ['#กิจกรรมอาสา', '#มข.'],
+                    'can_register' => !$isRegistered && $participantCount < $activity->accept_amount,
+                    'is_registered' => $isRegistered,
+                    'is_full' => $participantCount >= $activity->accept_amount
+                ];
+            });
 
         return view('dashboard', compact('totalHours', 'approvedHours', 'pendingHours', 'rejectedHours', 'recentActivities', 'upcomingEvents'));
     }

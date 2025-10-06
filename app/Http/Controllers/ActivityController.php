@@ -145,4 +145,29 @@ class ActivityController extends Controller
 
         return view('detail', compact('activity'));
     }
+
+    public function cancelRegistration(Request $request) {
+        $activityId = $request->input('activity_id');
+        $userId = auth()->id();
+
+        if (!$userId) {
+            return response()->json(['success' => false, 'message' => 'กรุณาเข้าสู่ระบบก่อน']);
+        }
+
+        $registration = ActivityParticipant::where('activity_id', $activityId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if (!$registration) {
+            return response()->json(['success' => false, 'message' => 'ไม่พบการสมัครกิจกรรมนี้']);
+        }
+
+        // Update status to cancelled instead of deleting
+        $registration->update(['status' => 'cancelled']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'ยกเลิกการสมัครสำเร็จ'
+        ]);
+    }
 }

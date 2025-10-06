@@ -8,7 +8,7 @@
     <div class="min-h-screen bg-gray-50">
         <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
             <main>
-                <div class="mt-20 flex items-end justify-center">
+                <div class="mt-10 sm:mt-20 flex items-end justify-center">
                     <form id="profileImageForm" enctype="multipart/form-data">
                         @csrf
                         <input
@@ -24,14 +24,14 @@
                         id="profileImage"
                         src="{{ $user->profile_image ? asset($user->profile_image) : asset("images/tako.png") }}"
                         alt="profile"
-                        class="h-[200px] w-[200px] cursor-pointer rounded-full border-4 border-white object-cover shadow-lg"
+                        class="h-32 w-32 sm:h-40 sm:w-40 md:h-[200px] md:w-[200px] cursor-pointer rounded-full border-4 border-white object-cover shadow-lg"
                         onclick="document.getElementById('profileInput').click()"
                     />
                     <div
-                        class="relative right-10 bottom-5 cursor-pointer rounded-full bg-white px-2 py-2 shadow-md"
+                        class="relative right-6 sm:right-8 md:right-10 bottom-3 sm:bottom-4 md:bottom-5 cursor-pointer rounded-full bg-white p-1.5 sm:p-2 shadow-md"
                         onclick="document.getElementById('profileInput').click()"
                     >
-                        <i class="fa-solid fa-camera text-gray-600"></i>
+                        <i class="fa-solid fa-camera text-sm sm:text-base text-gray-600"></i>
                     </div>
                 </div>
 
@@ -64,12 +64,12 @@
                     </div>
                 </div>
 
-                <div class="mt-5 text-center">
-                    <h1 class="text-xl font-bold">
+                <div class="mt-5 text-center px-4">
+                    <h1 class="text-lg sm:text-xl font-bold">
                         {{ $user->firstname }} {{ $user->lastname }}
                     </h1>
-                    <p class="text-sm">{{ $user->email }}</p>
-                    <p class="text-gray-400">
+                    <p class="text-xs sm:text-sm break-words">{{ $user->email }}</p>
+                    <p class="text-xs sm:text-sm text-gray-400">
                         {{ $user->faculty }} / {{ $user->major }}
                     </p>
                 </div>
@@ -84,7 +84,7 @@
                     </div>
                 @endif
 
-                <div class="mt-20 flex justify-center">
+                <div class="mt-10 sm:mt-20 flex justify-center px-4">
                     <form
                         action="{{ route("profile.update") }}"
                         method="POST"
@@ -92,7 +92,7 @@
                     >
                         @csrf
                         @method("PUT")
-                        <div class="grid grid-cols-1 gap-10 md:grid-cols-2">
+                        <div class="grid grid-cols-1 gap-5 sm:gap-10 md:grid-cols-2">
                             <div class="flex flex-col">
                                 <label for="firstname" class="mb-2 font-bold">
                                     Firstname
@@ -102,7 +102,7 @@
                                     id="firstname"
                                     name="firstname"
                                     value="{{ old("firstname", $user->firstname) }}"
-                                    class="@error("firstname") @enderror w-[250px] appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow-md focus:outline-none"
+                                    class="@error("firstname") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-3 sm:px-5 py-2 text-sm sm:text-base leading-tight text-gray-700 shadow-md focus:outline-none"
                                 />
                                 @error("firstname")
                                     <span class="mt-1 text-xs text-red-500">
@@ -120,7 +120,7 @@
                                     id="lastname"
                                     name="lastname"
                                     value="{{ old("lastname", $user->lastname) }}"
-                                    class="@error("lastname") @enderror w-[250px] appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow-md focus:outline-none"
+                                    class="@error("lastname") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-3 sm:px-5 py-2 text-sm sm:text-base leading-tight text-gray-700 shadow-md focus:outline-none"
                                 />
                                 @error("lastname")
                                     <span class="mt-1 text-xs text-red-500">
@@ -139,7 +139,7 @@
                                 id="faculty"
                                 name="faculty"
                                 value="{{ old("faculty", $user->faculty) }}"
-                                class="@error("faculty") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow-md focus:outline-none"
+                                class="@error("faculty") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-3 sm:px-5 py-2 text-sm sm:text-base leading-tight text-gray-700 shadow-md focus:outline-none"
                             />
                             @error("faculty")
                                 <span class="mt-1 text-xs text-red-500">
@@ -149,7 +149,7 @@
                         </div>
 
                         <div
-                            class="mt-5 grid grid-cols-1 gap-10 md:grid-cols-2"
+                            class="mt-5 grid grid-cols-1 gap-5 sm:gap-10 md:grid-cols-2"
                         >
                             <div class="flex flex-col">
                                 <label for="major" class="mb-2 font-bold">
@@ -160,7 +160,7 @@
                                     id="major"
                                     name="major"
                                     value="{{ old("major", $user->major) }}"
-                                    class="@error("major") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow-md focus:outline-none"
+                                    class="@error("major") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-3 sm:px-5 py-2 text-sm sm:text-base leading-tight text-gray-700 shadow-md focus:outline-none"
                                 />
                                 @error("major")
                                     <span class="mt-1 text-xs text-red-500">
@@ -176,7 +176,7 @@
                                 <select
                                     id="year"
                                     name="year"
-                                    class="@error("year") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 pr-8 leading-tight text-gray-700 shadow-md hover:border-gray-500 focus:outline-none"
+                                    class="@error("year") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-3 sm:px-5 py-2 pr-8 text-sm sm:text-base leading-tight text-gray-700 shadow-md hover:border-gray-500 focus:outline-none"
                                 >
                                     <option
                                         value="1"
@@ -221,7 +221,7 @@
                                 id="email"
                                 name="email"
                                 value="{{ old("email", $user->email) }}"
-                                class="@error("email") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+                                class="@error("email") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-3 sm:px-5 py-2 text-sm sm:text-base leading-tight text-gray-700 shadow focus:outline-none"
                             />
                             @error("email")
                                 <span class="mt-1 text-xs text-red-500">
@@ -240,7 +240,7 @@
                                 id="phone"
                                 name="phone"
                                 value="{{ old("phone", $user->phone) }}"
-                                class="@error("phone") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+                                class="@error("phone") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-3 sm:px-5 py-2 text-sm sm:text-base leading-tight text-gray-700 shadow focus:outline-none"
                             />
                             @error("phone")
                                 <span class="mt-1 text-xs text-red-500">
@@ -249,10 +249,10 @@
                             @enderror
                         </div>
 
-                        <div class="mt-10 flex justify-center">
+                        <div class="mt-6 sm:mt-10 flex justify-center">
                             <button
                                 type="submit"
-                                class="w-full rounded-lg border-blue-500 bg-blue-400 px-5 py-2 text-white"
+                                class="w-full rounded-lg border-blue-500 bg-blue-400 px-4 sm:px-5 py-2 text-sm sm:text-base text-white hover:bg-blue-500 transition-colors"
                             >
                                 แก้ไข
                             </button>

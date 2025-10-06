@@ -11,21 +11,21 @@
         </div>
 
         <div
-            class="flex min-h-screen w-full items-center justify-center p-6 md:w-1/2 md:p-12"
+            class="flex min-h-screen w-full items-center justify-center p-4 sm:p-6 md:w-1/2 md:p-12"
         >
-            <div class="w-full max-w-[700px] px-6 md:px-8">
+            <div class="w-full max-w-[700px] px-2 sm:px-6 md:px-8">
                 <form method="POST" action="{{ route("auth.login") }}">
                     @csrf
                     <div class="flex w-100 items-center">
                         <img src="{{ asset("images/app_icon_2.png") }}" />
                     </div>
                     <h1
-                        class="mb-4 text-3xl font-bold tracking-wide text-gray-900 md:text-4xl"
+                        class="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide text-gray-900"
                     >
                         เข้าสู่ระบบ
                     </h1>
-                    <div class="mt-2 mb-4 h-1 w-16 bg-sky-500"></div>
-                    <p class="mt-2 mb-8 text-lg text-gray-600 md:text-xl">
+                    <div class="mt-2 mb-3 sm:mb-4 h-1 w-12 sm:w-16 bg-sky-500"></div>
+                    <p class="mt-2 mb-6 sm:mb-8 text-base sm:text-lg md:text-xl text-gray-600">
                         หากยังต้องการสมัครบัญชี
                         <a
                             href="{{ route("auth.register") }}"
@@ -62,7 +62,7 @@
                                 placeholder="student.s@kkumail.com"
                                 value="{{ old("email") }}"
                                 required
-                                class="w-full rounded-lg border-2 border-gray-300 px-4 py-4 text-lg transition-all duration-200 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                                class="w-full rounded-lg border-2 border-gray-300 px-3 sm:px-4 py-3 sm:py-4 text-base sm:text-lg transition-all duration-200 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                             />
                         </div>
 
@@ -79,7 +79,7 @@
                                 type="password"
                                 placeholder="••••••••"
                                 required
-                                class="w-full rounded-lg border-2 border-gray-300 px-4 py-4 text-lg transition-all duration-200 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                                class="w-full rounded-lg border-2 border-gray-300 px-3 sm:px-4 py-3 sm:py-4 text-base sm:text-lg transition-all duration-200 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                             />
                         </div>
 
@@ -100,7 +100,7 @@
 
                         <button
                             type="submit"
-                            class="mt-6 cursor-pointer rounded-lg bg-sky-500 px-6 py-4 text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:bg-sky-600 hover:shadow-xl focus:ring-4 focus:ring-sky-200"
+                            class="mt-4 sm:mt-6 w-full cursor-pointer rounded-lg bg-sky-500 px-4 sm:px-6 py-3 sm:py-4 text-lg sm:text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:bg-sky-600 hover:shadow-xl focus:ring-4 focus:ring-sky-200"
                         >
                             เข้าสู่ระบบ
                         </button>
