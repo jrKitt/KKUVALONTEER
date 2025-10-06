@@ -30,7 +30,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard')->with('success', 'เข้าสู่ระบบสำเร็จ!');
+
+            $user = Auth::user();
+            if ($user->role === 'admin') {
+                return redirect('/admin/dashboard')->with('success', 'เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับสู่ระบบผู้ดูแล');
+            } else {
+                return redirect()->intended('/dashboard')->with('success', 'เข้าสู่ระบบสำเร็จ!');
+            }
         }
 
         return back()->withErrors([
@@ -49,7 +55,22 @@ class AuthController extends Controller
             'major' => 'required|string|max:255',
             'year' => 'required|integer|min:1|max:4',
             'password' => 'required|string|min:8|confirmed',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $profileImagePath = null;
+        if ($request->hasFile('profile_image')) {
+            $image = $request->file('profile_image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+
+            $uploadPath = public_path('uploads/profiles');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            $image->move($uploadPath, $imageName);
+            $profileImagePath = $imageName;
+        }
 
         $user = User::create([
             'firstname' => $request->firstname,
@@ -61,10 +82,13 @@ class AuthController extends Controller
             'year' => $request->year,
             'password' => Hash::make($request->password),
             'role' => 'student',
+            'major_id' => 1,
+            'profile_image' => $profileImagePath,
         ]);
 
         Auth::login($user);
 
+        // Since registration always creates 'student' role, redirect to student dashboard
         return redirect('/dashboard')->with('success', 'สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!');
     }
 

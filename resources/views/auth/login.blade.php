@@ -1,31 +1,45 @@
-@extends('components/layouts/layout-app')
+@extends("components/layouts/layout-app")
 
-@section('title')
+@section("title")
     เข้าสู่ระบบ | KKU VOLENTEER
 @endsection
 
-
-@section('content')
-    <div class="w-full h-screen flex flex-col md:flex-row">
-        <div class="hidden md:flex md:w-1/2 h-full">
-            <x-sliders.slider-auth class="w-full h-full"/>
+@section("content")
+    <div class="flex min-h-screen w-full flex-col md:flex-row">
+        <div class="hidden min-h-screen md:flex md:w-1/2">
+            <x-sliders.slider-auth class="min-h-screen w-full" />
         </div>
 
-        <div class="w-full md:w-1/2 h-full flex justify-center items-center p-4 md:p-0">
-            <div class="w-full max-w-[600px] px-4 md:px-0">
-
-                <form method="POST" action="{{ route('auth.login') }}">
+        <div
+            class="flex min-h-screen w-full items-center justify-center p-6 md:w-1/2 md:p-12"
+        >
+            <div class="w-full max-w-[700px] px-6 md:px-8">
+                <form method="POST" action="{{ route("auth.login") }}">
                     @csrf
-                    <div class="flex items-center  w-100">
-                            <img src="{{asset('images/app_icon_2.png')}}">
+                    <div class="flex w-100 items-center">
+                        <img src="{{ asset("images/app_icon_2.png") }}" />
                     </div>
-                    <h1 class="text-xl md:text-2xl font-semibold text-gray-900 tracking-wide">เข้าสู่ระบบ</h1>
-                    <div class="w-12 h-1 bg-sky-500 mt-2"></div>
-                    <p class="mt-1 text-sm md:text-base">หากยังต้องการสมัครบัญชี <a href="{{ route('auth.register') }}" class="text-sky-500 underline">ลงทะเบียน</a></p>
+                    <h1
+                        class="mb-4 text-3xl font-bold tracking-wide text-gray-900 md:text-4xl"
+                    >
+                        เข้าสู่ระบบ
+                    </h1>
+                    <div class="mt-2 mb-4 h-1 w-16 bg-sky-500"></div>
+                    <p class="mt-2 mb-8 text-lg text-gray-600 md:text-xl">
+                        หากยังต้องการสมัครบัญชี
+                        <a
+                            href="{{ route("auth.register") }}"
+                            class="text-sky-500 underline hover:text-sky-600"
+                        >
+                            ลงทะเบียน
+                        </a>
+                    </p>
 
                     @if ($errors->any())
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-3 md:px-4 py-3 rounded mt-4 text-sm md:text-base">
-                            <ul class="list-disc list-inside">
+                        <div
+                            class="mt-6 rounded-lg border border-red-400 bg-red-100 px-6 py-4 text-base text-red-700"
+                        >
+                            <ul class="list-inside list-disc space-y-1">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
@@ -33,20 +47,61 @@
                         </div>
                     @endif
 
-                    <div class="flex flex-col gap-3 md:gap-4 mt-4 md:mt-6">
-                        <input id="email" name="email" type="email" placeholder="student.s@kkumail.com"
-                               value="{{ old('email') }}" required
-                               class="w-full border-2 border-gray-300 p-3 md:p-4 rounded-lg focus:border-sky-500 outline-none text-sm md:text-base">
-
-                        <input id="password" name="password" type="password" placeholder="••••••••" required
-                               class="w-full border-2 border-gray-300 p-3 md:p-4 rounded-lg focus:border-sky-500 outline-none text-sm md:text-base">
-
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" name="remember" id="remember" class="w-4 h-4">
-                            <label for="remember" class="text-sm md:text-base">จดจำผู้ใช้</label>
+                    <div class="mt-8 flex flex-col gap-6">
+                        <div>
+                            <label
+                                for="email"
+                                class="mb-2 block text-sm font-medium text-gray-700"
+                            >
+                                อีเมล
+                            </label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                placeholder="student.s@kkumail.com"
+                                value="{{ old("email") }}"
+                                required
+                                class="w-full rounded-lg border-2 border-gray-300 px-4 py-4 text-lg transition-all duration-200 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            />
                         </div>
 
-                        <button type="submit" class="bg-sky-500 text-white rounded-lg py-3 md:py-4 mt-4 md:mt-6 cursor-pointer hover:bg-sky-600 transition-colors duration-200 text-base md:text-lg font-semibold">
+                        <div>
+                            <label
+                                for="password"
+                                class="mb-2 block text-sm font-medium text-gray-700"
+                            >
+                                รหัสผ่าน
+                            </label>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                placeholder="••••••••"
+                                required
+                                class="w-full rounded-lg border-2 border-gray-300 px-4 py-4 text-lg transition-all duration-200 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
+                            />
+                        </div>
+
+                        <div class="mt-2 flex items-center gap-3">
+                            <input
+                                type="checkbox"
+                                name="remember"
+                                id="remember"
+                                class="h-5 w-5 rounded text-sky-500 focus:ring-sky-500"
+                            />
+                            <label
+                                for="remember"
+                                class="text-base text-gray-700"
+                            >
+                                จดจำผู้ใช้
+                            </label>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="mt-6 cursor-pointer rounded-lg bg-sky-500 px-6 py-4 text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:bg-sky-600 hover:shadow-xl focus:ring-4 focus:ring-sky-200"
+                        >
                             เข้าสู่ระบบ
                         </button>
                     </div>
