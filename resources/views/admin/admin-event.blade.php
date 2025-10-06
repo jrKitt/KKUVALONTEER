@@ -129,12 +129,11 @@
             </div>
         </main>
 
-        {{-- modal --}}
-        {{-- <form class="w-full"> --}}
         <dialog id="my_modal_1" class="modal">
-            <div
-                class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
-            >
+            <form action="/activity" method="POST">
+                <div
+                     class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
+                 >
                 <div class="card">
                     <div class="card-title mb-4">+ สร้างกิจกรรมใหม่่</div>
                     <hr class="text-gray-300" />
@@ -142,51 +141,44 @@
                         <div class="fieldset col-span-6 max-md:col-span-12">
                             <label class="">ชื่อกิจกรรม</label>
                             <input
+                                name="activity_name"
                                 type="text"
                                 class="rounded-md border border-gray-400 px-4 py-2"
-                                placeholder="ชื่อกิจกรรม"
+                                placeholder="ชื่อกิจกรรม..."
                             />
                         </div>
 
-                        <div class="fieldset col-span-6 max-md:col-span-12">
-                            <label class="">หมวดหมู่</label>
-                            <select
-                                class="w-full rounded-md border-1 border-gray-400 px-4 py-2 text-lg"
-                            >
-                                <option value="" disabled selected>
-                                    เลือกหมวดหมู่
-                                </option>
-                                <option value="">a</option>
-                                <option value="">b</option>
-                                <option value="">c</option>
-                            </select>
+                         <div class="fieldset col-span-12">
+                            <label class="">รายละเอียดกิจกรรม</label>
+                            <textarea
+                                name=""
+                                id=""
+                                cols="30"
+                                rows="5"
+                                class="rounded-md textarea-xs border border-gray-400 px-4 py-2"
+                                placeholder="รายละเอียด..."
+                            ></textarea>
                         </div>
 
-                        <div class="fieldset col-span-6 max-md:col-span-12">
-                            <label class="">หมวดหมู่</label>
+
+                        <div class="fieldset col-span-4 max-md:col-span-12">
+                            <label class="">วันจัดกิจกรรม</label>
                             <input
                                 type="date"
                                 class="rounded-md border border-gray-400 px-4 py-2"
+                                placeholder="วันเริ่มกิจกรรม..."
                             />
                         </div>
 
-                        <div class="fieldset col-span-6 max-md:col-span-12">
+                        <div class="fieldset col-span-4 max-md:col-span-12 pr-6">
                             <label class="">จำนวนชั่วโมง</label>
                             <input
                                 type="number"
                                 class="rounded-md border border-gray-400 px-4 py-2"
                             />
                         </div>
-
-                        <div class="fieldset col-span-6 max-md:col-span-12">
-                            <label class="">สถานที่</label>
-                            <input
-                                type="text"
-                                class="rounded-md border border-gray-400 px-4 py-2"
-                            />
-                        </div>
-
-                        <div class="fieldset col-span-6 max-md:col-span-12">
+                        
+                         <div class="fieldset col-span-4 max-md:col-span-12">
                             <label class="">จำนวนผู้เข้าร่วมสูงสุด</label>
                             <input
                                 type="number"
@@ -194,16 +186,28 @@
                             />
                         </div>
 
-                        <div class="fieldset col-span-12">
-                            <label class="">รายละเอียดกิจกรรม</label>
-                            <textarea
-                                name=""
-                                id=""
-                                cols="30"
-                                rows="10"
+                        <div class="fieldset col-span-12 max-md:col-span-12">
+                            <label class="">สถานที่</label>
+                            <input
+                                type="text"
+                                placeholder="สถานที่..."
                                 class="rounded-md border border-gray-400 px-4 py-2"
-                            ></textarea>
+                            />
                         </div>
+
+                       
+
+                        <div class=" col-span-12">
+                            <label for="">แท็กกิจกรรม</label>
+                            <div class="w-full h-20 border-2 border-gray-300 rounded-md">
+
+                            </div>
+                            <input type="text" class="rounded-md border border-gray-400 px-4 py-2 mt-2" placeholder="ชื่อแท็ก...">
+                            <button class="btn ml-1">เพิ่มแท็ก</button>
+
+                        </div>
+
+                       
 
                         <div class="fieldset col-span-12">
                             <div
@@ -249,8 +253,8 @@
                     />
                 </div>
             </div>
+            </form>  
         </dialog>
-        {{-- </form> --}}
     </div>
 
     <script>

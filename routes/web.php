@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VolunteerHourController;
 use App\Http\Controllers\DashboardController;
+use Illuminate\Routing\RouteRegistrar;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +60,4 @@ Route::get('/admin' , function(){
     return view('admin/index');
 });
 
-
-Route::get('/test', function () {
-    return view('test');
-});
+Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");
