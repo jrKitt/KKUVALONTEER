@@ -131,6 +131,7 @@
 
         <dialog id="my_modal_1" class="modal">
             <form action="/activity" method="POST">
+                @csrf
                 <div
                      class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
                  >
@@ -151,9 +152,9 @@
                          <div class="fieldset col-span-12">
                             <label class="">รายละเอียดกิจกรรม</label>
                             <textarea
-                                name=""
                                 id=""
                                 cols="30"
+                                name="des"
                                 rows="5"
                                 class="rounded-md textarea-xs border border-gray-400 px-4 py-2"
                                 placeholder="รายละเอียด..."
@@ -190,6 +191,7 @@
                             <label class="">สถานที่</label>
                             <input
                                 type="text"
+                                name="location"
                                 placeholder="สถานที่..."
                                 class="rounded-md border border-gray-400 px-4 py-2"
                             />
