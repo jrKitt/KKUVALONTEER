@@ -7,6 +7,7 @@ use App\Http\Controllers\VolunteerHourController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\OwnerController;
 use Illuminate\Routing\RouteRegistrar;
 
 /*
@@ -36,6 +37,7 @@ Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 Route::get('/detail', function () {
     return view('valunteerdetails');
 });
+Route::get('/owner',[OwnerController::class,'index']);
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
 Route::post('/login', [AuthController::class, 'login']);
