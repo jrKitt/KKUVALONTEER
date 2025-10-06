@@ -91,20 +91,33 @@
 
 
                         <div class="fieldset col-span-4 max-md:col-span-12">
-                            <label class="">วันจัดกิจกรรม</label>
+                            <label class="">วัน/เวลา เริ่มกิจกรรม</label>
                             <input
-                                type="date"
+                                type="datetime-local"
                                 required
+                                name="start_time"
+                                class="rounded-md border border-gray-400 px-4 py-2"
+                                placeholder="วันเริ่มกิจกรรม..."
+                            />
+                        </div>
+
+                        <div class="fieldset col-span-4 max-md:col-span-12">
+                            <label class="">วัน/เวลา จบกิจกรรม</label>
+                            <input
+                                type="datetime-local"
+                                required
+                                name="end_time"
                                 class="rounded-md border border-gray-400 px-4 py-2"
                                 placeholder="วันเริ่มกิจกรรม..."
                             />
                         </div>
 
                         <div class="fieldset col-span-4 max-md:col-span-12 pr-6">
-                            <label class="">จำนวนชั่วโมง</label>
+                            <label class="">จำนวนชั่วโมงรวม</label>
                             <input
                                 type="number"
                                 required
+                                name="total_hour"
                                 class="rounded-md border border-gray-400 px-4 py-2"
                             />
                         </div>
@@ -114,11 +127,12 @@
                             <input
                                 type="number"
                                 required
+                                name="accept_amount"
                                 class="rounded-md border border-gray-400 px-4 py-2"
                             />
                         </div>
 
-                        <div class="fieldset col-span-12 max-md:col-span-12">
+                        <div class="fieldset col-span-8 max-md:col-span-12">
                             <label class="">สถานที่</label>
                             <input
                                 type="text"
@@ -140,91 +154,6 @@
                             <button class="btn ml-1">เพิ่มแท็ก</button>
 
                         </div>
-
-                       
-
-                        <div class="fieldset col-span-12">
-                            <div
-                                class="flex items-center space-x-2 rounded-md border border-gray-300"
-                            >
-                                <label
-                                    for="file-upload"
-                                    class="cursor-pointer bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200"
-                                >
-                                    Browse...
-                                </label>
-
-                                <input
-                                    name="activity_name"
-                                    type="text"
-                                    class="rounded-md border border-gray-400 px-4 py-2"
-                                    placeholder="ชื่อกิจกรรม..."
-                                />
-                            </div>
-
-                            <div class="fieldset col-span-12">
-                                <label class="">รายละเอียดกิจกรรม</label>
-                                <textarea
-                                    id=""
-                                    cols="30"
-                                    name="des"
-                                    rows="5"
-                                    class="textarea-xs rounded-md border border-gray-400 px-4 py-2"
-                                    placeholder="รายละเอียด..."
-                                ></textarea>
-                            </div>
-
-                            <div class="fieldset col-span-4 max-md:col-span-12">
-                                <label class="">วันจัดกิจกรรม</label>
-                                <input
-                                    type="date"
-                                    class="rounded-md border border-gray-400 px-4 py-2"
-                                    placeholder="วันเริ่มกิจกรรม..."
-                                />
-                            </div>
-
-                            <div
-                                class="fieldset col-span-4 pr-6 max-md:col-span-12"
-                            >
-                                <label class="">จำนวนชั่วโมง</label>
-                                <input
-                                    type="number"
-                                    class="rounded-md border border-gray-400 px-4 py-2"
-                                />
-                            </div>
-
-                            <div class="fieldset col-span-4 max-md:col-span-12">
-                                <label class="">จำนวนผู้เข้าร่วมสูงสุด</label>
-                                <input
-                                    type="number"
-                                    class="rounded-md border border-gray-400 px-4 py-2"
-                                />
-                            </div>
-
-                            <div
-                                class="fieldset col-span-12 max-md:col-span-12"
-                            >
-                                <label class="">สถานที่</label>
-                                <input
-                                    type="text"
-                                    name="location"
-                                    placeholder="สถานที่..."
-                                    class="rounded-md border border-gray-400 px-4 py-2"
-                                />
-                            </div>
-
-                            <div class="col-span-12">
-                                <label for="">แท็กกิจกรรม</label>
-                                <div
-                                    class="h-20 w-full rounded-md border-2 border-gray-300"
-                                ></div>
-                                <input
-                                    type="text"
-                                    class="mt-2 rounded-md border border-gray-400 px-4 py-2"
-                                    placeholder="ชื่อแท็ก..."
-                                />
-                                <button class="btn ml-1">เพิ่มแท็ก</button>
-                            </div>
 
                             <div class="fieldset col-span-12">
                                 <div
