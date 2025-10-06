@@ -155,39 +155,122 @@
                                 </label>
 
                                 <input
-                                    id="file-upload"
-                                    type="file"
-                                    class="hidden"
-                                    onchange="updateFileName(this)"
+                                    name="activity_name"
+                                    type="text"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                    placeholder="ชื่อกิจกรรม..."
                                 />
+                            </div>
 
-                                <span
-                                    id="file-name"
-                                    class="text-sm text-gray-500"
+                            <div class="fieldset col-span-12">
+                                <label class="">รายละเอียดกิจกรรม</label>
+                                <textarea
+                                    id=""
+                                    cols="30"
+                                    name="des"
+                                    rows="5"
+                                    class="textarea-xs rounded-md border border-gray-400 px-4 py-2"
+                                    placeholder="รายละเอียด..."
+                                ></textarea>
+                            </div>
+
+                            <div class="fieldset col-span-4 max-md:col-span-12">
+                                <label class="">วันจัดกิจกรรม</label>
+                                <input
+                                    type="date"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                    placeholder="วันเริ่มกิจกรรม..."
+                                />
+                            </div>
+
+                            <div
+                                class="fieldset col-span-4 pr-6 max-md:col-span-12"
+                            >
+                                <label class="">จำนวนชั่วโมง</label>
+                                <input
+                                    type="number"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
+                            </div>
+
+                            <div class="fieldset col-span-4 max-md:col-span-12">
+                                <label class="">จำนวนผู้เข้าร่วมสูงสุด</label>
+                                <input
+                                    type="number"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
+                            </div>
+
+                            <div
+                                class="fieldset col-span-12 max-md:col-span-12"
+                            >
+                                <label class="">สถานที่</label>
+                                <input
+                                    type="text"
+                                    name="location"
+                                    placeholder="สถานที่..."
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
+                            </div>
+
+                            <div class="col-span-12">
+                                <label for="">แท็กกิจกรรม</label>
+                                <div
+                                    class="h-20 w-full rounded-md border-2 border-gray-300"
+                                ></div>
+                                <input
+                                    type="text"
+                                    class="mt-2 rounded-md border border-gray-400 px-4 py-2"
+                                    placeholder="ชื่อแท็ก..."
+                                />
+                                <button class="btn ml-1">เพิ่มแท็ก</button>
+                            </div>
+
+                            <div class="fieldset col-span-12">
+                                <div
+                                    class="flex items-center space-x-2 rounded-md border border-gray-300"
                                 >
-                                    No file selected.
-                                </span>
+                                    <label
+                                        for="file-upload"
+                                        class="cursor-pointer bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200"
+                                    >
+                                        Browse...
+                                    </label>
+
+                                    <input
+                                        id="file-upload"
+                                        type="file"
+                                        class="hidden"
+                                        onchange="updateFileName(this)"
+                                    />
+
+                                    <span
+                                        id="file-name"
+                                        class="text-sm text-gray-500"
+                                    >
+                                        No file selected.
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <hr class="text-gray-300" />
-                <div class="modal-action">
-                    <form method="dialog">
+                    <hr class="text-gray-300" />
+                    <div class="modal-action">
                         <button
+                            type="button"
                             class="cursor-pointer rounded-xl border-2 border-sky-400 px-12 py-2 text-sky-400 transition-all hover:bg-gray-100 active:scale-90"
+                            onclick="my_modal_1.close()"
                         >
                             ยกเลิก
                         </button>
-                    </form>
-                    <input
-                        type="submit"
-                        value="ยืนยัน"
-                        class="cursor-pointer rounded-xl border-2 bg-sky-400 px-12 py-2 text-white transition-all hover:bg-sky-500 active:scale-90"
-                    />
+                        <input
+                            type="submit"
+                            value="ยืนยัน"
+                            class="cursor-pointer rounded-xl border-2 bg-sky-400 px-12 py-2 text-white transition-all hover:bg-sky-500 active:scale-90"
+                        />
+                    </div>
                 </div>
-            </div>
-            </form>  
+            </form>
         </dialog>
     </div>
 
