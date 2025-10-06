@@ -10,10 +10,11 @@
     @vite('resources/js/app.js')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://kit.fontawesome.com/c813362ef5.js" crossorigin="anonymous"></script>
 
 </head>
 <body>
-    <div class="h-screen font-prompt">
+    <div class="h-screen">
         @include('components.alert')
 
         @yield('content')

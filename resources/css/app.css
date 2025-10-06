@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 @import "tailwindcss";
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -8,6 +8,10 @@
 
  @plugin "daisyui" {
   themes: light --default;
+ }
+
+ * {
+    font-family: Kanit;
  }
 
 @keyframes slide {
@@ -46,14 +50,6 @@
   animation-delay: 8s;
 }
 
-.btn{
-    padding-block: 5px;
-    padding-inline: 30px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-
 progress.progress {
   -webkit-appearance: none;
   appearance: none;
@@ -79,4 +75,32 @@ progress.progress::-moz-progress-bar {
   transition: width 0.3s ease;
 }
 
+calendar-month::part(day):hover {
+  background:#1AA8F8;
+  color: white;
+}
+
+calendar-month {
+
+  &::part(button) {
+    border-radius: 10px;
+    /* background: black; */
+  }
+  
+  &::part(today) {
+    border-radius: 10px;
+    background:transparent;
+    color: #1AA8F8;
+    border: 2px solid #1AA8F8;
+  }
+  &::part(selected) {
+    border-radius: 10px;
+    background:transparent;
+    color: red;
+    border: 2px solid red;
+  }
+  &::part(head) {
+    height:35px;
+  }
+}
 

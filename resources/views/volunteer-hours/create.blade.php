@@ -1,4 +1,4 @@
-@extends("components/layouts/layoutAdmin")
+@extends("../components/layouts/layoutAdmin.blade.php")
 
 @section('title', 'เพิ่มชั่วโมงจิตอาสา')
 

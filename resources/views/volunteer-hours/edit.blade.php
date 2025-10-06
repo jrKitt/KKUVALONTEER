@@ -1,4 +1,4 @@
-@extends('layouts.volunteer')
+@extends("../components/layouts/layoutAdmin.blade.php")
 
 @section('title', 'แก้ไขชั่วโมงจิตอาสา')
 
