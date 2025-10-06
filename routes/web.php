@@ -57,9 +57,7 @@ Route::get('/admin/dashboard' , function(){
     return view('admin/admin-dashboard');
 })->name('admin.dashboard');
 
-Route::get('/admin/event' , function(){
-    return view('admin/admin-event');
-})->name('admin.events');
+
 
 Route::get('/admin' , function(){
     return view('admin/index');
@@ -93,5 +91,8 @@ Route::get('/admin/checkin', function() {
 
     return view('admin.checkin-simple', compact('event', 'participants'));
 })->name('admin.checkin');
+
+
+Route::get('/admin/event' , [ActivityController::class, "showAdminActivity"])->name('admin.events');
 
 Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");

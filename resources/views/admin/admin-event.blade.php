@@ -27,20 +27,22 @@
                             + เพิ่มกิจกรรม
                         </button>
                     </section>
-                    <section class="flex gap-5 max-sm:flex-col">
-                        <input
-                            type="text"
-                            placeholder="ค้นหา"
-                            class="rounded-xl border-2 border-gray-400 px-2 py-1"
-                        />
+                    <section class="flex max-sm:flex-col">
+                       
                         <select
-                            class="w-50 rounded-xl border-2 border-gray-400 px-2 py-1 max-md:w-70"
+                            class="w-50 rounded-xl border-2 border-gray-400 px-2 py-1 max-md:w-70 mr-5"
                         >
-                            <option value="" disabled selected>รายเดือน</option>
+                            <option value="" disabled selected>-- ทุกคณะ --</option>
                             <option value="">a</option>
                             <option value="">b</option>
                             <option value="">c</option>
                         </select>
+                         <input
+                            type="text"
+                            placeholder="ชื่อกิจกรรม..."
+                            class="rounded-xl border-2 border-gray-400 px-2 py-1"
+                        />
+                        <button class="btn">ค้นหา</button>
                     </section>
                 </div>
             </div>
@@ -48,9 +50,78 @@
         </div>
 
         <main>
-            <div class="mx-auto grid w-full max-w-6xl grid-cols-12 gap-5">
-                @foreach ([1, 2, 3] as $arr)
-                   <x-cards.card-event/>
+            <div class="mx-auto grid w-full max-w-6xl grid-cols-12 gap-5 pb-6">
+                @foreach ($rec as $activity)
+                    <div
+                        class="col-span-4 w-full rounded-xl shadow-md max-lg:col-span-6 max-md:col-span-12"
+                    >
+                        <div class="p-4">
+                            <section>
+                                <div
+                                    class="py- absolute m-2 rounded-full bg-red-100 px-2 text-sm text-red-600/80"
+                                >
+                                    15 days left
+                                </div>
+                                <img
+                                    src="{{ asset("images/family.png") }}"
+                                    alt="img"
+                                    class="rounded-xl"
+                                />
+                            </section>
+                            <section class="my-2 flex flex-col gap-2">
+                                <h1>{{$activity->name_th}}</h1>
+                                <div
+                                    class="] flex gap-2 [&_div]:rounded-full [&_div]:px-2 [&_div]:py-1 [&_div]:text-sm [&_div]:text-white"
+                                >
+                                    <div class="bg-green-500">#เกษตรศาสตร์</div>
+                                    <div class="bg-gray-400">#กลางแจ้ง</div>
+                                </div>
+                                <div>
+                                    <h6 class="text-gray-600">
+                                        {{$activity->name_th}}
+                                    </h6>
+                                    <p class="text-gray-600">
+                                        {{$activity->description}}
+                                    </p>
+                                </div>
+                                <div>
+                                    <div
+                                        class="mb-3 flex items-center justify-between text-sm text-gray-500"
+                                    >
+                                        <div class="flex items-center">
+                                            <i
+                                                class="fa-solid fa-location-dot"
+                                            ></i>
+                                            {{$activity->location}}
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fa-solid fa-clock"></i>
+                                            {{$activity->total_hour}} ชั่วโมง
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 text-xs text-gray-500">
+                                        <i
+                                            class="fa-solid fa-calendar-days"
+                                        ></i>
+                                        8 พ.ย. 2568
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="flex gap-5">
+                                <button
+                                    class="w-full rounded-xl bg-amber-400/80 py-2 text-white"
+                                    onclick="my_modal_1.showModal()"
+                                >
+                                    แก้ไขข้อมูล
+                                </button>
+                                <button
+                                    class="w-full rounded-xl border text-red-400 py-2 border-red-400 shadow"
+                                >
+                                    ลบข้อมูล
+                                </button>
+                            </section>
+                        </div>
+                    </div>
                 @endforeach
             </div>
         </main>

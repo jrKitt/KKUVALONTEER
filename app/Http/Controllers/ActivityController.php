@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 class ActivityController extends Controller
 {
 
+    public function showAdminActivity() {
+        $rec = Activity::all();
+       return view("admin/admin-event" , compact("rec"));
+    }
+
     //
     public function createActivity(Request $req) {
         error_log($req->input("start_time"));
