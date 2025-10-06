@@ -36,6 +36,9 @@ Route::get('/about', function () {
 Route::get('/profile', function () {
     return view('profile');
 });
+Route::get('/detail', function () {
+    return view('valunteerdetails');
+});
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('auth.login');
 Route::post('/login', [AuthController::class, 'login']);

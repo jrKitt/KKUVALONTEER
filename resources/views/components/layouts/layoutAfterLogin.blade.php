@@ -57,8 +57,8 @@
                                 tabindex="0"
                                 class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
                             >
-                                <li><span>profile</span></li>
-                                <li><span>logout</span></li>
+                                <li><a href="/profile">profile</a></li>
+                                <li><a href="#">logout</a></li>
                             </ul>
                         </div>
                     </div>
