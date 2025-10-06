@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\ActivityParticipant;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
@@ -13,9 +14,38 @@ class ActivityController extends Controller
        return view("admin/admin-event" , compact("rec"));
     }
 
+    public function showUserActivity() {
+        $rec = Activity::orderBy('created_at', 'desc')->get();
+
+        if (auth()->check()) {
+            $userRegistrations = ActivityParticipant::where('user_id', auth()->id())
+                ->pluck('activity_id')
+                ->toArray();
+
+            foreach ($rec as $activity) {
+                $activity->is_registered = in_array($activity->id, $userRegistrations);
+                $activity->participants_count = ActivityParticipant::where('activity_id', $activity->id)->count();
+            }
+        }
+
+        return view("events", compact("rec"));
+    }
+
     //
     public function createActivity(Request $req) {
+        $req->validate([
+            'activity_name' => 'required|string|max:255',
+            'des' => 'nullable|string',
+            'location' => 'nullable|string|max:255',
+            'start_time' => 'required|date',
+            'end_time' => 'nullable|date|after:start_time',
+            'accept_amount' => 'required|integer|min:1',
+            'total_hour' => 'nullable|integer|min:0',
+            'activity_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+        ]);
+
         error_log($req->input("start_time"));
+
         $new_activity = new Activity();
         $new_activity->name_th = $req->input("activity_name");
         $new_activity->description = $req->input("des");
@@ -24,8 +54,95 @@ class ActivityController extends Controller
         $new_activity->end_time = $req->input("end_time");
         $new_activity->accept_amount = $req->input("accept_amount");
         $new_activity->total_hour = $req->input("total_hour");
-        $new_activity->create_by = 0;
+        $new_activity->create_by = auth()->id() ?? 0;
+        $new_activity->status = 'pending';
+        if ($req->hasFile('activity_image')) {
+            $file = $req->file('activity_image');
+            $uploadPath = public_path('uploads/activities');
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+            $file->move($uploadPath, $filename);
+
+            $new_activity->image_file_name = $filename;
+        }
+
         $new_activity->save();
-        return redirect("/admin/event");
+
+        return redirect("/admin/event")->with('success', 'สร้างกิจกรรมเรียบร้อยแล้ว');
+    }
+
+    public function registerActivity(Request $request) {
+        $activityId = $request->input('activity_id');
+        $userId = auth()->id();
+
+        if (!$userId) {
+            return response()->json(['success' => false, 'message' => 'กรุณาเข้าสู่ระบบก่อน']);
+        }
+
+        $activity = Activity::find($activityId);
+        if (!$activity) {
+            return response()->json(['success' => false, 'message' => 'ไม่พบกิจกรรมนี้']);
+        }
+
+        if ($activity->status !== 'pending' && $activity->status !== 'ongoing') {
+            return response()->json(['success' => false, 'message' => 'กิจกรรมนี้ปิดรับสมัครแล้ว']);
+        }
+
+        $existingRegistration = ActivityParticipant::where('activity_id', $activityId)
+            ->where('user_id', $userId)
+            ->first();
+
+        if ($existingRegistration) {
+            return response()->json(['success' => false, 'message' => 'คุณได้สมัครกิจกรรมนี้แล้ว']);
+        }
+
+        $currentParticipants = ActivityParticipant::where('activity_id', $activityId)->count();
+        if ($currentParticipants >= $activity->accept_amount) {
+            return response()->json(['success' => false, 'message' => 'กิจกรรมนี้เต็มแล้ว']);
+        }
+
+        ActivityParticipant::create([
+            'activity_id' => $activityId,
+            'user_id' => $userId,
+            'status' => 'registered',
+            'registered_at' => now()
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'ลงทะเบียนสำเร็จ',
+            'activity' => $activity
+        ]);
+    }
+
+    public function getActivityDetail($id) {
+        $activity = Activity::find($id);
+
+        if (!$activity) {
+            return response()->json(['success' => false, 'message' => 'ไม่พบกิจกรรมนี้']);
+        }
+
+        return response()->json(['success' => true, 'activity' => $activity]);
+    }
+
+    public function showActivityDetail($id) {
+        $activity = Activity::with('creator')->find($id);
+
+        if (!$activity) {
+            abort(404, 'ไม่พบกิจกรรมนี้');
+        }
+
+        if (auth()->check()) {
+            $activity->is_registered = ActivityParticipant::where('activity_id', $id)
+                ->where('user_id', auth()->id())
+                ->exists();
+
+            $activity->participants_count = ActivityParticipant::where('activity_id', $id)->count();
+        }
+
+        return view('detail', compact('activity'));
     }
 }

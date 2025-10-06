@@ -6,6 +6,47 @@
 
 @section("layout-content")
     <div class="mx-4 min-h-screen bg-gray-50 text-black">
+        <!-- Success/Error Messages -->
+        @if (session("success"))
+            <div class="mx-auto mb-4 max-w-6xl">
+                <div
+                    class="relative rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700"
+                    role="alert"
+                >
+                    <span class="block sm:inline">
+                        {{ session("success") }}
+                    </span>
+                </div>
+            </div>
+        @endif
+
+        @if (session("error"))
+            <div class="mx-auto mb-4 max-w-6xl">
+                <div
+                    class="relative rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
+                    role="alert"
+                >
+                    <span class="block sm:inline">{{ session("error") }}</span>
+                </div>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="mx-auto mb-4 max-w-6xl">
+                <div
+                    class="relative rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
+                    role="alert"
+                >
+                    <strong class="font-bold">เกิดข้อผิดพลาด!</strong>
+                    <ul class="mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
         <div class="mx-auto aspect-auto max-w-6xl px-2">
             <div
                 class="my-6 flex w-full items-center justify-between max-md:flex-col"
@@ -28,16 +69,17 @@
                         </button>
                     </section>
                     <section class="flex max-sm:flex-col">
-                       
                         <select
-                            class="w-50 rounded-xl border-2 border-gray-400 px-2 py-1 max-md:w-70 mr-5"
+                            class="mr-5 w-50 rounded-xl border-2 border-gray-400 px-2 py-1 max-md:w-70"
                         >
-                            <option value="" disabled selected>-- ทุกคณะ --</option>
+                            <option value="" disabled selected>
+                                -- ทุกคณะ --
+                            </option>
                             <option value="">a</option>
                             <option value="">b</option>
                             <option value="">c</option>
                         </select>
-                         <input
+                        <input
                             type="text"
                             placeholder="ชื่อกิจกรรม..."
                             class="rounded-xl border-2 border-gray-400 px-2 py-1"
@@ -62,14 +104,23 @@
                                 >
                                     15 days left
                                 </div>
-                                <img
-                                    src="{{ asset("images/family.png") }}"
-                                    alt="img"
-                                    class="rounded-xl"
-                                />
+
+                                @if ($activity->image_file_name)
+                                    <img
+                                        src="{{ asset("uploads/activities/" . $activity->image_file_name) }}"
+                                        alt="{{ $activity->name_th }}"
+                                        class="h-48 w-full rounded-xl object-cover"
+                                    />
+                                @else
+                                    <img
+                                        src="{{ asset("images/family.png") }}"
+                                        alt="img"
+                                        class="h-48 w-full rounded-xl object-cover"
+                                    />
+                                @endif
                             </section>
                             <section class="my-2 flex flex-col gap-2">
-                                <h1>{{$activity->name_th}}</h1>
+                                <h1>{{ $activity->name_th }}</h1>
                                 <div
                                     class="] flex gap-2 [&_div]:rounded-full [&_div]:px-2 [&_div]:py-1 [&_div]:text-sm [&_div]:text-white"
                                 >
@@ -78,10 +129,10 @@
                                 </div>
                                 <div>
                                     <h6 class="text-gray-600">
-                                        {{$activity->name_th}}
+                                        {{ $activity->name_th }}
                                     </h6>
                                     <p class="text-gray-600">
-                                        {{$activity->description}}
+                                        {{ $activity->description }}
                                     </p>
                                 </div>
                                 <div>
@@ -92,11 +143,11 @@
                                             <i
                                                 class="fa-solid fa-location-dot"
                                             ></i>
-                                            {{$activity->location}}
+                                            {{ $activity->location }}
                                         </div>
                                         <div class="flex items-center">
                                             <i class="fa-solid fa-clock"></i>
-                                            {{$activity->total_hour}} ชั่วโมง
+                                            {{ $activity->total_hour }} ชั่วโมง
                                         </div>
                                     </div>
                                     <div class="mb-3 text-xs text-gray-500">
@@ -115,7 +166,7 @@
                                     แก้ไขข้อมูล
                                 </button>
                                 <button
-                                    class="w-full rounded-xl border text-red-400 py-2 border-red-400 shadow"
+                                    class="w-full rounded-xl border border-red-400 py-2 text-red-400 shadow"
                                 >
                                     ลบข้อมูล
                                 </button>
@@ -127,106 +178,113 @@
         </main>
 
         <dialog id="my_modal_1" class="modal">
-            <form action="/activity" method="POST">
+            <form
+                action="/activity"
+                method="POST"
+                enctype="multipart/form-data"
+            >
                 @csrf
                 <div
-                     class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
-                 >
-                <div class="card">
-                    <div class="card-title mb-4">+ สร้างกิจกรรมใหม่่</div>
-                    <hr class="text-gray-300" />
-                    <div class="card-body grid grid-cols-12 gap-5">
-                        <div class="fieldset col-span-6 max-md:col-span-12">
-                            <label class="">ชื่อกิจกรรม</label>
-                            <input
-                                name="activity_name"
-                                type="text"
-                                required
-                                class="rounded-md border border-gray-400 px-4 py-2"
-                                placeholder="ชื่อกิจกรรม..."
-                            />
-                        </div>
-
-                         <div class="fieldset col-span-12">
-                            <label class="">รายละเอียดกิจกรรม</label>
-                            <textarea
-                                id=""
-                                cols="30"
-                                name="des"
-                                required
-                                rows="5"
-                                class="rounded-md textarea-xs border border-gray-400 px-4 py-2"
-                                placeholder="รายละเอียด..."
-                            ></textarea>
-                        </div>
-
-
-                        <div class="fieldset col-span-4 max-md:col-span-12">
-                            <label class="">วัน/เวลา เริ่มกิจกรรม</label>
-                            <input
-                                type="datetime-local"
-                                required
-                                name="start_time"
-                                class="rounded-md border border-gray-400 px-4 py-2"
-                                placeholder="วันเริ่มกิจกรรม..."
-                            />
-                        </div>
-
-                        <div class="fieldset col-span-4 max-md:col-span-12">
-                            <label class="">วัน/เวลา จบกิจกรรม</label>
-                            <input
-                                type="datetime-local"
-                                required
-                                name="end_time"
-                                class="rounded-md border border-gray-400 px-4 py-2"
-                                placeholder="วันเริ่มกิจกรรม..."
-                            />
-                        </div>
-
-                        <div class="fieldset col-span-4 max-md:col-span-12 pr-6">
-                            <label class="">จำนวนชั่วโมงรวม</label>
-                            <input
-                                type="number"
-                                required
-                                name="total_hour"
-                                class="rounded-md border border-gray-400 px-4 py-2"
-                            />
-                        </div>
-                        
-                         <div class="fieldset col-span-4 max-md:col-span-12">
-                            <label class="">จำนวนผู้เข้าร่วมสูงสุด</label>
-                            <input
-                                type="number"
-                                required
-                                name="accept_amount"
-                                class="rounded-md border border-gray-400 px-4 py-2"
-                            />
-                        </div>
-
-                        <div class="fieldset col-span-8 max-md:col-span-12">
-                            <label class="">สถานที่</label>
-                            <input
-                                type="text"
-                                required
-                                name="location"
-                                placeholder="สถานที่..."
-                                class="rounded-md border border-gray-400 px-4 py-2"
-                            />
-                        </div>
-
-                       
-
-                        <div class=" col-span-12">
-                            <label for="">แท็กกิจกรรม</label>
-                            <div class="w-full h-20 border-2 border-gray-300 rounded-md">
-
+                    class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
+                >
+                    <div class="card">
+                        <div class="card-title mb-4">+ สร้างกิจกรรมใหม่่</div>
+                        <hr class="text-gray-300" />
+                        <div class="card-body grid grid-cols-12 gap-5">
+                            <div class="fieldset col-span-6 max-md:col-span-12">
+                                <label class="">ชื่อกิจกรรม</label>
+                                <input
+                                    name="activity_name"
+                                    type="text"
+                                    required
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                    placeholder="ชื่อกิจกรรม..."
+                                />
                             </div>
-                            <input type="text" class="rounded-md border border-gray-400 px-4 py-2 mt-2" placeholder="ชื่อแท็ก...">
-                            <button class="btn ml-1">เพิ่มแท็ก</button>
-
-                        </div>
 
                             <div class="fieldset col-span-12">
+                                <label class="">รายละเอียดกิจกรรม</label>
+                                <textarea
+                                    id=""
+                                    cols="30"
+                                    name="des"
+                                    required
+                                    rows="5"
+                                    class="textarea-xs rounded-md border border-gray-400 px-4 py-2"
+                                    placeholder="รายละเอียด..."
+                                ></textarea>
+                            </div>
+
+                            <div class="fieldset col-span-4 max-md:col-span-12">
+                                <label class="">วัน/เวลา เริ่มกิจกรรม</label>
+                                <input
+                                    type="datetime-local"
+                                    required
+                                    name="start_time"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                    placeholder="วันเริ่มกิจกรรม..."
+                                />
+                            </div>
+
+                            <div class="fieldset col-span-4 max-md:col-span-12">
+                                <label class="">วัน/เวลา จบกิจกรรม</label>
+                                <input
+                                    type="datetime-local"
+                                    required
+                                    name="end_time"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                    placeholder="วันเริ่มกิจกรรม..."
+                                />
+                            </div>
+
+                            <div
+                                class="fieldset col-span-4 pr-6 max-md:col-span-12"
+                            >
+                                <label class="">จำนวนชั่วโมงรวม</label>
+                                <input
+                                    type="number"
+                                    required
+                                    name="total_hour"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
+                            </div>
+
+                            <div class="fieldset col-span-4 max-md:col-span-12">
+                                <label class="">จำนวนผู้เข้าร่วมสูงสุด</label>
+                                <input
+                                    type="number"
+                                    required
+                                    name="accept_amount"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
+                            </div>
+
+                            <div class="fieldset col-span-8 max-md:col-span-12">
+                                <label class="">สถานที่</label>
+                                <input
+                                    type="text"
+                                    required
+                                    name="location"
+                                    placeholder="สถานที่..."
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
+                            </div>
+
+                            <div class="col-span-12">
+                                <label for="">แท็กกิจกรรม</label>
+                                <div
+                                    class="h-20 w-full rounded-md border-2 border-gray-300"
+                                ></div>
+                                <input
+                                    type="text"
+                                    class="mt-2 rounded-md border border-gray-400 px-4 py-2"
+                                    placeholder="ชื่อแท็ก..."
+                                />
+                                <button class="btn ml-1">เพิ่มแท็ก</button>
+                            </div>
+
+                            <div class="fieldset col-span-12">
+                                <label class="">รูปภาพกิจกรรม</label>
                                 <div
                                     class="flex items-center space-x-2 rounded-md border border-gray-300"
                                 >
@@ -234,12 +292,14 @@
                                         for="file-upload"
                                         class="cursor-pointer bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200"
                                     >
-                                        Browse...
+                                        เลือกรูปภาพ...
                                     </label>
 
                                     <input
                                         id="file-upload"
+                                        name="activity_image"
                                         type="file"
+                                        accept="image/*"
                                         class="hidden"
                                         onchange="updateFileName(this)"
                                     />
@@ -248,8 +308,11 @@
                                         id="file-name"
                                         class="text-sm text-gray-500"
                                     >
-                                        No file selected.
+                                        ยังไม่ได้เลือกไฟล์
                                     </span>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-500">
+                                    รองรับไฟล์: JPG, PNG, GIF (ขนาดไม่เกิน 5MB)
                                 </div>
                             </div>
                         </div>
@@ -275,12 +338,18 @@
     </div>
 
     <script>
-        const = updateFileName = (input) => {
+        const updateFileName = (input) => {
             const fileName =
                 input.files.length > 0
                     ? input.files[0].name
-                    : 'No file selected.';
+                    : 'ยังไม่ได้เลือกไฟล์';
             document.getElementById('file-name').textContent = fileName;
-        }
+
+            if (input.files.length > 0) {
+                const fileSize = (input.files[0].size / 1024 / 1024).toFixed(2);
+                document.getElementById('file-name').textContent =
+                    `${fileName} (${fileSize} MB)`;
+            }
+        };
     </script>
 @endsection

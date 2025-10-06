@@ -100,4 +100,8 @@ Route::get('/admin/checkin', function() {
 
 Route::get('/admin/event' , [ActivityController::class, "showAdminActivity"])->name('admin.events');
 
+Route::get('/activities', [ActivityController::class, "showUserActivity"])->name('user.activities');
+Route::post('/activities/register', [ActivityController::class, "registerActivity"])->name('activities.register');
+Route::get('/detail/{id}', [ActivityController::class, "showActivityDetail"])->name('activity.detail');
+
 Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");

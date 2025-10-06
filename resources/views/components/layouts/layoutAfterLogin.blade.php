@@ -22,10 +22,10 @@
                             หน้าแรก
                         </a>
                         <a
-                            href="/event"
+                            href="{{ route("user.activities") }}"
                             class="text-gray-700 hover:text-blue-600"
                         >
-                            กิจกรรมอาสาสมัคร
+                            กิจกรรมจิตอาสา
                         </a>
                         <a
                             href="/about"
@@ -46,19 +46,74 @@
                         <div class="dropdown dropdown-bottom dropdown-end">
                             <button href="/profile" class="cursor-pointer">
                                 <img
-                                    class="h-10 w-10 rounded-full"
-                                    src="{{ asset("images/profileTemp.png") }}"
-                                    alt="img"
+                                    class="h-10 w-10 rounded-full border-2 border-gray-200 object-cover transition-colors hover:border-blue-300"
+                                    src="{{ Auth::check() && Auth::user()->profile_image ? asset(Auth::user()->profile_image) : asset("images/profileTemp.png") }}"
+                                    alt="{{ Auth::check() ? Auth::user()->firstname . " " . Auth::user()->lastname : "Profile" }}"
                                     width="100"
                                     height="100"
                                 />
                             </button>
                             <ul
                                 tabindex="0"
-                                class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+                                class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 border border-gray-200 p-2 shadow-lg"
                             >
-                                <li><a href="/profile">profile</a></li>
-                                <li><a href="#">logout</a></li>
+                                @auth
+                                    <li
+                                        class="menu-title px-3 py-2 text-lg text-gray-500"
+                                    >
+                                        <span>
+                                            {{ Auth::user()->firstname }}
+                                            {{ Auth::user()->lastname }}
+                                        </span>
+                                        <span class="text-sm text-gray-500">
+                                            {{ Auth::user()->email }}
+                                        </span>
+                                    </li>
+                                    <div class="divider my-1"></div>
+                                @endauth
+
+                                <li>
+                                    <a
+                                        href="/profile"
+                                        class="flex items-center gap-2"
+                                    >
+                                        <svg
+                                            class="h-4 w-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                            />
+                                        </svg>
+                                        โปรไฟล์
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="/logout"
+                                        class="flex items-center gap-2 text-red-600 hover:text-red-700"
+                                    >
+                                        <svg
+                                            class="h-4 w-4"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                            />
+                                        </svg>
+                                        ออกจากระบบ
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
