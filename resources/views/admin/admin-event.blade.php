@@ -133,7 +133,7 @@
         {{-- <form class="w-full"> --}}
         <dialog id="my_modal_1" class="modal">
             <div
-                class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
+                class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg overflow-auto"
             >
                 <div class="card">
                     <div class="card-title mb-4">+ สร้างกิจกรรมใหม่่</div>
@@ -199,8 +199,7 @@
                             <textarea
                                 name=""
                                 id=""
-                                cols="30"
-                                rows="10"
+                                rows="3"
                                 class="rounded-md border border-gray-400 px-4 py-2"
                             ></textarea>
                         </div>
