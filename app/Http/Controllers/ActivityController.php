@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class ActivityController extends Controller
 {
-    
+
     //
     public function createActivity(Request $req) {
         $activity_name = $req->input("activity_name");

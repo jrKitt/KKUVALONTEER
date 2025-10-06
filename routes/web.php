@@ -55,12 +55,43 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/admin/dashboard' , function(){
     return view('admin/admin-dashboard');
-});
+})->name('admin.dashboard');
+
 Route::get('/admin/event' , function(){
     return view('admin/admin-event');
-});
+})->name('admin.events');
+
 Route::get('/admin' , function(){
     return view('admin/index');
 });
+
+Route::get('/admin/checkin', function() {
+    $event = (object) [
+        'id' => 1,
+        'title' => 'กิจกรรมชวนน้องดำนาครั้งที่ 1',
+        'description' => 'อ้ายนี่ล่ะผัวน้อง',
+        'location' => 'นาข้าวบ้านหนองแสง ตำบลหนองแสง อำเภอเมือง จังหวัดขอนแก่น',
+        'date' => '2024-09-19',
+        'hours' => 8,
+        'image' => '/images/rice-field.jpg',
+        'tags' => ['จิตอาสา', 'เกษตรกรรม', 'ชุมชน']
+    ];
+
+    $participants = collect([
+        (object) [
+            'id' => 1,
+            'firstname' => 'สมชาย',
+            'lastname' => 'ใจดี',
+            'faculty' => 'คณะวิศวกรรมศาสตร์',
+            'major' => 'วิศวกรรมคอมพิวเตอร์',
+            'year' => 2,
+            'avatar' => null,
+            'pivot' => (object) ['checked_in' => false],
+            'volunteer_hours' => collect([(object) ['hours' => 12]])
+        ]
+    ]);
+
+    return view('admin.checkin-simple', compact('event', 'participants'));
+})->name('admin.checkin');
 
 Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");
