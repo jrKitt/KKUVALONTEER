@@ -9,13 +9,23 @@
         <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
             <!-- Profile Section -->
             <main>
-                <div class="mt-20 flex justify-center items-end">
-                    <img
-                        src="{{ asset("images/profileTemp.png") }}"
-                        alt="profile"
-                        class="h-[200px] w-[200px] rounded-full"
+                <div class="mt-20 flex items-end justify-center">
+                    <input
+                        type="file"
+                        id="profileInput"
+                        accept="image/*"
+                        class="hidden"
+                        onchange="previewProfile(this)"
                     />
-                    <div class="relative right-10 bottom-5 border ">
+                    <img
+                        src="{{ asset("images/tako.png") }}"
+                        alt="profile"
+                        class="h-[200px] w-[200px] rounded-full cursor-pointer"
+                        onclick="document.getElementById('profileInput').click()"
+                    />
+                    <div
+                        class="relative right-10 bottom-5 rounded-full bg-white px-1 py-1.5"
+                    >
                         <i class="fa-solid fa-camera"></i>
                     </div>
                 </div>
