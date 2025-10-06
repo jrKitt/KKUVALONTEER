@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VolunteerHourController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Routing\RouteRegistrar;
 
 /*
@@ -33,9 +34,6 @@ Route::get('/event', function () {
 Route::get('/about', function () {
     return view('about-us');
 });
-Route::get('/profile', function () {
-    return view('profile');
-});
 Route::get('/detail', function () {
     return view('valunteerdetails');
 });
@@ -51,6 +49,13 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('volunteer-hours', VolunteerHourController::class);
+
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+    Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])->name('profile.image.update');
+    Route::delete('/profile/image', [ProfileController::class, 'deleteProfileImage'])->name('profile.image.delete');
 });
 
 Route::get('/admin/dashboard' , function(){

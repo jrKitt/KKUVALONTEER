@@ -60,6 +60,7 @@ class AuthController extends Controller
             'major' => $request->major,
             'year' => $request->year,
             'password' => Hash::make($request->password),
+            'role' => 'student',
         ]);
 
         Auth::login($user);

@@ -7,44 +7,92 @@
 @section("layout-content")
     <div class="min-h-screen bg-gray-50">
         <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-            <!-- Profile Section -->
             <main>
                 <div class="mt-20 flex items-end justify-center">
-                    <input
-                        type="file"
-                        id="profileInput"
-                        accept="image/*"
-                        class="hidden"
-                        onchange="previewProfile(this)"
-                    />
+                    <form id="profileImageForm" enctype="multipart/form-data">
+                        @csrf
+                        <input
+                            type="file"
+                            id="profileInput"
+                            name="profile_image"
+                            accept="image/*"
+                            class="hidden"
+                            onchange="uploadProfileImage(this)"
+                        />
+                    </form>
                     <img
-                        src="{{ asset("images/tako.png") }}"
+                        id="profileImage"
+                        src="{{ $user->profile_image ? asset($user->profile_image) : asset("images/tako.png") }}"
                         alt="profile"
-                        class="h-[200px] w-[200px] rounded-full cursor-pointer"
+                        class="h-[200px] w-[200px] cursor-pointer rounded-full border-4 border-white object-cover shadow-lg"
                         onclick="document.getElementById('profileInput').click()"
                     />
                     <div
-                        class="relative right-10 bottom-5 rounded-full bg-white px-1 py-1.5"
+                        class="relative right-10 bottom-5 cursor-pointer rounded-full bg-white px-2 py-2 shadow-md"
+                        onclick="document.getElementById('profileInput').click()"
                     >
-                        <i class="fa-solid fa-camera"></i>
+                        <i class="fa-solid fa-camera text-gray-600"></i>
+                    </div>
+                </div>
+
+                <!-- Loading indicator -->
+                <div id="uploadLoading" class="mt-4 hidden text-center">
+                    <div
+                        class="inline-flex items-center rounded-md bg-white px-4 py-2 text-sm leading-6 font-semibold text-blue-500 shadow"
+                    >
+                        <svg
+                            class="mr-3 -ml-1 h-5 w-5 animate-spin text-blue-500"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                                class="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                stroke-width="4"
+                            ></circle>
+                            <path
+                                class="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                        </svg>
+                        กำลังอัพโหลด...
                     </div>
                 </div>
 
                 <div class="mt-5 text-center">
-                    <h1 class="text-xl font-bold">นายโยโกะ คามิโจ</h1>
-                    <p class="text-sm">yoko.ka@kkumail.com</p>
+                    <h1 class="text-xl font-bold">
+                        {{ $user->firstname }} {{ $user->lastname }}
+                    </h1>
+                    <p class="text-sm">{{ $user->email }}</p>
                     <p class="text-gray-400">
-                        วิทยาลัยการคอมพิวเตอร์ / วิทยาลัยการคอมพิวเตอร์
+                        {{ $user->faculty }} / {{ $user->major }}
                     </p>
                 </div>
 
                 <hr class="my-2 border-gray-300" />
 
-                <!-- Form Section -->
+                @if (session("success"))
+                    <div
+                        class="mt-4 rounded-lg border border-green-400 bg-green-100 p-4 text-green-700"
+                    >
+                        {{ session("success") }}
+                    </div>
+                @endif
+
                 <div class="mt-20 flex justify-center">
-                    <form action="" class="w-full max-w-lg">
+                    <form
+                        action="{{ route("profile.update") }}"
+                        method="POST"
+                        class="w-full max-w-lg"
+                    >
+                        @csrf
+                        @method("PUT")
                         <div class="grid grid-cols-1 gap-10 md:grid-cols-2">
-                            <!-- FirstName -->
                             <div class="flex flex-col">
                                 <label for="firstname" class="mb-2 font-bold">
                                     Firstname
@@ -53,12 +101,16 @@
                                     type="text"
                                     id="firstname"
                                     name="firstname"
-                                    placeholder="นายโยโกะ"
-                                    class="w-[250px] appearance-none rounded-lg border-gray-300 px-5 py-2 leading-tight text-gray-400 shadow-md focus:outline-none"
+                                    value="{{ old("firstname", $user->firstname) }}"
+                                    class="@error("firstname") @enderror w-[250px] appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow-md focus:outline-none"
                                 />
+                                @error("firstname")
+                                    <span class="mt-1 text-xs text-red-500">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
                             </div>
 
-                            <!-- LastName -->
                             <div class="flex flex-col">
                                 <label for="lastname" class="mb-2 font-bold">
                                     Lastname
@@ -67,50 +119,56 @@
                                     type="text"
                                     id="lastname"
                                     name="lastname"
-                                    placeholder="คามิโจ"
-                                    class="w-[250px] appearance-none rounded-lg border-gray-300 px-5 py-2 leading-tight text-gray-400 shadow-md focus:outline-none"
+                                    value="{{ old("lastname", $user->lastname) }}"
+                                    class="@error("lastname") @enderror w-[250px] appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow-md focus:outline-none"
                                 />
+                                @error("lastname")
+                                    <span class="mt-1 text-xs text-red-500">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
                             </div>
                         </div>
 
-                        <!-- Faculty -->
                         <div class="mt-5 flex flex-col">
                             <label for="faculty" class="mb-2 font-bold">
                                 Faculty
                             </label>
-                            <select
+                            <input
+                                type="text"
                                 id="faculty"
                                 name="faculty"
-                                class="w-full appearance-none rounded-lg border-gray-300 px-5 py-2 pr-8 leading-tight text-gray-400 shadow-md hover:border-gray-500 focus:outline-none"
-                            >
-                                <option value="">วิทยาลัยการคอมพิวเตอร์</option>
-                                <option value="">วิทยาลัยการคอมพิวเตอร์</option>
-                            </select>
+                                value="{{ old("faculty", $user->faculty) }}"
+                                class="@error("faculty") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow-md focus:outline-none"
+                            />
+                            @error("faculty")
+                                <span class="mt-1 text-xs text-red-500">
+                                    {{ $message }}
+                                </span>
+                            @enderror
                         </div>
 
                         <div
                             class="mt-5 grid grid-cols-1 gap-10 md:grid-cols-2"
                         >
-                            <!-- Major -->
                             <div class="flex flex-col">
                                 <label for="major" class="mb-2 font-bold">
                                     Faculty (สาขา)
                                 </label>
-                                <select
+                                <input
+                                    type="text"
                                     id="major"
                                     name="major"
-                                    class="w-full appearance-none rounded-lg border-gray-300 px-5 py-2 pr-8 leading-tight text-gray-400 shadow-md hover:border-gray-500 focus:outline-none"
-                                >
-                                    <option value="">
-                                        วิทยาการคอมพิวเตอร์
-                                    </option>
-                                    <option value="">
-                                        วิทยาการคอมพิวเตอร์
-                                    </option>
-                                </select>
+                                    value="{{ old("major", $user->major) }}"
+                                    class="@error("major") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow-md focus:outline-none"
+                                />
+                                @error("major")
+                                    <span class="mt-1 text-xs text-red-500">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
                             </div>
 
-                            <!-- Year -->
                             <div class="flex flex-col">
                                 <label for="year" class="mb-2 font-bold">
                                     Year
@@ -118,17 +176,38 @@
                                 <select
                                     id="year"
                                     name="year"
-                                    class="w-full appearance-none rounded-lg border-gray-300 px-5 py-2 pr-8 leading-tight text-gray-400 shadow-md hover:border-gray-500 focus:outline-none"
+                                    class="@error("year") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 pr-8 leading-tight text-gray-700 shadow-md hover:border-gray-500 focus:outline-none"
                                 >
-                                    <option value="1">ปี 1</option>
-                                    <option value="2">ปี 2</option>
-                                    <option value="3">ปี 3</option>
-                                    <option value="4">ปี 4</option>
-                                    <option value="5">ปี 5</option>
-                                    <option value="6">ปี 6</option>
-                                    <option value="7">ปี 7</option>
-                                    <option value="8">ปี 8</option>
+                                    <option
+                                        value="1"
+                                        {{ old("year", $user->year) == 1 ? "selected" : "" }}
+                                    >
+                                        ปี 1
+                                    </option>
+                                    <option
+                                        value="2"
+                                        {{ old("year", $user->year) == 2 ? "selected" : "" }}
+                                    >
+                                        ปี 2
+                                    </option>
+                                    <option
+                                        value="3"
+                                        {{ old("year", $user->year) == 3 ? "selected" : "" }}
+                                    >
+                                        ปี 3
+                                    </option>
+                                    <option
+                                        value="4"
+                                        {{ old("year", $user->year) == 4 ? "selected" : "" }}
+                                    >
+                                        ปี 4
+                                    </option>
                                 </select>
+                                @error("year")
+                                    <span class="mt-1 text-xs text-red-500">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
                             </div>
                         </div>
 
@@ -140,9 +219,34 @@
                             <input
                                 type="email"
                                 id="email"
-                                placeholder="yoko.ka@kkumail.com"
-                                class="w-full appearance-none rounded-lg border-gray-300 px-5 py-2 leading-tight text-gray-400 shadow focus:outline-none"
+                                name="email"
+                                value="{{ old("email", $user->email) }}"
+                                class="@error("email") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow focus:outline-none"
                             />
+                            @error("email")
+                                <span class="mt-1 text-xs text-red-500">
+                                    {{ $message }}
+                                </span>
+                            @enderror
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mt-5 flex flex-col">
+                            <label for="phone" class="mb-2 font-bold">
+                                Phone
+                            </label>
+                            <input
+                                type="text"
+                                id="phone"
+                                name="phone"
+                                value="{{ old("phone", $user->phone) }}"
+                                class="@error("phone") @enderror w-full appearance-none rounded-lg border-gray-300 border-red-500 px-5 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+                            />
+                            @error("phone")
+                                <span class="mt-1 text-xs text-red-500">
+                                    {{ $message }}
+                                </span>
+                            @enderror
                         </div>
 
                         <div class="mt-10 flex justify-center">
@@ -158,4 +262,107 @@
             </main>
         </section>
     </div>
+@endsection
+
+@section("scripts")
+    <script>
+        function uploadProfileImage(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+
+                // ตรวจสอบขนาดไฟล์ (2MB = 2048KB)
+                if (file.size > 2048 * 1024) {
+                    alert(
+                        'ขนาดไฟล์ใหญ่เกินไป กรุณาเลือกไฟล์ที่มีขนาดไม่เกิน 2MB',
+                    );
+                    return;
+                }
+
+                // ตรวจสอบประเภทไฟล์
+                const validTypes = [
+                    'image/jpeg',
+                    'image/png',
+                    'image/jpg',
+                    'image/gif',
+                ];
+                if (!validTypes.includes(file.type)) {
+                    alert('กรุณาเลือกไฟล์รูปภาพ (JPEG, PNG, JPG, GIF)');
+                    return;
+                }
+
+                // แสดง loading
+                document
+                    .getElementById('uploadLoading')
+                    .classList.remove('hidden');
+
+                // สร้าง FormData
+                const formData = new FormData();
+                formData.append('profile_image', file);
+                formData.append(
+                    '_token',
+                    document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute('content'),
+                );
+
+                // อัพโหลดไฟล์
+                fetch('{{ route("profile.image.update") }}', {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        document
+                            .getElementById('uploadLoading')
+                            .classList.add('hidden');
+
+                        if (data.success) {
+                            // อัพเดตรูปโปรไฟล์
+                            document.getElementById('profileImage').src =
+                                data.image_url;
+
+                            // แสดงข้อความสำเร็จ
+                            showSuccessMessage(data.message);
+                        } else {
+                            alert(
+                                'เกิดข้อผิดพลาด: ' +
+                                    (data.message || 'ไม่สามารถอัพโหลดรูปได้'),
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        document
+                            .getElementById('uploadLoading')
+                            .classList.add('hidden');
+                        console.error('Error:', error);
+                        alert('เกิดข้อผิดพลาดในการอัพโหลด');
+                    });
+            }
+        }
+
+        function showSuccessMessage(message) {
+            // สร้าง element สำหรับแสดงข้อความสำเร็จ
+            const successDiv = document.createElement('div');
+            successDiv.className =
+                'fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded shadow-lg z-50';
+            successDiv.innerHTML = message;
+
+            document.body.appendChild(successDiv);
+
+            // ลบข้อความหลัง 3 วินาที
+            setTimeout(() => {
+                if (successDiv.parentNode) {
+                    successDiv.parentNode.removeChild(successDiv);
+                }
+            }, 3000);
+        }
+
+        // เพิ่ม CSRF token ใน meta tag ถ้ายังไม่มี
+        if (!document.querySelector('meta[name="csrf-token"]')) {
+            const meta = document.createElement('meta');
+            meta.name = 'csrf-token';
+            meta.content = '{{ csrf_token() }}';
+            document.getElementsByTagName('head')[0].appendChild(meta);
+        }
+    </script>
 @endsection

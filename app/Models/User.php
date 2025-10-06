@@ -26,6 +26,9 @@ class User extends Authenticatable
         'major',
         'year',
         'password',
+        'role',
+        'profile_image',
+        'major_id',
     ];
 
     /**
@@ -51,5 +54,23 @@ class User extends Authenticatable
     public function volunteerHours()
     {
         return $this->hasMany(VolunteerHour::class);
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isStudent()
+    {
+        return $this->role === 'student';
+    }
+
+    public function getProfileImageUrlAttribute()
+    {
+        if ($this->profile_image) {
+            return asset('storage/' . $this->profile_image);
+        }
+        return asset('images/default-avatar.png');
     }
 }
