@@ -78,13 +78,13 @@
                     >
                         @forelse ($userActivities as $activity)
                             <div
-                                class="activity-card m-2 flex w-fit justify-center rounded-md p-4 shadow-md max-lg:flex-col"
+                                class="activity-card m-2 flex w-full max-w-5xl justify-center rounded-md p-4 shadow-md max-lg:flex-col"
                                 data-status="{{ $activity->status }}"
                                 data-progress="{{ $activity->progress }}"
                                 data-search="{{ strtolower($activity->name . " " . ($activity->description ?? "")) }}"
                             >
                                 <div
-                                    class="flex items-center gap-5 max-lg:flex-col"
+                                    class="flex items-center gap-5 max-lg:flex-col w-full justify-between"
                                 >
                                     <section class="w-fit">
                                         @if ($activity->image_file_name)
@@ -101,6 +101,7 @@
                                             />
                                         @endif
                                     </section>
+
                                     <section
                                         class="flex w-full flex-col justify-around gap-1"
                                     >
@@ -212,7 +213,7 @@
                                             </div>
                                         </div>
                                         <div
-                                            class="flex w-full items-end justify-between gap-2 max-lg:flex-col max-lg:items-stretch"
+                                            class="flex w-full items-center justify-between gap-2 max-lg:flex-col max-lg:items-stretch"
                                         >
                                             <div class="flex-1">
                                                 <div
@@ -245,17 +246,6 @@
                                                 <div
                                                     class="flex items-center justify-center gap-2"
                                                 >
-                                                    <div class="w-10">
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            viewBox="0 0 640 640"
-                                                            fill="currentColor"
-                                                        >
-                                                            <path
-                                                                d="M160 128C142.3 128 128 142.3 128 160L128 480C128 497.7 142.3 512 160 512L480 512C497.7 512 512 497.7 512 480L512 160C512 142.3 497.7 128 480 128L160 128zM96 160C96 124.7 124.7 96 160 96L480 96C515.3 96 544 124.7 544 160L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 160z"
-                                                            />
-                                                        </svg>
-                                                    </div>
                                                     <a
                                                         href="{{ route("activity.detail", $activity->id) }}"
                                                     >
