@@ -68,7 +68,6 @@
             const indicators = document.querySelectorAll('.carousel-indicator');
             let currentSlide = 0;
 
-            // Auto slide every 5 seconds
             function autoSlide() {
                 currentSlide = (currentSlide + 1) % 3;
                 updateSlider();
@@ -91,15 +90,13 @@
                 });
             }
 
-            // Manual slide control
+
             indicators.forEach((indicator, index) => {
                 indicator.addEventListener('click', () => {
                     currentSlide = index;
                     updateSlider();
                 });
             });
-
-            // Start auto sliding
             setInterval(autoSlide, 5000);
         });
     </script>

@@ -168,12 +168,12 @@
                             <section
                                 class="flex flex-col gap-2 sm:flex-row sm:gap-5"
                             >
-                                <button
-                                    class="w-1/2 rounded-xl bg-amber-400/80 py-2 text-sm sm:text-base text-white"
-                                    onclick="my_modal_1.showModal()"
+                              <button
+                                class="w-1/2 rounded-xl bg-amber-400/80 py-2 text-sm sm:text-base text-white"
+                                onclick="openEditModal({{ $activity->toJson() }})"
                                 >
-                                    แก้ไขข้อมูล
-                                </button>
+                                     แก้ไขข้อมูล
+                            </button>
                                 <form class="w-1/2" action="{{ route('activity.delete', $activity->id) }}" method="POST" onsubmit="return confirmDelete(event)">
                                      @csrf
                                      @method('DELETE')
@@ -189,6 +189,9 @@
                 @endforeach
             </div>
         </main>
+
+
+        {{-- addm activity modal --}}
 
         <dialog id="my_modal_1" class="modal">
             <script>
@@ -238,7 +241,7 @@
                     class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
                 >
                     <div class="card">
-                        <div class="card-title mb-4">+ สร้างกิจกรรมใหม่่</div>
+                        <div class="card-title mb-4">สร้างกิจกรรมใหม่่</div>
                         <hr class="text-gray-300" />
                         <div class="card-body grid grid-cols-12 gap-5">
                             <div class="fieldset col-span-6 max-md:col-span-12">
@@ -400,6 +403,202 @@
                 </div>
             </form>
         </dialog>
+
+        <dialog id="edit_modal" class="modal">
+            <script>
+            let editTags = []
+
+            function openEditModal(activity) {
+                document.getElementById('editForm').action = `/activity/${activity.id}`
+                document.getElementById('edit_id').value = activity.id
+                document.getElementById('edit_name').value = activity.name_th
+                document.getElementById('edit_des').value = activity.description || ''
+                document.getElementById('edit_start').value = activity.start_time?.replace(' ', 'T')
+                document.getElementById('edit_end').value = activity.end_time?.replace(' ', 'T')
+                document.getElementById('edit_hour').value = activity.total_hour
+                document.getElementById('edit_accept').value = activity.accept_amount
+                document.getElementById('edit_location').value = activity.location
+
+                editTags = []
+                try {
+                    editTags = JSON.parse(activity.tags || '[]')
+                } catch (e) {}
+
+                renderEditTags()
+                edit_modal.showModal()
+            }
+
+            function addEditTag() {
+                const input = document.getElementById('editTagInput')
+                const value = input.value.trim()
+                if (value && !editTags.includes(value)) {
+                    editTags.push(value)
+                    renderEditTags()
+                    input.value = ''
+                }
+            }
+
+            function removeEditTag(index) {
+                editTags.splice(index, 1)
+                renderEditTags()
+            }
+
+            function handleEditTagKey(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault()
+                    addEditTag()
+                }
+            }
+
+            function renderEditTags() {
+                const container = document.getElementById('editTagsContainer')
+                container.innerHTML = ''
+                const form = document.getElementById('editForm')
+
+                document.querySelectorAll('input[name="tags[]"]').forEach(i => i.remove())
+
+                editTags.forEach((tag, index) => {
+                    const span = document.createElement('span')
+                    span.className = 'inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm'
+                    span.innerHTML = `${tag}
+                        <button type="button" class="ml-2 text-blue-600 hover:text-blue-800" onclick="removeEditTag(${index})">×</button>
+                        <input type="hidden" name="tags[]" value="${tag}">
+                    `
+                    container.appendChild(span)
+                    const hidden = document.createElement('input')
+                    hidden.type = 'hidden'
+                    hidden.name = 'tags[]'
+                    hidden.value = tag
+                    form.appendChild(hidden)
+                })
+            }
+            </script>
+
+            <form id="editForm" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg">
+                    <div class="card">
+                        <div class="card-title mb-4">แก้ไขกิจกรรม</div>
+                        <hr class="text-gray-300" />
+                        <div class="card-body grid grid-cols-12 gap-5">
+                            <input type="hidden" name="activity_id" id="edit_id" />
+
+                            <div class="fieldset col-span-6 max-md:col-span-12">
+                                <label>ชื่อกิจกรรม</label>
+                                <input type="text" id="edit_name" name="activity_name"
+                                    class="rounded-md border border-gray-400 px-4 py-2" required />
+                            </div>
+
+                            <div class="fieldset col-span-12">
+                                <label>รายละเอียดกิจกรรม</label>
+                                <textarea id="edit_des" name="des"
+                                    class="rounded-md border border-gray-400 px-4 py-2" rows="4"></textarea>
+                            </div>
+
+                            <div class="fieldset col-span-4 max-md:col-span-12">
+                                <label>วัน/เวลาเริ่มกิจกรรม</label>
+                                <input type="datetime-local" id="edit_start" name="start_time"
+                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                            </div>
+
+                            <div class="fieldset col-span-4 max-md:col-span-12">
+                                <label>วัน/เวลาจบกิจกรรม</label>
+                                <input type="datetime-local" id="edit_end" name="end_time"
+                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                            </div>
+
+                            <div class="fieldset col-span-4 max-md:col-span-12">
+                                <label>จำนวนชั่วโมงรวม</label>
+                                <input type="number" id="edit_hour" name="total_hour"
+                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                            </div>
+
+                            <div class="fieldset col-span-4 max-md:col-span-12">
+                                <label>จำนวนผู้เข้าร่วมสูงสุด</label>
+                                <input type="number" id="edit_accept" name="accept_amount"
+                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                            </div>
+
+                            <div class="fieldset col-span-4 max-md:col-span-12">
+                                <label>สถานที่</label>
+                                <input type="text" id="edit_location" name="location"
+                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                            </div>
+
+                            <div class="col-span-12">
+                                <label for="">แท็กกิจกรรม</label>
+                                <div
+                                    id="editTagsContainer"
+                                    class="flex min-h-20 w-full flex-wrap gap-2 rounded-md border-2 border-gray-300 p-3"
+                                ></div>
+                                <div class="mt-2 flex">
+                                    <input
+                                        type="text"
+                                        id="editTagInput"
+                                        class="flex-1 rounded-md border border-gray-400 px-4 py-2"
+                                        placeholder="ชื่อแท็ก..."
+                                        onkeypress="handleEditTagKey(event)"
+                                    />
+                                    <button
+                                        type="button"
+                                        class="btn ml-1"
+                                        onclick="addEditTag()"
+                                    >
+                                        เพิ่มแท็ก
+                                    </button>
+                                </div>
+                                <div class="mt-1 text-sm text-gray-500">
+                                    กด Enter หรือคลิก "เพิ่มแท็ก" เพื่อเพิ่มแท็กใหม่
+                                </div>
+                            </div>
+
+                            <div class="col-span-12">
+                                <label class="">รูปภาพกิจกรรม</label>
+                                <div
+                                    class="flex items-center space-x-2 rounded-md border border-gray-300"
+                                >
+                                    <label
+                                        for="edit-file-upload"
+                                        class="cursor-pointer bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200"
+                                    >
+                                        เลือกรูปภาพ...
+                                    </label>
+
+                                    <input
+                                        id="edit-file-upload"
+                                        name="activity_image"
+                                        type="file"
+                                        accept="image/*"
+                                        class="hidden"
+                                        onchange="updateEditFileName(this)"
+                                    />
+
+                                    <span
+                                        id="edit-file-name"
+                                        class="text-sm text-gray-500"
+                                    >
+                                        ยังไม่ได้เลือกไฟล์
+                                    </span>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-500">
+                                    รองรับไฟล์: JPG, PNG, GIF (ขนาดไม่เกิน 5MB)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="text-gray-300" />
+
+                    <div class="modal-action">
+                        <button type="button" class="cursor-pointer rounded-xl border-2 border-sky-400 px-12 py-2 text-sky-400 transition-all hover:bg-gray-100 active:scale-90"
+                            onclick="edit_modal.close()">ยกเลิก</button>
+                        <button type="submit"
+                            class="cursor-pointer rounded-xl border-2 bg-sky-400 px-12 py-2 text-white transition-all hover:bg-sky-500 active:scale-90">บันทึกการแก้ไข</button>
+                    </div>
+                </div>
+            </form>
+    </dialog>
+
     </div>
 
     <script>

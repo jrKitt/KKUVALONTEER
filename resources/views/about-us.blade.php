@@ -78,13 +78,13 @@
                     >
                         @forelse ($userActivities as $activity)
                             <div
-                                class="activity-card m-2 flex w-fit justify-between rounded-md p-4 shadow-md max-lg:flex-col"
+                                class="activity-card m-2 flex w-fit justify-center rounded-md p-4 shadow-md max-lg:flex-col"
                                 data-status="{{ $activity->status }}"
                                 data-progress="{{ $activity->progress }}"
                                 data-search="{{ strtolower($activity->name . " " . ($activity->description ?? "")) }}"
                             >
                                 <div
-                                    class="flex gap-5 max-lg:flex-col max-lg:items-center"
+                                    class="flex gap-5 max-lg:flex-col items-center"
                                 >
                                     <section class="w-fit">
                                         @if ($activity->image_file_name)
@@ -142,7 +142,7 @@
                                         <div
                                             class="flex gap-3 text-sm max-sm:flex-col"
                                         >
-                                            <div class="flex items-center">
+                                            <div class="flex items-center w-100">
                                                 <div class="w-6">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -154,7 +154,7 @@
                                                         />
                                                     </svg>
                                                 </div>
-                                                <div>
+                                                <div class="text-wrap">
                                                     {{ $activity->location }}
                                                 </div>
                                             </div>

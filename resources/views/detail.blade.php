@@ -97,13 +97,14 @@
                     </div>
 
                     @if ($activity->description)
-                        <div class="mt-6">
-                            <h4 class="mb-2 font-medium text-gray-900">
-                                คำอธิบาย
-                            </h4>
-                            <p class="leading-relaxed text-gray-600">
-                                {{ $activity->description }}
-                            </p>
+                        <div>
+                            <ul class="text-md ml-8 list-disc">
+                                @foreach (preg_split("/\r\n|\n|\r/", $activity->description) as $point)
+                                    @if (trim($point))
+                                        <li>{{ trim($point) }}</li>
+                                    @endif
+                                @endforeach
+                            </ul>
                         </div>
                     @endif
                 </div>
@@ -131,7 +132,7 @@
                     @elseif ($activity->status === "pending" || $activity->status === "ongoing")
                         <button
                             type="button"
-                            class="rounded-lg bg-blue-500 px-8 py-3 font-medium text-white transition-colors hover:bg-blue-600"
+                            class="active:scale-90 transition-all cursor-pointer rounded-md bg-blue-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-blue-600"
                             onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
                         >
                             สมัครเข้าร่วม
@@ -147,7 +148,7 @@
                     @endif
                     <button
                         type="button"
-                        class="rounded-lg border border-gray-300 px-8 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                        class=" active:scale-90 transition-all cursor-pointer rounded-md border border-blue-300 px-10 py-2 text-lg text-blue-300 shadow-lg hover:bg-blue-200 hover:text-white"
                         onclick="window.history.back()"
                     >
                         กลับ
@@ -155,20 +156,18 @@
                 </div>
             </div>
 
-            <!-- Other Activities -->
-            <div class="rounded-lg bg-white p-6 shadow-sm">
-                <h2 class="mb-6 text-2xl font-bold text-gray-900">
-                    กิจกรรมอื่นๆ
-                </h2>
-                <div
-                    class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
-                >
-                    @php
-                        $otherActivities = App\Models\Activity::where("id", "!=", $activity->id)
-                            ->orderBy("created_at", "desc")
-                            ->limit(4)
-                            ->get();
-                    @endphp
+                <!-- Other activity -->
+                <div>
+                    <h1 class="mt-5 text-4xl font-bold">กิจกรรมอื่นๆ</h1>
+                    <div
+                        class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+                    >
+                        @php
+                            $otherActivities = App\Models\Activity::where("id", "!=", $activity->id)
+                                ->orderBy("created_at", "desc")
+                                ->limit(4)
+                                ->get();
+                        @endphp
 
                     @foreach ($otherActivities as $otherActivity)
                         <div
@@ -220,7 +219,13 @@
 
                                 <!-- Info -->
                                 <div
-                                    class="mb-4 space-y-1 text-sm text-gray-600"
+                                    class="mt-2 line-clamp-3 flex flex-grow text-xs text-gray-500"
+                                >
+                                    {{ Str::limit($otherActivity->description ?: "ไม่มีรายละเอียด") }}
+                                </div>
+
+                                <nav
+                                    class="grid grid-cols-2 p-1 text-xs md:grid-cols-2"
                                 >
                                     <div class="flex items-center">
                                         <i
@@ -243,8 +248,9 @@
                                     </div>
                                 </div>
 
-                                <!-- Actions -->
-                                <div class="flex gap-2">
+                                <div
+                                    class="flex justify-end space-x-3 px-1 py-1 text-xs text-nowrap"
+                                >
                                     @php
                                         $otherActivity->participants_count = App\Models\ActivityParticipant::where("activity_id", $otherActivity->id)->count();
                                         $otherActivity->is_registered = auth()->check()
@@ -273,7 +279,7 @@
                                     @elseif ($otherActivity->status === "pending" || $otherActivity->status === "ongoing")
                                         <button
                                             type="button"
-                                            class="flex-1 rounded bg-blue-500 px-3 py-2 text-sm text-white hover:bg-blue-600"
+                                            class="cursor-pointer rounded-md bg-blue-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-blue-600 active:scale-90"
                                             onclick="registerForActivity({{ $otherActivity->id }}, '{{ $otherActivity->name_th }}')"
                                         >
                                             สมัคร
@@ -289,7 +295,7 @@
                                     @endif
                                     <button
                                         type="button"
-                                        class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                        class="cursor-pointer rounded-md border border-blue-300 px-6 py-1 text-lg text-blue-300 shadow-lg transition-all hover:bg-blue-200 hover:text-white active:scale-90"
                                         onclick="window.location.href='/detail/{{ $otherActivity->id }}'"
                                     >
                                         ดูเพิ่ม
