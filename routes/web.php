@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\CheckinController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VolunteerHourController;
@@ -57,6 +58,50 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::post('/profile/image', [ProfileController::class, 'updateProfileImage'])->name('profile.image.update');
     Route::delete('/profile/image', [ProfileController::class, 'deleteProfileImage'])->name('profile.image.delete');
+    Route::resource('goals', \App\Http\Controllers\GoalController::class);
+    Route::post('/goals/update-progress', [\App\Http\Controllers\GoalController::class, 'updateProgress'])->name('goals.updateProgress');
+
+    Route::get('/debug/goals', function() {
+        $user = \Auth::user();
+        $goals = $user->volunteerGoals()->get();
+
+        $debug = [];
+        foreach ($goals as $goal) {
+            $goal->updateCurrentHours();
+            $goal->refresh();
+
+            $debug[] = [
+                'goal_id' => $goal->id,
+                'target_hours' => $goal->target_hours,
+                'current_hours' => $goal->current_hours,
+                'progress' => $goal->progress_percentage,
+                'start_date' => $goal->start_date->format('Y-m-d'),
+                'end_date' => $goal->end_date->format('Y-m-d'),
+                'volunteer_hours' => $user->volunteerHours()
+                    ->whereBetween('date', [$goal->start_date, $goal->end_date])
+                    ->where('status', 'approved')
+                    ->get()
+                    ->map(function($vh) {
+                        return [
+                            'activity' => $vh->activity_name,
+                            'hours' => $vh->hours,
+                            'date' => $vh->date->format('Y-m-d'),
+                            'status' => $vh->status
+                        ];
+                    }),
+                'checked_in_activities' => \DB::table('activity_participants')
+                    ->join('activities', 'activity_participants.activity_id', '=', 'activities.id')
+                    ->where('activity_participants.user_id', $user->id)
+                    ->where('activity_participants.checked_in', true)
+                    ->whereDate('activities.start_time', '>=', $goal->start_date)
+                    ->whereDate('activities.start_time', '<=', $goal->end_date)
+                    ->select('activities.name_th', 'activities.start_time', 'activity_participants.actual_hours', 'activities.total_hour')
+                    ->get()
+            ];
+        }
+
+        return response()->json($debug, JSON_PRETTY_PRINT);
+    })->name('debug.goals');
 });
 
 Route::get('/admin/dashboard' , function(){
@@ -101,6 +146,13 @@ Route::get('/admin/checkin', function() {
 
 Route::get('/admin/event' , [ActivityController::class, "showAdminActivity"])->name('admin.events');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/admin/activities/{activity}/checkin', [CheckinController::class, 'show'])->name('admin.activity.checkin');
+    Route::post('/admin/activities/{activity}/checkin', [CheckinController::class, 'checkin'])->name('admin.activity.checkin.store');
+    Route::post('/admin/activities/{activity}/checkin/undo', [CheckinController::class, 'undoCheckin'])->name('admin.activity.checkin.undo');
+    Route::post('/admin/activities/{activity}/checkin/bulk', [CheckinController::class, 'bulkCheckin'])->name('admin.activity.checkin.bulk');
+});
+
 Route::get('/activities', [ActivityController::class, "showUserActivity"])->name('user.activities');
 Route::post('/activities/register', [ActivityController::class, "registerActivity"])->name('activities.register');
 Route::post('/activities/cancel', [ActivityController::class, "cancelRegistration"])->name('activities.cancel');
@@ -108,7 +160,5 @@ Route::get('/detail/{id}', [ActivityController::class, "showActivityDetail"])->n
 
 Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");
 Route::put('/activity/{id}', [ActivityController::class, 'updateActivity'])->name('activity.update');
-
-
 
 Route::delete('/activity/{id}', [ActivityController::class, 'deleteActivity'])->name('activity.delete');

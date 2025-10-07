@@ -84,7 +84,7 @@
                                 data-search="{{ strtolower($activity->name . " " . ($activity->description ?? "")) }}"
                             >
                                 <div
-                                    class="flex gap-5 max-lg:flex-col items-center"
+                                    class="flex items-center gap-5 max-lg:flex-col"
                                 >
                                     <section class="w-fit">
                                         @if ($activity->image_file_name)
@@ -113,20 +113,35 @@
                                                 {{ $activity->name }}
                                             </h1>
                                             <div
-                                                class="@if ($activity->status === "completed")
-                                                    text-green-600
-                                                @elseif ($activity->status === "registered")
-                                                    text-yellow-600
-                                                @else
-                                                    text-gray-600
-                                                @endif text-2xl font-medium max-md:text-lg"
+                                                class="flex items-center gap-2"
                                             >
-                                                @if ($activity->status === "completed")
-                                                    เสร็จสิ้น
-                                                @elseif ($activity->status === "registered")
-                                                    กำลังดำเนินการ
-                                                @else
-                                                        รอดำเนินการ
+                                                <div
+                                                    class="@if ($activity->status === "checked_in")
+                                                        text-green-600
+                                                    @elseif ($activity->status === "completed")
+                                                        text-purple-600
+                                                    @elseif ($activity->status === "registered")
+                                                        text-blue-600
+                                                    @else
+                                                        text-gray-600
+                                                    @endif text-2xl font-medium max-md:text-lg"
+                                                >
+                                                    @if ($activity->status === "checked_in")
+                                                        เช็คชื่อแล้ว
+                                                    @elseif ($activity->status === "completed")
+                                                        เสร็จสิ้น
+                                                    @elseif ($activity->status === "registered")
+                                                        ลงทะเบียนแล้ว
+                                                    @else
+                                                            รอดำเนินการ
+                                                    @endif
+                                                </div>
+                                                @if ($activity->checked_in && $activity->checked_in_at)
+                                                    <div
+                                                        class="text-sm text-gray-500"
+                                                    >
+                                                        {{ \Carbon\Carbon::parse($activity->checked_in_at)->format("d/m/Y H:i") }}
+                                                    </div>
                                                 @endif
                                             </div>
                                         </div>
@@ -142,7 +157,9 @@
                                         <div
                                             class="flex gap-3 text-sm max-sm:flex-col"
                                         >
-                                            <div class="flex items-center w-100">
+                                            <div
+                                                class="flex w-100 items-center"
+                                            >
                                                 <div class="w-6">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"

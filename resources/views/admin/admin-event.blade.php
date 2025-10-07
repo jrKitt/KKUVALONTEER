@@ -4,109 +4,110 @@
     activities | KKU VOLUNTEER
 @endsection
 
-
 @php
-    function thaiDate($dateString) {
+    function thaiDate($dateString)
+    {
         $months = ["", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
         $ts = strtotime($dateString);
         $day = date("j", $ts);
-        $month = $months[(int)date("n", $ts)];
+        $month = $months[(int) date("n", $ts)];
         $year = date("Y", $ts) + 543;
         return "$day $month $year";
     }
 @endphp
 
-
 <script>
+    let tags = [];
 
-                let tags = []
+    function renderTags() {
+        const container = document.getElementById('tag-container');
+        container.innerHTML = '';
 
-                function renderTags() {
-                    const container = document.getElementById('tag-container')
-                    container.innerHTML = ''
-
-                    tags.forEach((tag, index) => {
-                        const tagEl = document.createElement('div')
-                        tagEl.className = 'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm'
-                        tagEl.innerHTML = `
+        tags.forEach((tag, index) => {
+            const tagEl = document.createElement('div');
+            tagEl.className =
+                'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm';
+            tagEl.innerHTML = `
                             <p class="text-xs">${tag}</p>
                             <button type="button" class="text-xs text-red-500" onclick="removeTag(${index})">x</button>
                             <input type="hidden" name="tag[]" value="${tag}">
-                        `
-                        container.appendChild(tagEl)
-                    })
-                 }
+                        `;
+            container.appendChild(tagEl);
+        });
+    }
 
+    function addTag() {
+        const input = document.getElementById('tag-input');
+        const value = input.value.trim();
+        if (value && !tags.includes(value)) {
+            tags.push(value);
+            renderTags();
+            input.value = '';
+        }
+    }
 
-                function addTag() {
-                    const input = document.getElementById('tag-input')
-                    const value = input.value.trim()
-                    if (value && !tags.includes(value)) {
-                        tags.push(value)
-                        renderTags()
-                        input.value = ''
-                    }
-                }
+    function removeTag(index) {
+        tags.splice(index, 1);
+        renderTags();
+    }
 
-                function removeTag(index) {
-                    tags.splice(index, 1)
-                    renderTags()
-                }
+    let editTags = [];
 
+    function openEditModal(activity) {
+        document.getElementById('editForm').action = `/activity/${activity.id}`;
+        document.getElementById('edit_id').value = activity.id;
+        document.getElementById('edit_name').value = activity.name_th;
+        document.getElementById('edit_des').value = activity.description || '';
+        document.getElementById('edit_start').value = activity.start_time
+            ?.slice(0, 16)
+            .replace(' ', 'T');
+        document.getElementById('edit_end').value = activity.end_time
+            ?.slice(0, 16)
+            .replace(' ', 'T');
+        document.getElementById('edit_hour').value = activity.total_hour;
+        document.getElementById('edit_accept').value = activity.accept_amount;
+        document.getElementById('edit_location').value = activity.location;
 
-             let editTags = []
+        editTags = [];
+        try {
+            editTags = JSON.parse(activity.tags || '[]');
+        } catch (e) {}
 
-            function openEditModal(activity) {
-                document.getElementById('editForm').action = `/activity/${activity.id}`
-                document.getElementById('edit_id').value = activity.id
-                document.getElementById('edit_name').value = activity.name_th
-                document.getElementById('edit_des').value = activity.description || ''
-                document.getElementById('edit_start').value = activity.start_time?.slice(0,16).replace(' ', 'T')
-                document.getElementById('edit_end').value = activity.end_time?.slice(0,16).replace(' ', 'T')
-                document.getElementById('edit_hour').value = activity.total_hour
-                document.getElementById('edit_accept').value = activity.accept_amount
-                document.getElementById('edit_location').value = activity.location
+        renderEditTags();
+        edit_modal.showModal();
+    }
 
-                editTags = []
-                try {
-                    editTags = JSON.parse(activity.tags || '[]')
-                } catch (e) {}
+    function addEditTag() {
+        const input = document.getElementById('edit-tag-input');
+        const value = input.value.trim();
+        if (value && !editTags.includes(value)) {
+            editTags.push(value);
+            renderEditTags();
+            input.value = '';
+        }
+    }
 
-                renderEditTags()
-                edit_modal.showModal()
-            }
+    function removeEditTag(index) {
+        editTags.splice(index, 1);
+        renderEditTags();
+    }
 
-            function addEditTag() {
-                const input = document.getElementById('edit-tag-input')
-                const value = input.value.trim()
-                if (value && !editTags.includes(value)) {
-                    editTags.push(value)
-                    renderEditTags()
-                    input.value = ''
-                }
-            }
+    function renderEditTags() {
+        const container = document.getElementById('edit-tag-container');
+        container.innerHTML = '';
 
-            function removeEditTag(index) {
-                editTags.splice(index, 1)
-                renderEditTags()
-            }
-
-            function renderEditTags() {
-                const container = document.getElementById('edit-tag-container')
-                container.innerHTML = ''
-
-                editTags.forEach((tag, index) => {
-                    const tagEl = document.createElement('div')
-                    tagEl.className = 'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm'
-                    tagEl.innerHTML = `
+        editTags.forEach((tag, index) => {
+            const tagEl = document.createElement('div');
+            tagEl.className =
+                'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm';
+            tagEl.innerHTML = `
                         <p class="text-xs">${tag}</p>
                         <button type="button" class="text-xs text-red-500" onclick="removeEditTag(${index})">x</button>
                         <input type="hidden" name="tags[]" value="${tag}">
-                    `
-                    container.appendChild(tagEl)
-                })
-            }
-
+                    `;
+            container.appendChild(tagEl);
+        });
+    }
 </script>
 
 @section("layout-content")
@@ -156,16 +157,20 @@
             <div
                 class="my-6 flex w-full items-center justify-between gap-4 max-md:flex-col"
             >
-                <div class="text-3xl sm:text-4xl md:text-5xl font-semibold">จัดการกิจกรรม</div>
-                <div class="flex flex-col gap-3 sm:gap-5 w-full md:w-auto">
+                <div class="text-3xl font-semibold sm:text-4xl md:text-5xl">
+                    จัดการกิจกรรม
+                </div>
+                <div class="flex w-full flex-col gap-3 sm:gap-5 md:w-auto">
                     <section
                         class="flex w-full items-center justify-end gap-3 sm:gap-5"
                     >
-                        {{-- <div
+                        {{--
+                            <div
                             class="cursor-pointer rounded-lg border-2 border-gray-400 p-1 transition-all hover:bg-stone-500/20 active:scale-90"
-                        >
+                            >
                             <i class="fa-solid fa-calendar"></i>
-                        </div> --}}
+                            </div>
+                        --}}
                         <button
                             class="cursor-pointer rounded-md bg-green-500/80 px-3 py-1 text-sm whitespace-nowrap text-white transition-all hover:bg-green-600/80 active:scale-90 sm:px-4 sm:text-base"
                             onclick="my_modal_1.showModal()"
@@ -187,9 +192,13 @@
                         <input
                             type="text"
                             placeholder="ชื่อกิจกรรม..."
-                            class=" rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
+                            class="rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
                         />
-                        <button class="btn btn-sm sm:btn-md btn-info text-white">ค้นหา</button>
+                        <button
+                            class="btn btn-sm sm:btn-md btn-info text-white"
+                        >
+                            ค้นหา
+                        </button>
                     </section>
                 </div>
             </div>
@@ -203,23 +212,22 @@
                         e.preventDefault();
                         return false;
                     }
-                 return true;
+                    return true;
                 }
             </script>
-            <div class="mx-auto grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-6">
+            <div
+                class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 pb-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
                 @foreach ($rec as $activity)
-                    
                     <div class="w-full rounded-xl shadow-md">
                         <div class="p-4">
                             <section>
                                 <div
-                                    id="activity_card_{{$activity->id}}"
+                                    id="activity_card_{{ $activity->id }}"
                                     class="py- absolute m-2 rounded-full bg-red-100 px-2 text-sm text-red-600/80"
                                 >
                                     {{ $activity->day_left }} Day left
                                 </div>
-
-                               
 
                                 @if ($activity->image_file_name)
                                     <img
@@ -247,7 +255,7 @@
                                     <h6 class="text-gray-600">
                                         {{ $activity->name_th }}
                                     </h6>
-                                    <p class="text-gray-600 line-clamp-3">
+                                    <p class="line-clamp-3 text-gray-600">
                                         {{ $activity->description }}
                                     </p>
                                 </div>
@@ -255,12 +263,11 @@
                                     <div
                                         class="mb-3 flex items-center justify-between text-sm text-gray-500"
                                     >
-                                        <div class="flex items-center ">
+                                        <div class="flex items-center">
                                             <i
                                                 class="fa-solid fa-location-dot"
                                             ></i>
-                                            <p class=" line-clamp-1">
-
+                                            <p class="line-clamp-1">
                                                 {{ $activity->location }}
                                             </p>
                                         </div>
@@ -269,30 +276,46 @@
                                             {{ $activity->total_hour }} ชั่วโมง
                                         </div>
                                     </div>
-                                  <div class="mb-3 text-xs text-gray-500">
-                                        <i class="fa-solid fa-calendar-days"></i>
+                                    <div class="mb-3 text-xs text-gray-500">
+                                        <i
+                                            class="fa-solid fa-calendar-days"
+                                        ></i>
                                         {{ thaiDate($activity->start_time) }}
                                     </div>
                                 </div>
                             </section>
-                            <section
-                                class="flex flex-col gap-2 sm:flex-row sm:gap-5"
-                            >
-                              <button
-                                class="w-1/2 rounded-xl bg-amber-400/80 py-2 text-sm sm:text-base text-white"
-                                onclick="openEditModal({{ $activity->toJson() }})"
+                            <section class="flex flex-col gap-2">
+                                <!-- Checkin Button -->
+                                <a
+                                    href="{{ route("admin.activity.checkin", $activity->id) }}"
+                                    class="w-full rounded-xl bg-green-500/80 py-2 text-center text-sm text-white transition-colors hover:bg-green-600/80 sm:text-base"
                                 >
-                                     แก้ไขข้อมูล
-                            </button>
-                                <form class="w-1/2" action="{{ route('activity.delete', $activity->id) }}" method="POST" onsubmit="return confirmDelete(event)">
-                                     @csrf
-                                     @method('DELETE')
+                                    📋 เช็คชื่อกิจกรรม
+                                </a>
+
+                                <div class="flex gap-2 sm:gap-5">
                                     <button
-                                        type="submit"
-                                        class="w-full rounded-xl border border-red-400 py-2 text-sm sm:text-base text-red-400 shadow">
-                                        ลบข้อมูล
+                                        class="w-1/2 rounded-xl bg-amber-400/80 py-2 text-sm text-white sm:text-base"
+                                        onclick="openEditModal({{ $activity->toJson() }})"
+                                    >
+                                        แก้ไขข้อมูล
                                     </button>
-                                </form>
+                                    <form
+                                        class="w-1/2"
+                                        action="{{ route("activity.delete", $activity->id) }}"
+                                        method="POST"
+                                        onsubmit="return confirmDelete(event)"
+                                    >
+                                        @csrf
+                                        @method("DELETE")
+                                        <button
+                                            type="submit"
+                                            class="w-full rounded-xl border border-red-400 py-2 text-sm text-red-400 shadow sm:text-base"
+                                        >
+                                            ลบข้อมูล
+                                        </button>
+                                    </form>
+                                </div>
                             </section>
                         </div>
                     </div>
@@ -300,11 +323,9 @@
             </div>
         </main>
 
-
         {{-- addm activity modal --}}
 
         <dialog id="my_modal_1" class="modal">
-           
             <form
                 action="/activity"
                 method="POST"
@@ -397,7 +418,7 @@
                                 />
                             </div>
 
-                           <div class="col-span-12">
+                            <div class="col-span-12">
                                 <label for="">แท็กกิจกรรม</label>
                                 <div
                                     id="tag-container"
@@ -409,7 +430,6 @@
                                         id="tag-input"
                                         class="flex-1 rounded-md border border-gray-400 px-4 py-2"
                                         placeholder="ชื่อแท็ก..."
-                                 
                                     />
                                     <button
                                         type="button"
@@ -479,60 +499,95 @@
         </dialog>
 
         <dialog id="edit_modal" class="modal">
-            <script>
-            
-        </script>
+            <script></script>
 
             <form id="editForm" method="POST" enctype="multipart/form-data">
                 @csrf
-                @method('PUT')
-                <div class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg">
+                @method("PUT")
+                <div
+                    class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
+                >
                     <div class="card">
                         <div class="card-title mb-4">แก้ไขกิจกรรม</div>
                         <hr class="text-gray-300" />
                         <div class="card-body grid grid-cols-12 gap-5">
-                            <input type="hidden" name="activity_id" id="edit_id" />
+                            <input
+                                type="hidden"
+                                name="activity_id"
+                                id="edit_id"
+                            />
 
                             <div class="fieldset col-span-6 max-md:col-span-12">
                                 <label>ชื่อกิจกรรม</label>
-                                <input type="text" id="edit_name" name="activity_name"
-                                    class="rounded-md border border-gray-400 px-4 py-2" required />
+                                <input
+                                    type="text"
+                                    id="edit_name"
+                                    name="activity_name"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                    required
+                                />
                             </div>
 
                             <div class="fieldset col-span-12">
                                 <label>รายละเอียดกิจกรรม</label>
-                                <textarea id="edit_des" name="des"
-                                    class="rounded-md border border-gray-400 px-4 py-2" rows="4"></textarea>
+                                <textarea
+                                    id="edit_des"
+                                    name="des"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                    rows="4"
+                                ></textarea>
                             </div>
 
-                            <div class="fieldset col-span-4 max-md:col-span-12 mr-3">
+                            <div
+                                class="fieldset col-span-4 mr-3 max-md:col-span-12"
+                            >
                                 <label>วัน/เวลาเริ่มกิจกรรม</label>
-                                <input type="datetime-local" id="edit_start" name="start_time"
-                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                                <input
+                                    type="datetime-local"
+                                    id="edit_start"
+                                    name="start_time"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
                             </div>
 
                             <div class="fieldset col-span-4 max-md:col-span-12">
                                 <label>วัน/เวลาจบกิจกรรม</label>
-                                <input type="datetime-local" id="edit_end" name="end_time"
-                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                                <input
+                                    type="datetime-local"
+                                    id="edit_end"
+                                    name="end_time"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
                             </div>
 
                             <div class="fieldset col-span-4 max-md:col-span-12">
                                 <label>จำนวนชั่วโมงรวม</label>
-                                <input type="number" id="edit_hour" name="total_hour"
-                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                                <input
+                                    type="number"
+                                    id="edit_hour"
+                                    name="total_hour"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
                             </div>
 
                             <div class="fieldset col-span-4 max-md:col-span-12">
                                 <label>จำนวนผู้เข้าร่วมสูงสุด</label>
-                                <input type="number" id="edit_accept" name="accept_amount"
-                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                                <input
+                                    type="number"
+                                    id="edit_accept"
+                                    name="accept_amount"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
                             </div>
 
                             <div class="fieldset col-span-8 max-md:col-span-12">
                                 <label>สถานที่</label>
-                                <input type="text" id="edit_location" name="location"
-                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                                <input
+                                    type="text"
+                                    id="edit_location"
+                                    name="location"
+                                    class="rounded-md border border-gray-400 px-4 py-2"
+                                />
                             </div>
 
                             <div class="col-span-12">
@@ -557,7 +612,8 @@
                                     </button>
                                 </div>
                                 <div class="mt-1 text-sm text-gray-500">
-                                    กด Enter หรือคลิก "เพิ่มแท็ก" เพื่อเพิ่มแท็กใหม่
+                                    กด Enter หรือคลิก "เพิ่มแท็ก"
+                                    เพื่อเพิ่มแท็กใหม่
                                 </div>
                             </div>
 
@@ -598,20 +654,26 @@
                     <hr class="text-gray-300" />
 
                     <div class="modal-action">
-                        <button type="button" class="cursor-pointer rounded-xl border-2 border-sky-400 px-12 py-2 text-sky-400 transition-all hover:bg-gray-100 active:scale-90"
-                            onclick="edit_modal.close()">ยกเลิก</button>
-                        <button type="submit"
-                            class="cursor-pointer rounded-xl border-2 bg-sky-400 px-12 py-2 text-white transition-all hover:bg-sky-500 active:scale-90">บันทึกการแก้ไข</button>
+                        <button
+                            type="button"
+                            class="cursor-pointer rounded-xl border-2 border-sky-400 px-12 py-2 text-sky-400 transition-all hover:bg-gray-100 active:scale-90"
+                            onclick="edit_modal.close()"
+                        >
+                            ยกเลิก
+                        </button>
+                        <button
+                            type="submit"
+                            class="cursor-pointer rounded-xl border-2 bg-sky-400 px-12 py-2 text-white transition-all hover:bg-sky-500 active:scale-90"
+                        >
+                            บันทึกการแก้ไข
+                        </button>
                     </div>
                 </div>
             </form>
-    </dialog>
-
+        </dialog>
     </div>
 
     <script>
-
-
         let tags = [];
 
         const updateFileName = (input) => {

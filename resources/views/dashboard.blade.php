@@ -7,9 +7,11 @@
 @section("layout-content")
     <div class="min-h-screen bg-gray-50">
         <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-            <div class="mb-8">
+            <!-- Hero Section with Status and Goal -->
+            <div class="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <!-- Current Status Card -->
                 <div
-                    class="mx-auto max-w-md rounded-2xl bg-red-600 p-6 text-center text-white md:p-8"
+                    class="rounded-2xl bg-red-600 p-6 text-center text-white md:p-8"
                 >
                     <h2 class="mb-2 text-lg font-semibold md:text-xl">
                         สถานะปัจจุบัน
@@ -18,96 +20,235 @@
                         {{ $totalHours ?? 0 }} ชั่วโมง
                     </div>
                 </div>
+
+                <!-- Goal Progress Card -->
+                @if (isset($goalProgress) && $goalProgress)
+                    <div
+                        class="rounded-2xl bg-gradient-to-br from-green-600 to-green-700 p-6 text-white shadow-lg"
+                    >
+                        <div class="mb-4 flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-bold md:text-xl">
+                                    <svg
+                                        class="mr-2 inline-block h-5 w-5"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                    เป้าหมายปัจจุบัน
+                                </h3>
+                                <p class="mt-1 text-sm text-green-100">
+                                    {{ Str::limit($goalProgress["goal"]->description ?? "เป้าหมาย " . $goalProgress["goal"]->target_hours . " ชั่วโมง", 50) }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold md:text-3xl">
+                                    {{ $goalProgress["goal"]->current_hours }}
+                                    / {{ $goalProgress["goal"]->target_hours }}
+                                </div>
+                                <div class="text-sm text-green-100">
+                                    ชั่วโมง
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="mb-4">
+                            <div
+                                class="mb-2 text-center text-sm text-green-100"
+                            >
+                                {{ number_format($goalProgress["progress"], 1) }}%
+                                • เหลือ {{ $goalProgress["remaining"] }}
+                                ชั่วโมง
+                            </div>
+                            <div class="h-3 w-full rounded-full bg-green-800">
+                                <div
+                                    class="h-3 rounded-full bg-white transition-all duration-500"
+                                    style="
+                                        width: {{ min(100, $goalProgress["progress"]) }}%;
+                                    "
+                                ></div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="text-xs text-green-100">
+                                <svg
+                                    class="mr-1 inline-block h-4 w-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    ></path>
+                                </svg>
+
+                                @if ($goalProgress["days_left"] > 0)
+                                    เหลือ {{ $goalProgress["days_left"] }} วัน
+                                @elseif ($goalProgress["days_left"] == 0)
+                                    สิ้นสุดวันนี้
+                                @else
+                                        หมดเวลาแล้ว
+                                @endif
+                            </div>
+                            <a
+                                href="{{ route("goals.index") }}"
+                                class="rounded-lg bg-white/20 px-4 py-2 text-xs font-medium text-white transition-colors duration-200 hover:bg-white/30"
+                            >
+                                จัดการเป้าหมาย
+                            </a>
+                        </div>
+                    </div>
+                @else
+                    <div
+                        class="rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-6 text-center"
+                    >
+                        <svg
+                            class="mx-auto mb-4 h-12 w-12 text-gray-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                            ></path>
+                        </svg>
+                        <h4 class="mb-2 text-lg font-medium text-gray-900">
+                            ยังไม่มีเป้าหมาย
+                        </h4>
+                        <p class="mb-4 text-gray-600">
+                            สร้างเป้าหมายชั่วโมงอาสาสมัครเพื่อติดตามความคืบหน้าของคุณ
+                        </p>
+                        <a
+                            href="{{ route("goals.create") }}"
+                            class="inline-flex items-center rounded-lg bg-red-600 px-6 py-3 font-medium text-white transition-colors duration-200 hover:bg-red-700"
+                        >
+                            <svg
+                                class="mr-2 h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                ></path>
+                            </svg>
+                            สร้างเป้าหมาย
+                        </a>
+                    </div>
+                @endif
             </div>
 
-            <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-                <div class="rounded-xl bg-white p-6 shadow-md">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">
-                                รวมชั่วโมงทั้งหมด
-                            </p>
-                            <p class="text-2xl font-bold text-gray-900">
-                                {{ $totalHours ?? 0 }}
-                            </p>
-                        </div>
-                        <div class="rounded-full bg-blue-100 p-3">
-                            <svg
-                                class="h-6 w-6 text-blue-600"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                ></path>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rounded-xl bg-white p-6 shadow-md">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">
-                                อนุมัติแล้ว
-                            </p>
-                            <p class="text-2xl font-bold text-green-600">
-                                {{ $approvedHours ?? 0 }}
-                            </p>
-                        </div>
-                        <div class="rounded-full bg-green-100 p-3">
-                            <svg
-                                class="h-6 w-6 text-green-600"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M5 13l4 4L19 7"
-                                ></path>
-                            </svg>
+            <div class="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-4">
+                <!-- Stats Cards -->
+                <div
+                    class="grid grid-cols-1 gap-6 md:grid-cols-3 lg:col-span-3"
+                >
+                    <div class="rounded-xl bg-white p-6 shadow-md">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">
+                                    รวมชั่วโมงทั้งหมด
+                                </p>
+                                <p class="text-2xl font-bold text-gray-900">
+                                    {{ $totalHours ?? 0 }}
+                                </p>
+                            </div>
+                            <div class="rounded-full bg-blue-100 p-3">
+                                <svg
+                                    class="h-6 w-6 text-blue-600"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    ></path>
+                                </svg>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="rounded-xl bg-white p-6 shadow-md">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-600">
-                                รออนุมัติ
-                            </p>
-                            <p class="text-2xl font-bold text-yellow-600">
-                                {{ $pendingHours ?? 0 }}
-                            </p>
+                    <div class="rounded-xl bg-white p-6 shadow-md">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">
+                                    เช็คชื่อแล้ว
+                                </p>
+                                <p class="text-2xl font-bold text-green-600">
+                                    {{ $approvedHours ?? 0 }}
+                                </p>
+                            </div>
+                            <div class="rounded-full bg-green-100 p-3">
+                                <svg
+                                    class="h-6 w-6 text-green-600"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 13l4 4L19 7"
+                                    ></path>
+                                </svg>
+                            </div>
                         </div>
-                        <div class="rounded-full bg-yellow-100 p-3">
-                            <svg
-                                class="h-6 w-6 text-yellow-600"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                ></path>
-                            </svg>
+                    </div>
+
+                    <div class="rounded-xl bg-white p-6 shadow-md">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">
+                                    รออนุมัติ
+                                </p>
+                                <p class="text-2xl font-bold text-yellow-600">
+                                    {{ $pendingHours ?? 0 }}
+                                </p>
+                            </div>
+                            <div class="rounded-full bg-yellow-100 p-3">
+                                <svg
+                                    class="h-6 w-6 text-yellow-600"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                    ></path>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             @if (isset($recentActivities) && $recentActivities->count() > 0)
-                <!-- Recent Activities -->
                 <div class="mb-8">
                     <h3
                         class="mb-6 text-xl font-bold text-gray-900 md:text-2xl"
@@ -137,20 +278,16 @@
                                     @endif
                                     <div class="absolute top-4 right-4">
                                         <span
-                                            class="@if ($activity->status === "completed")
-                                                bg-green-500
-                                            @elseif ($activity->status === "cancelled")
-                                                bg-red-500
-                                            @else
-                                                bg-yellow-500
-                                            @endif rounded-full px-3 py-1 text-sm font-medium text-white shadow-lg"
+                                            class="@if ($activity->status === 'checked_in') bg-green-500 @elseif ($activity->status === 'completed') bg-purple-500 @elseif ($activity->status === 'cancelled') bg-red-500 @else bg-blue-500 @endif rounded-full px-3 py-1 text-sm font-medium text-white shadow-lg"
                                         >
-                                            @if ($activity->status === "completed")
+                                            @if ($activity->status === "checked_in")
+                                                เช็คชื่อแล้ว
+                                            @elseif ($activity->status === "completed")
                                                 เสร็จสิ้น
                                             @elseif ($activity->status === "cancelled")
                                                 ยกเลิก
                                             @else
-                                                    สมัครแล้ว
+                                                    ลงทะเบียนแล้ว
                                             @endif
                                         </span>
                                     </div>
@@ -244,13 +381,13 @@
                                     <div class="flex gap-2">
                                         <a
                                             href="{{ route("activity.detail", $activity->id) }}"
-                                            class="active:scale-90 cursor-pointer flex-1 rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-all hover:bg-blue-700"
+                                            class="flex-1 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-all hover:bg-blue-700 active:scale-90"
                                         >
                                             ดูรายละเอียด
                                         </a>
                                         @if ($activity->status === "registered")
                                             <button
-                                                class="active:scale-90 cursor-pointer rounded-lg border border-red-600 px-4 py-2 font-medium text-red-600 transition-all hover:bg-red-50"
+                                                class="cursor-pointer rounded-lg border border-red-600 px-4 py-2 font-medium text-red-600 transition-all hover:bg-red-50 active:scale-90"
                                                 onclick="cancelRegistration({{ $activity->id }})"
                                             >
                                                 ยกเลิก
@@ -392,7 +529,7 @@
                                         </button>
                                     @elseif ($event["can_register"])
                                         <button
-                                            class="active:scale-90 transition-all cursor-pointer flex-1 rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white hover:bg-blue-700"
+                                            class="flex-1 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-all hover:bg-blue-700 active:scale-90"
                                             onclick="registerForActivity({{ $event["id"] }}, '{{ $event["title"] }}')"
                                         >
                                             สมัครเลย
@@ -407,7 +544,7 @@
                                     @endif
                                     <a
                                         href="{{ route("activity.detail", $event["id"]) }}"
-                                        class="active:scale-90 transition-all cursor-pointer rounded-lg border border-blue-600 px-4 py-2 font-medium text-blue-600 hover:bg-blue-50"
+                                        class="cursor-pointer rounded-lg border border-blue-600 px-4 py-2 font-medium text-blue-600 transition-all hover:bg-blue-50 active:scale-90"
                                     >
                                         ดูรายละเอียด
                                     </a>

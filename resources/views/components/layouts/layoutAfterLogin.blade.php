@@ -46,6 +46,12 @@
                             กิจกรรมจิตอาสา
                         </a>
                         <a
+                            href="{{ route("goals.index") }}"
+                            class="text-gray-700 hover:text-blue-600"
+                        >
+                            เป้าหมาย
+                        </a>
+                        <a
                             href="/about"
                             class="text-gray-700 hover:text-blue-600"
                         >

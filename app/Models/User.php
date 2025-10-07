@@ -56,6 +56,29 @@ class User extends Authenticatable
         return $this->hasMany(VolunteerHour::class);
     }
 
+    public function volunteerGoals()
+    {
+        return $this->hasMany(VolunteerGoal::class);
+    }
+
+    public function activeGoals()
+    {
+        return $this->volunteerGoals()->active()->current();
+    }
+
+    public function getCurrentGoalProgressAttribute()
+    {
+        $activeGoal = $this->activeGoals()->first();
+        if (!$activeGoal) return null;
+
+        return [
+            'goal' => $activeGoal,
+            'progress' => $activeGoal->progress_percentage,
+            'remaining' => $activeGoal->remaining_hours,
+            'days_left' => $activeGoal->days_remaining
+        ];
+    }
+
     public function isAdmin()
     {
         return $this->role === 'admin';
