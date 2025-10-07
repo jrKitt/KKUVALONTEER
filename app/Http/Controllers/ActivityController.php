@@ -42,6 +42,8 @@ class ActivityController extends Controller
             'accept_amount' => 'required|integer|min:1',
             'total_hour' => 'nullable|integer|min:0',
             'activity_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:50',
         ]);
 
         error_log($req->input("start_time"));
@@ -56,6 +58,9 @@ class ActivityController extends Controller
         $new_activity->total_hour = $req->input("total_hour");
         $new_activity->create_by = auth()->id() ?? 0;
         $new_activity->status = 'pending';
+
+        $tags = $req->input('tags', []);
+        $new_activity->tags = !empty($tags) ? json_encode(array_values(array_filter($tags))) : null;
         if ($req->hasFile('activity_image')) {
             $file = $req->file('activity_image');
             $uploadPath = public_path('uploads/activities');

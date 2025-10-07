@@ -62,7 +62,7 @@ class AboutController extends Controller
                 'status' => $activity->registration_status,
                 'progress' => round($progress),
                 'image_file_name' => $activity->image_file_name,
-                'tags' => ['#กิจกรรมอาสา', '#มข.']
+                'tags' => ($activity->tags && is_array($activity->tags)) ? array_map(function($tag) { return '#' . $tag; }, $activity->tags) : ['#กิจกรรมอาสา']
             ];
         });
 

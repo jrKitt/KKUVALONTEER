@@ -234,7 +234,7 @@
                                 class="activity-card overflow-hidden rounded-lg bg-white shadow-md"
                                 data-status="{{ $activity->status }}"
                                 data-search="{{ strtolower($activity->name_th . " " . $activity->description . " " . $activity->location) }}"
-                                data-tags="{{ $activity->tags ? implode(",", $activity->tags) : "" }}"
+                                data-tags="{{ $activity->tags && is_array($activity->tags) ? implode(",", $activity->tags) : "" }}"
                             >
                                 @if ($activity->image_file_name)
                                     <img

@@ -47,6 +47,19 @@
                 </div>
                 <nav class="mt-5 text-lg">
                     <div>{{ $activity->name_th }}</div>
+
+                    @if ($activity->tags && is_array($activity->tags))
+                        <div class="mt-2 mb-3 flex flex-wrap gap-2">
+                            @foreach ($activity->tags as $tag)
+                                <span
+                                    class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm text-green-800"
+                                >
+                                    #{{ $tag }}
+                                </span>
+                            @endforeach
+                        </div>
+                    @endif
+
                     @if ($activity->description)
                         <div>
                             <ul class="ml-8 list-disc">

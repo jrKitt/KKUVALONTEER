@@ -49,10 +49,12 @@
 
         <div class="mx-auto aspect-auto max-w-6xl px-2">
             <div
-                class="my-6 flex w-full items-center justify-between max-md:flex-col gap-4"
+                class="my-6 flex w-full items-center justify-between gap-4 max-md:flex-col"
             >
-                <div class="text-3xl sm:text-4xl md:text-5xl font-bold">จัดการกิจกรรม</div>
-                <div class="flex flex-col gap-3 sm:gap-5 w-full md:w-auto">
+                <div class="text-3xl font-bold sm:text-4xl md:text-5xl">
+                    จัดการกิจกรรม
+                </div>
+                <div class="flex w-full flex-col gap-3 sm:gap-5 md:w-auto">
                     <section
                         class="flex w-full items-center justify-end gap-3 sm:gap-5"
                     >
@@ -62,15 +64,15 @@
                             <i class="fa-solid fa-calendar"></i>
                         </div>
                         <button
-                            class="cursor-pointer rounded-md bg-green-500/80 px-3 sm:px-4 py-1 text-sm sm:text-base text-white transition-all hover:bg-green-600/80 active:scale-90 whitespace-nowrap"
+                            class="cursor-pointer rounded-md bg-green-500/80 px-3 py-1 text-sm whitespace-nowrap text-white transition-all hover:bg-green-600/80 active:scale-90 sm:px-4 sm:text-base"
                             onclick="my_modal_1.showModal()"
                         >
                             + เพิ่มกิจกรรม
                         </button>
                     </section>
-                    <section class="flex flex-col sm:flex-row gap-2">
+                    <section class="flex flex-col gap-2 sm:flex-row">
                         <select
-                            class="w-full sm:w-auto rounded-xl border-2 border-gray-400 px-2 py-1 text-sm"
+                            class="w-full rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
                         >
                             <option value="" disabled selected>
                                 -- ทุกคณะ --
@@ -82,7 +84,7 @@
                         <input
                             type="text"
                             placeholder="ชื่อกิจกรรม..."
-                            class="w-full sm:w-auto rounded-xl border-2 border-gray-400 px-2 py-1 text-sm"
+                            class="w-full rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
                         />
                         <button class="btn btn-sm sm:btn-md">ค้นหา</button>
                     </section>
@@ -92,11 +94,11 @@
         </div>
 
         <main>
-            <div class="mx-auto grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-6">
+            <div
+                class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 pb-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
                 @foreach ($rec as $activity)
-                    <div
-                        class="w-full rounded-xl shadow-md"
-                    >
+                    <div class="w-full rounded-xl shadow-md">
                         <div class="p-4">
                             <section>
                                 <div
@@ -158,15 +160,17 @@
                                     </div>
                                 </div>
                             </section>
-                            <section class="flex flex-col sm:flex-row gap-2 sm:gap-5">
+                            <section
+                                class="flex flex-col gap-2 sm:flex-row sm:gap-5"
+                            >
                                 <button
-                                    class="w-full rounded-xl bg-amber-400/80 py-2 text-sm sm:text-base text-white"
+                                    class="w-full rounded-xl bg-amber-400/80 py-2 text-sm text-white sm:text-base"
                                     onclick="my_modal_1.showModal()"
                                 >
                                     แก้ไขข้อมูล
                                 </button>
                                 <button
-                                    class="w-full rounded-xl border border-red-400 py-2 text-sm sm:text-base text-red-400 shadow"
+                                    class="w-full rounded-xl border border-red-400 py-2 text-sm text-red-400 shadow sm:text-base"
                                 >
                                     ลบข้อมูล
                                 </button>
@@ -273,14 +277,29 @@
                             <div class="col-span-12">
                                 <label for="">แท็กกิจกรรม</label>
                                 <div
-                                    class="h-20 w-full rounded-md border-2 border-gray-300"
+                                    id="tagsContainer"
+                                    class="flex min-h-20 w-full flex-wrap gap-2 rounded-md border-2 border-gray-300 p-3"
                                 ></div>
-                                <input
-                                    type="text"
-                                    class="mt-2 rounded-md border border-gray-400 px-4 py-2"
-                                    placeholder="ชื่อแท็ก..."
-                                />
-                                <button class="btn ml-1">เพิ่มแท็ก</button>
+                                <div class="mt-2 flex">
+                                    <input
+                                        type="text"
+                                        id="tagInput"
+                                        class="flex-1 rounded-md border border-gray-400 px-4 py-2"
+                                        placeholder="ชื่อแท็ก..."
+                                        onkeypress="handleTagKeyPress(event)"
+                                    />
+                                    <button
+                                        type="button"
+                                        class="btn ml-1"
+                                        onclick="addTag()"
+                                    >
+                                        เพิ่มแท็ก
+                                    </button>
+                                </div>
+                                <div class="mt-1 text-sm text-gray-500">
+                                    กด Enter หรือคลิก "เพิ่มแท็ก"
+                                    เพื่อเพิ่มแท็กใหม่
+                                </div>
                             </div>
 
                             <div class="fieldset col-span-12">
@@ -338,6 +357,8 @@
     </div>
 
     <script>
+        let tags = [];
+
         const updateFileName = (input) => {
             const fileName =
                 input.files.length > 0
@@ -351,5 +372,66 @@
                     `${fileName} (${fileSize} MB)`;
             }
         };
+
+        function addTag() {
+            const tagInput = document.getElementById('tagInput');
+            const tagValue = tagInput.value.trim();
+
+            if (tagValue && !tags.includes(tagValue)) {
+                tags.push(tagValue);
+                updateTagsDisplay();
+                tagInput.value = '';
+            }
+        }
+
+        function removeTag(index) {
+            tags.splice(index, 1);
+            updateTagsDisplay();
+        }
+
+        function handleTagKeyPress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addTag();
+            }
+        }
+
+        function updateTagsDisplay() {
+            const container = document.getElementById('tagsContainer');
+            container.innerHTML = '';
+
+            tags.forEach((tag, index) => {
+                const tagElement = document.createElement('span');
+                tagElement.className =
+                    'inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800';
+                tagElement.innerHTML = `
+                    ${tag}
+                    <button type="button" onclick="removeTag(${index})" class="ml-2 text-blue-600 hover:text-blue-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                `;
+                container.appendChild(tagElement);
+            });
+
+            updateHiddenTagInputs();
+        }
+
+        function updateHiddenTagInputs() {
+            const existingInputs = document.querySelectorAll(
+                'input[name="tags[]"]',
+            );
+            existingInputs.forEach((input) => input.remove());
+
+            const form = document.querySelector('form');
+            tags.forEach((tag) => {
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'tags[]';
+                hiddenInput.value = tag;
+                form.appendChild(hiddenInput);
+            });
+        }
     </script>
 @endsection

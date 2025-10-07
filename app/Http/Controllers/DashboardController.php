@@ -64,7 +64,7 @@ class DashboardController extends Controller
                     'date' => $activity->start_time ? $activity->start_time->format('d M Y') : 'ไม่ระบุ',
                     'hours' => ($activity->total_hour ?? 0) . ' ชั่วโมง',
                     'image' => $activity->image_file_name ? "uploads/activities/" . $activity->image_file_name : "carousel_1.jpg",
-                    'tags' => ['#กิจกรรมอาสา', '#มข.'],
+                    'tags' => ($activity->tags && is_array($activity->tags)) ? array_map(function($tag) { return '#' . $tag; }, $activity->tags) : ['#กิจกรรมอาสา'],
                     'can_register' => !$isRegistered && $participantCount < $activity->accept_amount,
                     'is_registered' => $isRegistered,
                     'is_full' => $participantCount >= $activity->accept_amount
