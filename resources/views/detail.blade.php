@@ -9,61 +9,97 @@
 @endpush
 
 @section("layout-content")
-    @include("components.alert")
     <div class="min-h-screen bg-gray-50">
-        <section class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-            <!-- Main -->
-            <main class="px-10 text-gray-600">
+        <div class="mx-auto max-w-4xl px-4 py-8">
+            <!-- Header -->
+            <div class="mb-6 rounded-lg bg-white p-6 shadow-sm">
                 <div
-                    class="mt-10 flex flex-wrap items-center justify-between gap-2 gap-y-4"
+                    class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
                 >
-                    <h2 class="text-5xl font-bold">
+                    <h1 class="text-3xl font-bold text-gray-900">
                         {{ $activity->name_th }}
-                    </h2>
-                    <div
-                        class="{{ ($activity->participants_count ?? 0) >= $activity->accept_amount ? "bg-red-200" : "bg-green-200" }} {{ ($activity->participants_count ?? 0) >= $activity->accept_amount ? "text-red-600" : "text-green-600" }} rounded-md px-4 py-2 text-5xl font-bold"
-                    >
-                        <span class="">
-                            {{ $activity->participants_count ?? 0 }}
-                        </span>
-                        <span class="">/</span>
-                        <span class="">{{ $activity->accept_amount }}</span>
+                    </h1>
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-gray-500">ผู้เข้าร่วม:</span>
+                        <div
+                            class="{{ ($activity->participants_count ?? 0) >= $activity->accept_amount ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800" }} inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
+                        >
+                            {{ $activity->participants_count ?? 0 }}/{{ $activity->accept_amount }}
+                        </div>
                     </div>
                 </div>
-                <div class="">
+                <!-- Tags -->
+                @if ($activity->tags && is_array($activity->tags))
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        @foreach ($activity->tags as $tag)
+                            <span
+                                class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800"
+                            >
+                                #{{ $tag }}
+                            </span>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+            <!-- Image & Content -->
+            <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <!-- Image -->
+                <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                     @if ($activity->image_file_name)
                         <img
                             src="{{ asset("uploads/activities/" . $activity->image_file_name) }}"
                             alt="{{ $activity->name_th }}"
-                            class="mt-10 rounded-md object-cover"
+                            class="h-64 w-full object-cover"
                         />
                     @else
                         <img
                             src="{{ asset("images/family.png") }}"
                             alt="{{ $activity->name_th }}"
-                            class="mt-10 rounded-md object-cover"
+                            class="h-64 w-full object-cover"
                         />
                     @endif
                 </div>
-                <nav class="mt-5 text-lg">
-                    <div>{{ $activity->name_th }}</div>
 
-                    @if ($activity->tags && is_array($activity->tags))
-                        <div class="mt-2 mb-3 flex flex-wrap gap-2">
-                            @foreach ($activity->tags as $tag)
-                                <span
-                                    class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm text-green-800"
-                                >
-                                    #{{ $tag }}
-                                </span>
-                            @endforeach
+                <!-- Details -->
+                <div class="rounded-lg bg-white p-6 shadow-sm">
+                    <h3 class="mb-4 text-xl font-bold text-gray-900">
+                        รายละเอียดกิจกรรม
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center text-gray-600">
+                            <i
+                                class="fa-solid fa-location-dot mr-3 w-5 text-blue-500"
+                            ></i>
+                            <span>
+                                {{ $activity->location ?: "ไม่ระบุสถานที่" }}
+                            </span>
                         </div>
-                    @endif
+
+                        <div class="flex items-center text-gray-600">
+                            <i
+                                class="fa-solid fa-clock mr-3 w-5 text-green-500"
+                            ></i>
+                            <span>
+                                {{ $activity->total_hour ?? 0 }} ชั่วโมง
+                            </span>
+                        </div>
+
+                        <div class="flex items-center text-gray-600">
+                            <i
+                                class="fa-solid fa-calendar-days mr-3 w-5 text-purple-500"
+                            ></i>
+                            <span>
+                                {{ $activity->start_time ? $activity->start_time->format("d M Y") : "ไม่ระบุวันที่" }}
+                            </span>
+                        </div>
+                    </div>
 
                     @if ($activity->description)
                         <div>
-                            <ul class="ml-8 list-disc">
-                                @foreach (explode(".", $activity->description) as $point)
+                            <ul class="text-md ml-8 list-disc">
+                                @foreach (preg_split("/\r\n|\n|\r/", $activity->description) as $point)
                                     @if (trim($point))
                                         <li>{{ trim($point) }}</li>
                                     @endif
@@ -71,49 +107,24 @@
                             </ul>
                         </div>
                     @endif
-                </nav>
-
-                <!-- Detail -->
-                <div>
-                    <h2 class="mt-2 text-2xl font-bold text-gray-900">
-                        รายละเอียด
-                    </h2>
-                    <div class="text-gray-700">
-                        {{ $activity->description ?: "ไม่มีรายละเอียด" }}
-                    </div>
                 </div>
+            </div>
 
-                <nav class="grid grid-cols-2 p-5 md:grid-cols-2">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-location-dot"></i>
-                        <span>
-                            {{ $activity->location ?: "ไม่ระบุสถานที่" }}
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-clock"></i>
-                        {{ $activity->total_hour ?? 0 }}
-                        <span>ชั่วโมง</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        {{ $activity->start_time ? $activity->start_time->format("d M Y") : "ไม่ระบุวันที่" }}
-                    </div>
-                </nav>
-
-                <div class="flex justify-end space-x-4 px-4 py-4">
+            <!-- Action Buttons -->
+            <div class="mb-8 rounded-lg bg-white p-6 shadow-sm">
+                <div class="flex flex-col justify-center gap-3 sm:flex-row">
                     @if (isset($activity->is_registered) && $activity->is_registered)
                         <button
                             type="button"
-                            class="cursor-not-allowed rounded-md bg-green-500 px-10 py-2 text-lg text-white shadow-lg"
+                            class="cursor-not-allowed rounded-lg bg-green-500 px-8 py-3 font-medium text-white"
                             disabled
                         >
-                            สมัครแล้ว
+                            ✓ สมัครแล้ว
                         </button>
                     @elseif (($activity->participants_count ?? 0) >= $activity->accept_amount)
                         <button
                             type="button"
-                            class="cursor-not-allowed rounded-md bg-red-500 px-10 py-2 text-lg text-white shadow-lg"
+                            class="cursor-not-allowed rounded-lg bg-red-500 px-8 py-3 font-medium text-white"
                             disabled
                         >
                             เต็มแล้ว
@@ -121,7 +132,7 @@
                     @elseif ($activity->status === "pending" || $activity->status === "ongoing")
                         <button
                             type="button"
-                            class="rounded-md bg-blue-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-blue-600"
+                            class="active:scale-90 transition-all cursor-pointer rounded-md bg-blue-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-blue-600"
                             onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
                         >
                             สมัครเข้าร่วม
@@ -129,7 +140,7 @@
                     @else
                         <button
                             type="button"
-                            class="cursor-not-allowed rounded-md bg-gray-400 px-10 py-2 text-lg text-white shadow-lg"
+                            class="cursor-not-allowed rounded-lg bg-gray-400 px-8 py-3 font-medium text-white"
                             disabled
                         >
                             ปิดการสมัคร
@@ -137,19 +148,19 @@
                     @endif
                     <button
                         type="button"
-                        class="rounded-md border border-blue-300 px-10 py-2 text-lg text-blue-300 shadow-lg hover:bg-blue-200 hover:text-white"
+                        class=" active:scale-90 transition-all cursor-pointer rounded-md border border-blue-300 px-10 py-2 text-lg text-blue-300 shadow-lg hover:bg-blue-200 hover:text-white"
                         onclick="window.history.back()"
                     >
                         กลับ
                     </button>
                 </div>
-                <hr class="my-2 border-gray-300" />
+            </div>
 
                 <!-- Other activity -->
                 <div>
                     <h1 class="mt-5 text-4xl font-bold">กิจกรรมอื่นๆ</h1>
                     <div
-                        class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                        class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
                     >
                         @php
                             $otherActivities = App\Models\Activity::where("id", "!=", $activity->id)
@@ -158,59 +169,59 @@
                                 ->get();
                         @endphp
 
-                        @foreach ($otherActivities as $otherActivity)
-                            <div
-                                class="mr-3 flex flex-col rounded-md border border-gray-300 p-5 shadow-xl"
-                            >
-                                <div
-                                    class="h-40 overflow-hidden rounded-md sm:h-48 md:h-40"
+                    @foreach ($otherActivities as $otherActivity)
+                        <div
+                            class="overflow-hidden rounded-lg border border-gray-200 transition-shadow hover:shadow-md"
+                        >
+                            <!-- Image -->
+                            <div class="h-48 overflow-hidden">
+                                @if ($otherActivity->image_file_name)
+                                    <img
+                                        src="{{ asset("uploads/activities/" . $otherActivity->image_file_name) }}"
+                                        alt="{{ $otherActivity->name_th }}"
+                                        class="h-full w-full object-cover"
+                                    />
+                                @else
+                                    <img
+                                        src="{{ asset("images/family.png") }}"
+                                        alt="{{ $otherActivity->name_th }}"
+                                        class="h-full w-full object-cover"
+                                    />
+                                @endif
+                            </div>
+
+                            <div class="p-4">
+                                <!-- Title -->
+                                <h3
+                                    class="mb-2 line-clamp-2 font-medium text-gray-900"
                                 >
-                                    @if ($otherActivity->image_file_name)
-                                        <img
-                                            src="{{ asset("uploads/activities/" . $otherActivity->image_file_name) }}"
-                                            alt="{{ $otherActivity->name_th }}"
-                                            class="h-full w-full object-cover"
-                                        />
-                                    @else
-                                        <img
-                                            src="{{ asset("images/family.png") }}"
-                                            alt=""
-                                            class="h-full w-full object-cover"
-                                        />
-                                    @endif
-                                </div>
-
-                                <h1 class="mt-2 text-lg">
                                     {{ $otherActivity->name_th }}
-                                </h1>
+                                </h3>
 
-                                <div class="mt-2 flex flex-row gap-2 text-xs">
+                                <!-- Tags -->
+                                <div class="mb-3 flex flex-wrap gap-1">
                                     @if ($otherActivity->tags && is_array($otherActivity->tags))
                                         @foreach (array_slice($otherActivity->tags, 0, 2) as $tag)
-                                            <button
-                                                class="rounded-full bg-blue-500 px-2 py-1 text-white"
+                                            <span
+                                                class="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800"
                                             >
                                                 #{{ $tag }}
-                                            </button>
+                                            </span>
                                         @endforeach
                                     @else
-                                        <button
-                                            class="rounded-full bg-green-500 px-2 py-1 text-white"
+                                        <span
+                                            class="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800"
                                         >
                                             #กิจกรรม
-                                        </button>
-                                        <button
-                                            class="rounded-full bg-gray-400 px-2 py-1 text-white"
-                                        >
-                                            #จิตอาสา
-                                        </button>
+                                        </span>
                                     @endif
                                 </div>
 
+                                <!-- Info -->
                                 <div
                                     class="mt-2 line-clamp-3 flex flex-grow text-xs text-gray-500"
                                 >
-                                    {{ Str::limit($otherActivity->description ?: "ไม่มีรายละเอียด", 150) }}
+                                    {{ Str::limit($otherActivity->description ?: "ไม่มีรายละเอียด") }}
                                 </div>
 
                                 <nav
@@ -218,27 +229,27 @@
                                 >
                                     <div class="flex items-center">
                                         <i
-                                            class="fa-solid fa-location-dot mr-1"
+                                            class="fa-solid fa-location-dot mr-2 w-4"
                                         ></i>
-                                        <span>
-                                            {{ Str::limit($otherActivity->location ?: "ไม่ระบุ", 15) }}
-                                        </span>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <i class="fa-solid fa-clock mr-1"></i>
-                                        {{ $otherActivity->total_hour ?? 0 }}
-                                        <span>ชั่วโมง</span>
+                                        {{ Str::limit($otherActivity->location ?: "ไม่ระบุ", 20) }}
                                     </div>
                                     <div class="flex items-center">
                                         <i
-                                            class="fa-solid fa-calendar-days mr-1"
+                                            class="fa-solid fa-clock mr-2 w-4"
+                                        ></i>
+                                        {{ $otherActivity->total_hour ?? 0 }}
+                                        ชั่วโมง
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i
+                                            class="fa-solid fa-calendar-days mr-2 w-4"
                                         ></i>
                                         {{ $otherActivity->start_time ? $otherActivity->start_time->format("d M Y") : "ไม่ระบุ" }}
                                     </div>
-                                </nav>
+                                </div>
 
                                 <div
-                                    class="flex justify-end space-x-3 px-1 py-1 text-xs"
+                                    class="flex justify-end space-x-3 px-1 py-1 text-xs text-nowrap"
                                 >
                                     @php
                                         $otherActivity->participants_count = App\Models\ActivityParticipant::where("activity_id", $otherActivity->id)->count();
@@ -252,7 +263,7 @@
                                     @if ($otherActivity->is_registered)
                                         <button
                                             type="button"
-                                            class="cursor-not-allowed rounded-md bg-green-500 px-6 py-1 text-lg text-white shadow-lg"
+                                            class="flex-1 cursor-not-allowed rounded bg-green-500 px-3 py-2 text-sm text-white"
                                             disabled
                                         >
                                             ✓ สมัครแล้ว
@@ -260,7 +271,7 @@
                                     @elseif ($otherActivity->participants_count >= $otherActivity->accept_amount)
                                         <button
                                             type="button"
-                                            class="cursor-not-allowed rounded-md bg-red-500 px-6 py-1 text-lg text-white shadow-lg"
+                                            class="flex-1 cursor-not-allowed rounded bg-red-500 px-3 py-2 text-sm text-white"
                                             disabled
                                         >
                                             เต็มแล้ว
@@ -268,34 +279,34 @@
                                     @elseif ($otherActivity->status === "pending" || $otherActivity->status === "ongoing")
                                         <button
                                             type="button"
-                                            class="rounded-md bg-blue-400 px-6 py-1 text-lg text-white shadow-lg hover:bg-blue-600"
+                                            class="cursor-pointer rounded-md bg-blue-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-blue-600 active:scale-90"
                                             onclick="registerForActivity({{ $otherActivity->id }}, '{{ $otherActivity->name_th }}')"
                                         >
-                                            สมัครเข้าร่วม
+                                            สมัคร
                                         </button>
                                     @else
                                         <button
                                             type="button"
-                                            class="cursor-not-allowed rounded-md bg-gray-400 px-6 py-1 text-lg text-white shadow-lg"
+                                            class="flex-1 cursor-not-allowed rounded bg-gray-400 px-3 py-2 text-sm text-white"
                                             disabled
                                         >
-                                            ปิดการสมัคร
+                                            ปิดสมัคร
                                         </button>
                                     @endif
                                     <button
                                         type="button"
-                                        class="rounded-md border border-blue-300 px-6 py-1 text-lg text-blue-300 shadow-lg hover:bg-blue-200 hover:text-white"
+                                        class="cursor-pointer rounded-md border border-blue-300 px-6 py-1 text-lg text-blue-300 shadow-lg transition-all hover:bg-blue-200 hover:text-white active:scale-90"
                                         onclick="window.location.href='/detail/{{ $otherActivity->id }}'"
                                     >
-                                        รายละเอียด
+                                        ดูเพิ่ม
                                     </button>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
+                        </div>
+                    @endforeach
                 </div>
-            </main>
-        </section>
+            </div>
+        </div>
     </div>
 @endsection
 

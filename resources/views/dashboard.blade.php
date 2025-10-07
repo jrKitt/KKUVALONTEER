@@ -162,17 +162,24 @@
                                         {{ $activity->activity_name }}
                                     </h4>
 
-                                    <div class="mb-4 flex items-center gap-2">
-                                        <span
-                                            class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
-                                        >
-                                            #กิจกรรมอาสา
-                                        </span>
-                                        <span
-                                            class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800"
-                                        >
-                                            #มข.
-                                        </span>
+                                    <div
+                                        class="mb-4 flex flex-wrap items-center gap-2"
+                                    >
+                                        @if (isset($activity->tags) && is_array($activity->tags))
+                                            @foreach (array_slice($activity->tags, 0, 3) as $tag)
+                                                <span
+                                                    class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
+                                                >
+                                                    {{ $tag }}
+                                                </span>
+                                            @endforeach
+                                        @else
+                                            <span
+                                                class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
+                                            >
+                                                #กิจกรรมอาสา
+                                            </span>
+                                        @endif
                                     </div>
 
                                     @if ($activity->description)
@@ -237,13 +244,13 @@
                                     <div class="flex gap-2">
                                         <a
                                             href="{{ route("activity.detail", $activity->id) }}"
-                                            class="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-blue-700"
+                                            class="active:scale-90 cursor-pointer flex-1 rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-all hover:bg-blue-700"
                                         >
                                             ดูรายละเอียด
                                         </a>
                                         @if ($activity->status === "registered")
                                             <button
-                                                class="rounded-lg border border-red-600 px-4 py-2 font-medium text-red-600 transition-colors hover:bg-red-50"
+                                                class="active:scale-90 cursor-pointer rounded-lg border border-red-600 px-4 py-2 font-medium text-red-600 transition-all hover:bg-red-50"
                                                 onclick="cancelRegistration({{ $activity->id }})"
                                             >
                                                 ยกเลิก
@@ -385,7 +392,7 @@
                                         </button>
                                     @elseif ($event["can_register"])
                                         <button
-                                            class="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-colors hover:bg-blue-700"
+                                            class="active:scale-90 transition-all cursor-pointer flex-1 rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white hover:bg-blue-700"
                                             onclick="registerForActivity({{ $event["id"] }}, '{{ $event["title"] }}')"
                                         >
                                             สมัครเลย
@@ -400,7 +407,7 @@
                                     @endif
                                     <a
                                         href="{{ route("activity.detail", $event["id"]) }}"
-                                        class="rounded-lg border border-blue-600 px-4 py-2 font-medium text-blue-600 transition-colors hover:bg-blue-50"
+                                        class="active:scale-90 transition-all cursor-pointer rounded-lg border border-blue-600 px-4 py-2 font-medium text-blue-600 hover:bg-blue-50"
                                     >
                                         ดูรายละเอียด
                                     </a>

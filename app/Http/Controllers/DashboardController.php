@@ -41,7 +41,8 @@ class DashboardController extends Controller
                 'date' => \Carbon\Carbon::parse($activity->start_time),
                 'hours' => $activity->total_hour ?? 0,
                 'status' => $activity->registration_status,
-                'image_file_name' => $activity->image_file_name
+                'image_file_name' => $activity->image_file_name,
+                'tags' => ($activity->tags && is_array($activity->tags)) ? array_map(function($tag) { return '#' . $tag; }, $activity->tags) : ['#กิจกรรมจิตอาสา']
             ];
         });
 
