@@ -133,15 +133,15 @@
                         @auth
                             <button
                                 type="button"
-                                class="active:scale-90 transition-all cursor-pointer rounded-md bg-blue-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-blue-600"
+                                class="active:scale-90 transition-all cursor-pointer rounded-md bg-cyan-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-cyan-500"
                                 onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
                             >
                                 สมัครเข้าร่วม
                             </button>
                         @else
-                            <a 
-                                href="{{ route('login') }}" 
-                                class="active:scale-90 transition-all cursor-pointer rounded-md bg-blue-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-blue-600 text-center inline-block"
+                            <a
+                                href="{{ route('login') }}"
+                                class="active:scale-90 transition-all cursor-pointer rounded-md bg-cyan-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-cyan-500 text-center inline-block"
                             >
                                 เข้าสู่ระบบเพื่อสมัคร
                             </a>
@@ -289,15 +289,15 @@
                                         @auth
                                             <button
                                                 type="button"
-                                                class="cursor-pointer rounded-md bg-blue-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-blue-600 active:scale-90"
+                                                class="cursor-pointer rounded-md bg-cyan-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
                                                 onclick="registerForActivity({{ $otherActivity->id }}, '{{ $otherActivity->name_th }}')"
                                             >
                                                 สมัคร
                                             </button>
                                         @else
-                                            <a 
-                                                href="{{ route('login') }}" 
-                                                class="cursor-pointer rounded-md bg-blue-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-blue-600 active:scale-90 text-center inline-block"
+                                            <a
+                                                href="{{ route('login') }}"
+                                                class="cursor-pointer rounded-md bg-cyan-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90 text-center inline-block"
                                             >
                                                 เข้าสู่ระบบ
                                             </a>
@@ -409,11 +409,11 @@
                         window.location.href = response.url;
                         return;
                     }
-                    
+
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-                    
+
                     return response.json();
                 })
                 .then((data) => {

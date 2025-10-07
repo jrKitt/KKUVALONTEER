@@ -131,7 +131,15 @@
                                 <i class="fas fa-arrow-left me-1"></i>
                                 ย้อนกลับ
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button
+                                type="submit"
+                                class="btn"
+                                style="
+                                    background-color: #06b6d4;
+                                    border-color: #06b6d4;
+                                    color: white;
+                                "
+                            >
                                 <i class="fas fa-save me-1"></i>
                                 บันทึกข้อมูล
                             </button>

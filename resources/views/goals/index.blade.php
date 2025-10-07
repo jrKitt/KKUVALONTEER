@@ -42,7 +42,7 @@
                     </button>
                     <a
                         href="{{ route("goals.create") }}"
-                        class="inline-flex items-center rounded-lg bg-red-600 px-6 py-3 font-medium text-white transition-colors duration-200 hover:bg-red-700"
+                        class="inline-flex items-center rounded-lg bg-emerald-500 px-6 py-3 font-medium text-white transition-colors duration-200 hover:bg-emerald-600"
                     >
                         <svg
                             class="mr-2 h-5 w-5"
@@ -267,7 +267,7 @@
                                             class="h-2 w-full rounded-full bg-gray-200"
                                         >
                                             <div
-                                                class="h-2 rounded-full bg-red-600 transition-all duration-300"
+                                                class="h-2 rounded-full bg-cyan-400 transition-all duration-300"
                                                 style="
                                                     width: {{ min(100, $goal->progress_percentage) }}%;
                                                 "
@@ -315,7 +315,7 @@
                                         </a>
                                         <a
                                             href="{{ route("goals.edit", $goal) }}"
-                                            class="rounded-lg bg-red-600 px-4 py-2 text-white transition-colors duration-200 hover:bg-red-700"
+                                            class="rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-emerald-600"
                                         >
                                             แก้ไข
                                         </a>
@@ -533,7 +533,7 @@
                     <div class="mt-6">
                         <a
                             href="{{ route("goals.create") }}"
-                            class="inline-flex items-center rounded-lg bg-red-600 px-6 py-3 font-medium text-white transition-colors duration-200 hover:bg-red-700"
+                            class="inline-flex items-center rounded-lg bg-emerald-500 px-6 py-3 font-medium text-white transition-colors duration-200 hover:bg-emerald-600"
                         >
                             <svg
                                 class="mr-2 h-5 w-5"

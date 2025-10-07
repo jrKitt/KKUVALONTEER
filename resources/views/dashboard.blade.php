@@ -381,7 +381,7 @@
                                     <div class="flex gap-2">
                                         <a
                                             href="{{ route("activity.detail", $activity->id) }}"
-                                            class="flex-1 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-all hover:bg-blue-700 active:scale-90"
+                                            class="flex-1 cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
                                         >
                                             ดูรายละเอียด
                                         </a>
@@ -529,7 +529,7 @@
                                         </button>
                                     @elseif ($event["can_register"])
                                         <button
-                                            class="flex-1 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-all hover:bg-blue-700 active:scale-90"
+                                            class="flex-1 cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
                                             onclick="registerForActivity({{ $event["id"] }}, '{{ $event["title"] }}')"
                                         >
                                             สมัครเลย
@@ -544,7 +544,7 @@
                                     @endif
                                     <a
                                         href="{{ route("activity.detail", $event["id"]) }}"
-                                        class="cursor-pointer rounded-lg border border-blue-600 px-4 py-2 font-medium text-blue-600 transition-all hover:bg-blue-50 active:scale-90"
+                                        class="cursor-pointer rounded-lg border border-cyan-400 px-4 py-2 font-medium text-cyan-600 transition-all hover:bg-cyan-50 active:scale-90"
                                     >
                                         ดูรายละเอียด
                                     </a>

@@ -59,6 +59,11 @@ class Activity extends Model
         return $this->belongsTo(User::class, 'create_by');
     }
 
+    public function participants()
+    {
+        return $this->hasMany(ActivityParticipant::class, 'activity_id');
+    }
+
     public function scopeByStatus($query, $status)
     {
         return $query->where('status', $status);

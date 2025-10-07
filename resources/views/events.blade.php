@@ -44,7 +44,9 @@
                             @endif
                         </div>
                     </div>
-                    <div class="carousel-buttons flex gap-2 max-md:flex-col my-4">
+                    <div
+                        class="carousel-buttons my-4 flex gap-2 max-md:flex-col"
+                    >
                         @if ($rec->isNotEmpty())
                             @php
                                 $firstActivity = $rec->first();
@@ -52,7 +54,7 @@
 
                             @if (isset($firstActivity->is_registered) && $firstActivity->is_registered)
                                 <button
-                                    class="cursor-not-allowed rounded-xl bg-green-500 px-6 py-2 text-nowrap text-white shadow-lg"
+                                    class="cursor-not-allowed rounded-xl bg-emerald-400 px-6 py-2 text-nowrap text-white shadow-lg"
                                     disabled
                                 >
                                     สมัครแล้ว
@@ -65,12 +67,21 @@
                                     เต็มแล้ว
                                 </button>
                             @elseif ($firstActivity->status === "pending" || $firstActivity->status === "ongoing")
-                                <button
-                                    class="active:scale-90 transition-all cursor-pointer rounded-xl bg-sky-400 px-6 py-2 text-nowrap text-white hover:bg-sky-600 shadow-lg"
-                                    onclick="registerForActivity({{ $firstActivity->id }}, '{{ $firstActivity->name_th }}')"
-                                >
-                                    สมัครเข้าร่วม
-                                </button>
+                                @auth
+                                    <button
+                                        class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
+                                        onclick="registerForActivity({{ $firstActivity->id }}, '{{ $firstActivity->name_th }}')"
+                                    >
+                                        สมัครเข้าร่วม
+                                    </button>
+                                @else
+                                    <a
+                                        href="{{ route("login") }}"
+                                        class="inline-block cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-center text-nowrap text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
+                                    >
+                                        เข้าสู่ระบบเพื่อสมัคร
+                                    </a>
+                                @endauth
                             @else
                                 <button
                                     class="cursor-not-allowed rounded-xl bg-gray-400 px-6 py-2 text-nowrap text-white shadow-lg"
@@ -81,18 +92,19 @@
                             @endif
                             <a
                                 href="{{ route("activity.detail", $firstActivity->id) }}"
-                                class="active:scale-90 transition-all cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 hover:bg-gray-300 shadow-lg"
+                                class="cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 shadow-lg transition-all hover:bg-gray-300 active:scale-90"
                             >
                                 รายละเอียด
                             </a>
                         @else
                             <button
-                                class="active:scale-90 transition-all cursor-pointer rounded-xl bg-sky-400 px-6 py-2 text-nowrap text-white hover:bg-sky-600 shadow-lg"
+                                class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
+                                onclick="registerForActivity({{ $firstActivity->id }}, '{{ $firstActivity->name_th }}')"
                             >
                                 สมัครเข้าร่วม
                             </button>
                             <button
-                                class="active:scale-90 transition-all cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 hover:bg-gray-300 shadow-lg"
+                                class="cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 shadow-lg transition-all hover:bg-gray-300 active:scale-90"
                             >
                                 รายละเอียด
                             </button>
@@ -329,7 +341,7 @@
                                     <div class="flex gap-2">
                                         @if (isset($activity->is_registered) && $activity->is_registered)
                                             <button
-                                                class="flex-1 cursor-not-allowed rounded-lg bg-green-500 px-4 py-2 text-white"
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white"
                                                 disabled
                                             >
                                                 สมัครแล้ว
@@ -342,12 +354,21 @@
                                                 เต็มแล้ว
                                             </button>
                                         @elseif ($activity->status === "pending" || $activity->status === "ongoing")
-                                            <button
-                                                class="flex-1 rounded-lg bg-blue-500 px-4 py-2 text-white transition-colors hover:bg-blue-600"
-                                                onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
-                                            >
-                                                สมัครเลย
-                                            </button>
+                                            @auth
+                                                <button
+                                                    class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-white transition-colors hover:bg-cyan-500"
+                                                    onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
+                                                >
+                                                    สมัครเลย
+                                                </button>
+                                            @else
+                                                <a
+                                                    href="{{ route("login") }}"
+                                                    class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-center text-white transition-colors hover:bg-cyan-500"
+                                                >
+                                                    เข้าสู่ระบบเพื่อสมัคร
+                                                </a>
+                                            @endauth
                                         @else
                                             <button
                                                 class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-white"
@@ -582,11 +603,15 @@
                 let buttonHTML = '';
 
                 if (data.is_registered) {
-                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-green-500 px-6 py-2 text-nowrap text-white" disabled>สมัครแล้ว</button>';
+                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-emerald-400 px-6 py-2 text-nowrap text-white" disabled>สมัครแล้ว</button>';
                 } else if (data.participants_count >= data.accept_amount) {
                     buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-red-500 px-6 py-2 text-nowrap text-white" disabled>เต็มแล้ว</button>';
                 } else if (data.status === "pending" || data.status === "ongoing") {
-                    buttonHTML = `<button class="cursor-pointer rounded-xl bg-sky-400 px-6 py-2 text-nowrap text-white hover:bg-sky-600" onclick="registerForActivity(${data.id}, '${data.title}')">สมัครเข้าร่วม</button>`;
+                    @auth
+                        buttonHTML = `<button class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white hover:bg-cyan-500" onclick="registerForActivity(${data.id}, '${data.title}')">สมัครเข้าร่วม</button>`;
+                    @else
+                        buttonHTML = `<a href="{{ route('login') }}" class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white hover:bg-cyan-500 text-center inline-block">เข้าสู่ระบบเพื่อสมัคร</a>`;
+                    @endauth
                 } else {
                     buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-gray-400 px-6 py-2 text-nowrap text-white" disabled>ปิดการสมัคร</button>';
                 }
@@ -603,6 +628,12 @@
         }, 5000);
 
         function registerForActivity(activityId, activityName) {
+            // Check if user is authenticated (simple client-side check)
+            @guest
+                window.location.href = '{{ route("login") }}';
+                return;
+            @endguest
+
             const activity = activitiesData.find((a) => a.id === activityId);
             if (!activity) return;
 
@@ -623,9 +654,26 @@
                     activity_id: activityId,
                 }),
             })
-                .then((response) => response.json())
+                .then((response) => {
+                    // Check if response is redirecting (usually means not authenticated)
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                        return;
+                    }
+
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            // Not authenticated - redirect to login
+                            window.location.href = '/login';
+                            return;
+                        }
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    return response.json();
+                })
                 .then((data) => {
-                    if (data.success) {
+                    if (data && data.success) {
                         showAlert(
                             'success',
                             'ลงทะเบียนสำเร็จ!',
@@ -634,7 +682,7 @@
 
                         button.textContent = 'สมัครแล้ว';
                         button.className =
-                            'flex-1 cursor-not-allowed rounded-lg bg-green-500 px-4 py-2 text-white';
+                            'flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white';
                         button.disabled = true;
 
                         // Update participant count
@@ -651,8 +699,10 @@
                         }
 
                         return;
-                    } else {
+                    } else if (data && data.message) {
                         showAlert('error', 'เกิดข้อผิดพลาด!', data.message);
+                    } else {
+                        showAlert('error', 'เกิดข้อผิดพลาด!', 'ไม่สามารถลงทะเบียนได้');
                     }
                 })
                 .catch((error) => {
@@ -660,7 +710,7 @@
                     showAlert(
                         'error',
                         'เกิดข้อผิดพลาด!',
-                        'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
+                        'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่อและลองใหม่',
                     );
                 })
                 .finally(() => {

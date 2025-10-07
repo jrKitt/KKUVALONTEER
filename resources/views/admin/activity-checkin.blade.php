@@ -193,7 +193,12 @@
                         </button>
                         <button
                             onclick="bulkCheckin()"
-                            class="btn btn-primary btn-sm"
+                            class="btn btn-sm"
+                            style="
+                                background-color: #06b6d4;
+                                border-color: #06b6d4;
+                                color: white;
+                            "
                             id="bulkCheckinBtn"
                             disabled
                         >
@@ -453,7 +458,15 @@
                     >
                         ยกเลิก
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button
+                        type="submit"
+                        class="btn"
+                        style="
+                            background-color: #06b6d4;
+                            border-color: #06b6d4;
+                            color: white;
+                        "
+                    >
                         เช็คชื่อ
                     </button>
                 </div>
@@ -572,7 +585,15 @@
                 >
                     ยกเลิก
                 </button>
-                <button class="btn btn-primary" onclick="executeBulkCheckin()">
+                <button
+                    class="btn"
+                    style="
+                        background-color: #06b6d4;
+                        border-color: #06b6d4;
+                        color: white;
+                    "
+                    onclick="executeBulkCheckin()"
+                >
                     ยืนยันเช็คชื่อ
                 </button>
             </div>

@@ -321,7 +321,7 @@
                         </a>
                         <button
                             type="submit"
-                            class="rounded-lg bg-red-600 px-8 py-3 font-medium text-white transition-colors duration-200 hover:bg-red-700"
+                            class="rounded-lg bg-emerald-500 px-8 py-3 font-medium text-white transition-colors duration-200 hover:bg-emerald-600"
                         >
                             สร้างเป้าหมาย
                         </button>
