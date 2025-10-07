@@ -31,7 +31,6 @@ class ActivityController extends Controller
         return view("events", compact("rec"));
     }
 
-<<<<<<< HEAD
     //
     public function createActivity(Request $req) {
         $req->validate([
@@ -46,21 +45,6 @@ class ActivityController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'string|max:50',
         ]);
-=======
-    public function createActivity(Request $req){
-    $req->validate([
-        'activity_name' => 'required|string|max:255',
-        'des' => 'nullable|string',
-        'location' => 'nullable|string|max:255',
-        'start_time' => 'required|date',
-        'end_time' => 'nullable|date|after:start_time',
-        'accept_amount' => 'required|integer|min:1',
-        'total_hour' => 'nullable|integer|min:0',
-        'activity_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-        'tag' => 'array',
-        'tag.*' => 'string|max:255',
-    ]);
->>>>>>> 1b89e4e6473a467c6bbc05eaa4df015758d083b3
 
     $new_activity = new Activity();
     $new_activity->name_th = $req->input('activity_name');
@@ -73,31 +57,8 @@ class ActivityController extends Controller
     $new_activity->create_by = auth()->id() ?? 0;
     $new_activity->status = 'pending';
 
-<<<<<<< HEAD
-        $new_activity = new Activity();
-        $new_activity->name_th = $req->input("activity_name");
-        $new_activity->description = $req->input("des");
-        $new_activity->location = $req->input("location");
-        $new_activity->start_time = $req->input("start_time");
-        $new_activity->end_time = $req->input("end_time");
-        $new_activity->accept_amount = $req->input("accept_amount");
-        $new_activity->total_hour = $req->input("total_hour");
-        $new_activity->create_by = auth()->id() ?? 0;
-        $new_activity->status = 'pending';
-
-        $tags = $req->input('tags', []);
-        $new_activity->tags = !empty($tags) ? json_encode(array_values(array_filter($tags))) : null;
-        if ($req->hasFile('activity_image')) {
-            $file = $req->file('activity_image');
-            $uploadPath = public_path('uploads/activities');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
-            }
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-=======
     $tags = $req->input('tag', []);
     $new_activity->tags = json_encode($tags);
->>>>>>> 1b89e4e6473a467c6bbc05eaa4df015758d083b3
 
     if ($req->hasFile('activity_image')) {
         $file = $req->file('activity_image');
