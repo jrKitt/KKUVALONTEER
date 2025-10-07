@@ -31,10 +31,15 @@ Route::get('/home', function () {
 Route::get('/index', function () {
     return view('index');
 });
-Route::get('/event', function () {
-    return view('event');
-});
+
+
+// Route::get('/event', function () {
+//     return view('event');
+// });
+
+
 Route::get('/about', [AboutController::class, 'index'])->name('about.index');
+
 Route::get('/detail', function () {
     return view('valunteerdetails');
 });
@@ -151,6 +156,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/admin/activities/{activity}/checkin', [CheckinController::class, 'checkin'])->name('admin.activity.checkin.store');
     Route::post('/admin/activities/{activity}/checkin/undo', [CheckinController::class, 'undoCheckin'])->name('admin.activity.checkin.undo');
     Route::post('/admin/activities/{activity}/checkin/bulk', [CheckinController::class, 'bulkCheckin'])->name('admin.activity.checkin.bulk');
+    Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");
+    Route::put('/activity/{id}', [ActivityController::class, 'updateActivity'])->name('activity.update');
+    Route::delete('/activity/{id}', [ActivityController::class, 'deleteActivity'])->name('activity.delete');
 });
 
 Route::get('/activities', [ActivityController::class, "showUserActivity"])->name('user.activities');
@@ -158,7 +166,4 @@ Route::post('/activities/register', [ActivityController::class, "registerActivit
 Route::post('/activities/cancel', [ActivityController::class, "cancelRegistration"])->name('activities.cancel')->middleware('auth');
 Route::get('/detail/{id}', [ActivityController::class, "showActivityDetail"])->name('activity.detail');
 
-Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");
-Route::put('/activity/{id}', [ActivityController::class, 'updateActivity'])->name('activity.update');
 
-Route::delete('/activity/{id}', [ActivityController::class, 'deleteActivity'])->name('activity.delete');

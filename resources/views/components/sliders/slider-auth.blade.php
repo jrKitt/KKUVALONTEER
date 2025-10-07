@@ -4,18 +4,18 @@
 >
     <div class="absolute inset-0 z-0">
         <div
-            class="carousel-slider flex h-full w-[300%] transition-transform duration-1000 ease-in-out"
+            class="carousel-slider flex h-full w-[300%] transition-transform duration-1000 ease-in-out bg-black"
         >
             <div
-                class="h-full w-1/3 bg-cover bg-center"
+                class="h-full w-1/3 bg-cover bg-center opacity-70"
                 style="background-image: url('{{ asset("images/c1.png") }}')"
             ></div>
             <div
-                class="h-full w-1/3 bg-cover bg-center"
+                class="h-full w-1/3 bg-cover bg-center opacity-70"
                 style="background-image: url('{{ asset("images/c2.png") }}')"
             ></div>
             <div
-                class="h-full w-1/3 bg-cover bg-center"
+                class="h-full w-1/3 bg-cover bg-center opacity-70"
                 style="background-image: url('{{ asset("images/c3.png") }}')"
             ></div>
         </div>
@@ -33,14 +33,14 @@
 
     <div class="relative z-10 max-w-4xl">
         <h1
-            class="mb-6 text-5xl leading-tight font-bold text-white md:text-6xl"
+            class="mb-6 text-5xl leading-tight font-bold text-white md:text-3xl"
         >
             ชาว มข. มาทำกิจกรรมจิตอาสาสากันเถอะ !!!
         </h1>
         <p
             class="mb-8 max-w-3xl text-xl leading-relaxed text-gray-100 md:text-2xl"
         >
-            ว็บจิตอาสามหาวิทยาลัยขอนแก่น
+            เว็บจิตอาสามหาวิทยาลัยขอนแก่น
             เป็นพื้นที่สำหรับนักศึกษาที่ต้องการมีส่วนร่วมในการพัฒนาสังคมและชุมชน
             เรารวบรวมกิจกรรมจิตอาสา แนะนำโครงการต่าง ๆ
             และอำนวยความสะดวกในการบันทึกชั่วโมงจิตอาสา
@@ -48,15 +48,15 @@
 
         <div class="mb-12 flex gap-4">
             <div
-                class="carousel-indicator bg-opacity-90 active h-4 w-24 cursor-pointer rounded-xl bg-white shadow-lg transition-all duration-300 hover:w-28"
+                class="carousel-indicator bg-opacity-90 active h-2 w-24 cursor-pointer rounded-xl bg-blue-400 shadow-lg transition-all duration-300 hover:w-28"
                 data-slide="0"
             ></div>
             <div
-                class="carousel-indicator bg-opacity-60 h-4 w-24 cursor-pointer rounded-xl bg-white shadow-lg transition-all duration-300 hover:w-28"
+                class="carousel-indicator bg-opacity-60 h-2 w-24 cursor-pointer rounded-xl bg-white shadow-lg transition-all duration-300 hover:w-28"
                 data-slide="1"
             ></div>
             <div
-                class="carousel-indicator bg-opacity-60 h-4 w-24 cursor-pointer rounded-xl bg-white shadow-lg transition-all duration-300 hover:w-28"
+                class="carousel-indicator bg-opacity-60 h-2 w-24 cursor-pointer rounded-xl bg-white shadow-lg transition-all duration-300 hover:w-28"
                 data-slide="2"
             ></div>
         </div>
@@ -81,14 +81,18 @@
                     if (index === currentSlide) {
                         indicator.classList.add('active');
                         indicator.classList.remove('bg-opacity-50');
-                        indicator.classList.add('bg-opacity-80');
+                        indicator.classList.add('bg-opacity-100');
+                        indicator.classList.add('bg-blue-400');
+                        indicator.classList.remove('bg-white');
                     } else {
                         indicator.classList.remove('active');
-                        indicator.classList.remove('bg-opacity-80');
+                        indicator.classList.remove('bg-opacity-100');
                         indicator.classList.add('bg-opacity-50');
+                        indicator.classList.remove('bg-blue-400');
+                        indicator.classList.add('bg-white'); 
                     }
                 });
-            }
+}
 
 
             indicators.forEach((indicator, index) => {

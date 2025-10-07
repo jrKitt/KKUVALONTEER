@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\ActivityParticipant;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
@@ -18,33 +19,34 @@ class ActivityController extends Controller
 }
 
    public function showUserActivity(Request $request) {
-        $query = Activity::with('user')->orderBy('created_at', 'desc');
+    $query = Activity::with('user')->orderBy('created_at', 'desc');
 
-        if ($request->filled('faculty')) {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('faculty', $request->faculty); 
-            });
-        }
-
-        if ($request->filled('search')) {
-            $query->where('name_th', 'like', '%' . $request->search . '%');
-        }
-
-        $rec = $query->get();
-
-        if (auth()->check()) {
-            $userRegistrations = ActivityParticipant::where('user_id', auth()->id())
-                ->pluck('activity_id')
-                ->toArray();
-
-            foreach ($rec as $activity) {
-                $activity->is_registered = in_array($activity->id, $userRegistrations);
-                $activity->participants_count = $activity->participants()->count();
-            }
-        }
-
-        return view("events", compact("rec"));
+    if ($request->filled('search')) {
+        $query->where('name_th', 'like', '%' . $request->search . '%');
     }
+
+    $rec = $query->get();
+
+     $user = User::find(auth()->id());
+
+        $rec = $rec->filter(function ($activity) use ($user) {
+            return $activity->user && $activity->user->faculty === $user->faculty;
+        });
+
+
+    if (auth()->check()) {
+        $userRegistrations = ActivityParticipant::where('user_id', auth()->id())
+            ->pluck('activity_id')
+            ->toArray();
+
+        foreach ($rec as $activity) {
+            $activity->is_registered = in_array($activity->id, $userRegistrations);
+            $activity->participants_count = $activity->participants()->count();
+        }
+    }
+
+    return view("events", compact("rec"));
+}
 
 
     //

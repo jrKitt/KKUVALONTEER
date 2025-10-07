@@ -202,7 +202,15 @@
                             action="/admin/event"
                             class="flex gap-2"
                         >
-                            <select
+                            @if(request("faculty") || request("search"))
+                                <a
+                                    href="{{ url('/admin/event') }}"
+                                    class="btn btn-sm sm:btn-md btn-ghost text-gray-700 border border-gray-300 hover:bg-gray-100 w-3"
+                                >
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                </a>
+                            @endif
+                            {{-- <select
                                 name="faculty"
                                 class="w-full rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
                                 onchange="this.form.submit()"
@@ -226,7 +234,7 @@
                                         @endforeach
                                     </optgroup>
                                 @endforeach
-                            </select>
+                            </select> --}}
 
                             <input
                                 type="text"
@@ -240,6 +248,8 @@
                             >
                                 ค้นหา
                             </button>
+
+                          
                         </form>
                     </section>
                 </div>
