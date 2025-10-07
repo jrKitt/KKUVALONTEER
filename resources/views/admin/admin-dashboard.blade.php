@@ -15,7 +15,7 @@
                             class="flex w-full items-center justify-between flex-wrap gap-2"
                         >
                             <h3 class="text-sm sm:text-base">สถิติการเข้าร่วมกิจกรรม</h3>
-                            <select
+                            {{-- <select
                                 class="w-full sm:w-50 rounded-xl border-2 border-gray-400 px-2 py-1 text-sm"
                             >
                                 <option value="" disabled selected>
@@ -24,7 +24,7 @@
                                 <option value="">a</option>
                                 <option value="">b</option>
                                 <option value="">c</option>
-                            </select>
+                            </select> --}}
                         </section>
                         <canvas id="chart1"></canvas>
                     </div>
@@ -34,8 +34,8 @@
                         <section
                             class="flex w-full items-center justify-between flex-wrap gap-2"
                         >
-                            <h3 class="text-sm sm:text-base">สัดส่วนการเข้าร่วมกิจกรรม</h3>
-                            <select
+                            <h3 class="text-sm sm:text-base">สัดส่วนการเข้าร่วมกิจกรรมของนักศึกษา</h3>
+                            {{-- <select
                                 class="w-full sm:w-50 rounded-xl border-2 border-gray-400 px-2 py-1 text-sm"
                             >
                                 <option value="" disabled selected>
@@ -44,7 +44,7 @@
                                 <option value="">a</option>
                                 <option value="">b</option>
                                 <option value="">c</option>
-                            </select>
+                            </select> --}}
                         </section>
                         <canvas id="chart2"></canvas>
                     </div>
@@ -59,15 +59,15 @@
             >
                 <div>
                     <section class="flex items-start justify-between max-sm:flex-col my-2 gap-3 sm:gap-5">
-                        <h1 class="my-3 text-2xl sm:text-3xl md:text-4xl font-bold">กิจกรรม</h1>
-                        <select
+                        <h1 class="my-3 text-2xl sm:text-3xl md:text-4xl font-bold">กิจกรรมของฉันที่กำลังดำเนินอยู่</h1>
+                        {{-- <select
                             class="w-full sm:w-50 rounded-xl border-2 border-gray-400 px-2 py-1 text-sm"
                         >
                             <option value="" disabled selected>ทั้งหมด</option>
                             <option value="">a</option>
                             <option value="">b</option>
                             <option value="">c</option>
-                        </select>
+                        </select> --}}
                     </section>
 
                     <section

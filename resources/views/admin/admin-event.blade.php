@@ -23,6 +23,15 @@
         "กลุ่มสาขาวิชามนุษยศาสตร์และสังคมศาสตร์" => ["คณะศึกษาศาสตร์", "คณะมนุษยศาสตร์และสังคมศาสตร์", "คณะบริหารธุรกิจและการบัญชี", "คณะศิลปกรรมศาสตร์", "คณะเศรษฐศาสตร์", "คณะนิติศาสตร์", "วิทยาลัยการปกครองท้องถิ่น", "วิทยาลัยบัณฑิตศึกษาการจัดการ"],
         "กลุ่มสหสาขาวิชา" => ["บัณฑิตวิทยาลัย", "วิทยาลัยนานาชาติ", "คณะสหวิทยาการ"],
     ];
+
+
+    $selectedFaculty = request('faculty');
+    $search = request('search');
+    $filtered = $rec->filter(function($activity) use ($selectedFaculty, $search) {
+        $matchFaculty = !$selectedFaculty || ($activity->user && $activity->user->faculty === $selectedFaculty);
+        $matchSearch = !$search || str_contains(strtolower($activity->name_th), strtolower($search));
+        return $matchFaculty && $matchSearch;
+    });
 @endphp
 
 <script>
@@ -248,13 +257,13 @@
                     return true;
                 }
             </script>
-            <div
-                class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 pb-6 sm:grid-cols-2 lg:grid-cols-3"
-            >
-                @foreach ($rec as $activity)
-                    <script>
-                        console.log(@json($activity));
-                    </script>
+           @if ($filtered->isEmpty())
+                <div class="mx-auto my-10 max-w-2xl text-center text-gray-500">
+                    ไม่พบกิจกรรมที่ตรงกับการค้นหา
+                </div>
+            @else
+                <div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 pb-6 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach ($filtered as $activity)
                     <div class="w-full rounded-xl shadow-md">
                         <div class="p-4">
                             <section>
@@ -312,7 +321,10 @@
                                         </div>
                                         <div class="flex items-center text-xs">
                                             <i class="fa-solid fa-clock"></i>
-                                            {{ $activity->total_hour }} ชั่วโมง
+                                            <p class=" w-10">
+
+                                                {{ $activity->total_hour }} ชม.
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="mb-3 text-xs text-gray-500">
@@ -358,7 +370,8 @@
                             </section>
                         </div>
                     </div>
-                @endforeach
+                    @endforeach
+                 @endif
             </div>
         </main>
 

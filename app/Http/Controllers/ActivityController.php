@@ -18,30 +18,34 @@ class ActivityController extends Controller
 }
 
    public function showUserActivity(Request $request) {
-    $query = Activity::orderBy('created_at', 'desc');
+        $query = Activity::with('user')->orderBy('created_at', 'desc');
 
-
-    if ($request->has('faculty') && !empty($request->faculty)) {
-        $query->whereHas('user', function($q) use ($request) {
-            $q->where('faculty', $request->faculty);
-        });
-    }
-
-    $rec = $query->get();
-
-    if (auth()->check()) {
-        $userRegistrations = ActivityParticipant::where('user_id', auth()->id())
-            ->pluck('activity_id')
-            ->toArray();
-
-        foreach ($rec as $activity) {
-            $activity->is_registered = in_array($activity->id, $userRegistrations);
-            $activity->participants_count = ActivityParticipant::where('activity_id', $activity->id)->count();
+        if ($request->filled('faculty')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('faculty', $request->faculty); 
+            });
         }
+
+        if ($request->filled('search')) {
+            $query->where('name_th', 'like', '%' . $request->search . '%');
+        }
+
+        $rec = $query->get();
+
+        if (auth()->check()) {
+            $userRegistrations = ActivityParticipant::where('user_id', auth()->id())
+                ->pluck('activity_id')
+                ->toArray();
+
+            foreach ($rec as $activity) {
+                $activity->is_registered = in_array($activity->id, $userRegistrations);
+                $activity->participants_count = $activity->participants()->count();
+            }
+        }
+
+        return view("events", compact("rec"));
     }
 
-    return view("events", compact("rec"));
-    }
 
     //
     public function createActivity(Request $req) {
