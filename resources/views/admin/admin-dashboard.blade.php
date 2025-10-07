@@ -5,6 +5,7 @@
 @endsection
 
 @section("layout-content")
+
     <div class="min-h-screen bg-gray-50 text-black">
         <div class="mx-auto aspect-auto max-w-6xl px-2">
             <div class="my-6 text-5xl font-bold">Dashboard</div>
@@ -212,65 +213,81 @@
             'Dec',
         ];
 
+
+        const recs = @json($recs);
+      
+        recs.map(item => console.log(item));
+
+       const monthlyCount = Array(12).fill(0);
+        recs.forEach(item => {
+            const date = new Date(item.checked_in_at || item.registered_at);
+            const month = date.getMonth(); // 0–11
+            monthlyCount[month]++;
+        });
+
         new Chart(ctx1, {
             type: 'line',
             data: {
-                labels: month.filter((e, index) => index < 9 && e),
+                labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'],
                 datasets: [
                     {
-                        data: [1, 4, 2, 8, 10, 15, 20, 17, 24, 30, 27, 37],
-                        borderWidth: 5,
-                        tension: 0,
+                        label: 'จำนวนกิจกรรม',
+                        data: monthlyCount,
+                        borderWidth: 4,
+                        borderColor: '#3b82f6',
+                        tension: 0.3,
                         pointStyle: false,
                     },
                 ],
             },
             options: {
                 plugins: {
-                    legend: {
-                        display: false,
-                    },
+                    legend: { display: false },
+                },
+                scales: {
+                    y: { beginAtZero: true },
                 },
             },
         });
 
+        const facultyCount = {};
+        recs.forEach(item => {
+            const faculty = item.user?.faculty || 'ไม่ระบุคณะ';
+            facultyCount[faculty] = (facultyCount[faculty] || 0) + 1;
+        });
+
+        const labels = Object.keys(facultyCount);
+        const data = Object.values(facultyCount);
+
         new Chart(ctx2, {
-            type: 'line',
+            type: 'bar',
             data: {
-                labels: month.filter((e, index) => index < 9 && e),
+                labels,
                 datasets: [
                     {
-                        data: [1, 4, 2, 8, 10, 15, 20, 17, 24, 30, 27, 37],
-                        borderWidth: 5,
-                        tension: 0,
-                        pointStyle: false,
+                        label: 'จำนวนกิจกรรมตามคณะ',
+                        data,
+                        borderWidth: 2,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
                         borderColor: 'rgb(54, 162, 235)',
-                    },
-                    {
-                        data: [9, 16, 8, 24, 40, 60, 80, 68, 50, 80, 19, 58],
-                        borderWidth: 5,
-                        tension: 0,
-                        pointStyle: false,
-                        borderColor: 'rgb(39, 231, 166)',
-                        borderDash: [5, 5],
-                    },
-                    {
-                        data: [18, 12, 6, 4, 28, 40, 50, 34, 73, 12, 39, 20],
-                        borderWidth: 5,
-                        tension: 0,
-                        pointStyle: false,
-                        borderColor: 'rgb(254, 188, 59)',
-                        borderDash: [5, 5],
                     },
                 ],
             },
             options: {
                 plugins: {
-                    legend: {
-                        display: false,
-                    },
+                    legend: { display: false },
+                },
+                scales: {
+                    y: { beginAtZero: true },
                 },
             },
         });
+
+
+     
+
+        
+
+        
     </script>
 @endsection

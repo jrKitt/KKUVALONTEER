@@ -265,4 +265,13 @@ class ActivityController extends Controller
 
     return redirect()->back()->with('success', 'ลบกิจกรรมเรียบร้อยแล้ว');
     }
+
+
+    public function getAdminDashboard() {
+        $recs = ActivityParticipant::with('user')->get();
+
+        
+
+        return view("admin/admin-dashboard" ,compact('recs'));
+    } 
 }

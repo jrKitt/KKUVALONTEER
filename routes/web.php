@@ -109,9 +109,7 @@ Route::middleware('auth')->group(function () {
     })->name('debug.goals');
 });
 
-Route::get('/admin/dashboard' , function(){
-    return view('admin/admin-dashboard');
-})->name('admin.dashboard');
+Route::get('/admin/dashboard' , [ActivityController::class, "getAdminDashboard"])->name('admin.dashboard');
 
 
 
