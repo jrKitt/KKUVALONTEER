@@ -44,7 +44,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="carousel-buttons flex gap-2 max-md:flex-col">
+                    <div class="carousel-buttons flex gap-2 max-md:flex-col my-4">
                         @if ($rec->isNotEmpty())
                             @php
                                 $firstActivity = $rec->first();
@@ -52,28 +52,28 @@
 
                             @if (isset($firstActivity->is_registered) && $firstActivity->is_registered)
                                 <button
-                                    class="cursor-not-allowed rounded-xl bg-green-500 px-6 py-2 text-nowrap text-white"
+                                    class="cursor-not-allowed rounded-xl bg-green-500 px-6 py-2 text-nowrap text-white shadow-lg"
                                     disabled
                                 >
                                     สมัครแล้ว
                                 </button>
                             @elseif (($firstActivity->participants_count ?? 0) >= $firstActivity->accept_amount)
                                 <button
-                                    class="cursor-not-allowed rounded-xl bg-red-500 px-6 py-2 text-nowrap text-white"
+                                    class="cursor-not-allowed rounded-xl bg-red-500 px-6 py-2 text-nowrap text-white shadow-lg"
                                     disabled
                                 >
                                     เต็มแล้ว
                                 </button>
                             @elseif ($firstActivity->status === "pending" || $firstActivity->status === "ongoing")
                                 <button
-                                    class="cursor-pointer rounded-xl bg-sky-400 px-6 py-2 text-nowrap text-white hover:bg-sky-600"
+                                    class="active:scale-90 transition-all cursor-pointer rounded-xl bg-sky-400 px-6 py-2 text-nowrap text-white hover:bg-sky-600 shadow-lg"
                                     onclick="registerForActivity({{ $firstActivity->id }}, '{{ $firstActivity->name_th }}')"
                                 >
                                     สมัครเข้าร่วม
                                 </button>
                             @else
                                 <button
-                                    class="cursor-not-allowed rounded-xl bg-gray-400 px-6 py-2 text-nowrap text-white"
+                                    class="cursor-not-allowed rounded-xl bg-gray-400 px-6 py-2 text-nowrap text-white shadow-lg"
                                     disabled
                                 >
                                     ปิดการสมัคร
@@ -81,18 +81,18 @@
                             @endif
                             <a
                                 href="{{ route("activity.detail", $firstActivity->id) }}"
-                                class="cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 hover:bg-gray-300"
+                                class="active:scale-90 transition-all cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 hover:bg-gray-300 shadow-lg"
                             >
                                 รายละเอียด
                             </a>
                         @else
                             <button
-                                class="cursor-pointer rounded-xl bg-sky-400 px-6 py-2 text-nowrap text-white hover:bg-sky-600"
+                                class="active:scale-90 transition-all cursor-pointer rounded-xl bg-sky-400 px-6 py-2 text-nowrap text-white hover:bg-sky-600 shadow-lg"
                             >
                                 สมัครเข้าร่วม
                             </button>
                             <button
-                                class="cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 hover:bg-gray-300"
+                                class="active:scale-90 transition-all cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 hover:bg-gray-300 shadow-lg"
                             >
                                 รายละเอียด
                             </button>

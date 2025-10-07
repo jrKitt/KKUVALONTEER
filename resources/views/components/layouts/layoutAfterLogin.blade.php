@@ -52,7 +52,7 @@
                             <button href="/profile" class="cursor-pointer">
                                 <img
                                     class="h-10 w-10 rounded-full border-2 border-gray-200 object-cover transition-colors hover:border-blue-300"
-                                    src="{{ Auth::check() && Auth::user()->profile_image ? asset(Auth::user()->profile_image) : asset("images/profileTemp.png") }}"
+                                    src="{{ Auth::check() && Auth::user()->profile_image ? asset(Auth::user()->profile_image) : asset("images/tako.png") }}"
                                     alt="{{ Auth::check() ? Auth::user()->firstname . " " . Auth::user()->lastname : "Profile" }}"
                                     width="100"
                                     height="100"

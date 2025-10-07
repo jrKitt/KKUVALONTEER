@@ -252,9 +252,9 @@
                         <div class="mt-6 sm:mt-10 flex justify-center">
                             <button
                                 type="submit"
-                                class="w-full rounded-lg border-blue-500 bg-blue-400 px-4 sm:px-5 py-2 text-sm sm:text-base text-white hover:bg-blue-500 transition-colors"
+                                class="active:scale-90 transition-all cursor-pointer w-full rounded-lg border-blue-500 bg-blue-400 px-4 sm:px-5 py-2 text-sm sm:text-base text-white hover:bg-blue-500 "
                             >
-                                แก้ไข
+                                บันทึก
                             </button>
                         </div>
                     </form>
