@@ -63,4 +63,14 @@ class Activity extends Model
     {
         return $query->whereIn('status', ['pending', 'ongoing']);
     }
+
+    protected $appends = ['day_left'];
+
+    public function getDayLeftAttribute() {
+        $start = new \DateTime($this->start_time);
+        $now = new \DateTime();
+
+        $diff = $now->diff($start);
+        return $start < $now ? 0 : (int)$diff->days;
+    }
 }

@@ -10,40 +10,37 @@ class ActivityController extends Controller
 {
    
     public function showAdminActivity(Request $request) {
-    $query = Activity::with('user');
-
-    if ($request->has('search') && !empty($request->search)) {
-        $query->where('name_th', 'like', '%' . $request->search . '%');
-    }
-
-    $rec = $query->get()->map(function ($activity) {
-        $start = new \DateTime($activity->start_time);
-        $now = new \DateTime();
-
-        $diff = $now->diff($start);
-        $activity->day_left = $start < $now ? 0 : (int)$diff->days;
-
-        return $activity;
-    });
+    $rec = Activity::with('user')
+    ->when($request->search, fn($q) => $q->where('name_th', 'like', "%{$request->search}%"))
+    ->get();
 
     return view("admin/admin-event", compact("rec"));
 }
 
-    public function showUserActivity() {
-        $rec = Activity::orderBy('created_at', 'desc')->get();
+   public function showUserActivity(Request $request) {
+    $query = Activity::orderBy('created_at', 'desc');
 
-        if (auth()->check()) {
-            $userRegistrations = ActivityParticipant::where('user_id', auth()->id())
-                ->pluck('activity_id')
-                ->toArray();
+   
+    if ($request->has('faculty') && !empty($request->faculty)) {
+        $query->whereHas('user', function($q) use ($request) {
+            $q->where('faculty', $request->faculty);
+        });
+    }
 
-            foreach ($rec as $activity) {
-                $activity->is_registered = in_array($activity->id, $userRegistrations);
-                $activity->participants_count = ActivityParticipant::where('activity_id', $activity->id)->count();
-            }
+    $rec = $query->get();
+
+    if (auth()->check()) {
+        $userRegistrations = ActivityParticipant::where('user_id', auth()->id())
+            ->pluck('activity_id')
+            ->toArray();
+
+        foreach ($rec as $activity) {
+            $activity->is_registered = in_array($activity->id, $userRegistrations);
+            $activity->participants_count = ActivityParticipant::where('activity_id', $activity->id)->count();
         }
+    }
 
-        return view("events", compact("rec"));
+    return view("events", compact("rec"));
     }
 
     //

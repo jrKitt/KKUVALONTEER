@@ -16,6 +16,41 @@
             return "$day $month $year";
         }
     }
+
+    $faculties = [
+        "กลุ่มสาขาวิชาวิทยาศาสตร์เทคโนโลยี" => [
+            "คณะเกษตรศาสตร์",
+            "คณะเทคโนโลยี",
+            "คณะวิศวกรรมศาสตร์",
+            "คณะวิทยาศาสตร์",
+            "คณะสถาปัตยกรรมศาสตร์",
+            "วิทยาลัยการคอมพิวเตอร์"
+        ],
+        "กลุ่มสาขาวิชาวิทยาศาสตร์สุขภาพ" => [
+            "คณะพยาบาลศาสตร์",
+            "คณะแพทยศาสตร์",
+            "คณะเทคนิคการแพทย์",
+            "คณะสาธารณสุขศาสตร์",
+            "คณะทันตแพทยศาสตร์",
+            "คณะเภสัชศาสตร์",
+            "คณะสัตวแพทยศาสตร์"
+        ],
+        "กลุ่มสาขาวิชามนุษยศาสตร์และสังคมศาสตร์" => [
+            "คณะศึกษาศาสตร์",
+            "คณะมนุษยศาสตร์และสังคมศาสตร์",
+            "คณะบริหารธุรกิจและการบัญชี",
+            "คณะศิลปกรรมศาสตร์",
+            "คณะเศรษฐศาสตร์",
+            "คณะนิติศาสตร์",
+            "วิทยาลัยการปกครองท้องถิ่น",
+            "วิทยาลัยบัณฑิตศึกษาการจัดการ"
+        ],
+        "กลุ่มสหสาขาวิชา" => [
+            "บัณฑิตวิทยาลัย",
+            "วิทยาลัยนานาชาติ",
+            "คณะสหวิทยาการ"
+        ]
+    ];
 @endphp
 
 
@@ -176,17 +211,22 @@
                         </button>
                     </section>
                     <section class="flex flex-col gap-2 sm:flex-row">
-                        <select
-                            class="w-full rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
-                        >
-                            <option value="" disabled selected>
-                                -- ทุกคณะ --
-                            </option>
-                            <option value="">a</option>
-                            <option value="">b</option>
-                            <option value="">c</option>
-                        </select>
-                       <form method="GET" action="/admin/event" class="flex gap-2">
+                        <form method="GET" action="/admin/event" class="flex gap-2">
+                            <select name="faculty"
+                                class="w-full rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
+                                onchange="this.form.submit()">
+                                <option value="" disabled {{ request('faculty') ? '' : 'selected' }}>-- ทุกคณะ --</option>
+                                @foreach($faculties as $group => $items)
+                                    <optgroup label="{{ $group }}">
+                                        @foreach($items as $faculty)
+                                            <option value="{{ $faculty }}" {{ request('faculty') == $faculty ? 'selected' : '' }}>
+                                                {{ $faculty }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </select>
+                   
                             <input
                                 type="text"
                                 name="search"
@@ -248,8 +288,8 @@
                                 <div
                                     class="] flex gap-2 [&_div]:rounded-full [&_div]:px-2 [&_div]:py-1 [&_div]:text-sm [&_div]:text-white"
                                 >
-                                    <div class="bg-green-500">#เกษตรศาสตร์</div>
-                                    <div class="bg-gray-400">#กลางแจ้ง</div>
+                                    <div class="bg-green-500"># {{ $activity->user->faculty ?? 'ไม่ทราบคณะ' }}</div>
+                                    {{-- <div class="bg-gray-400">#กลางแจ้ง</div> --}}
                                 </div>
                                 <div>
                                     <h6 class="text-gray-600">
