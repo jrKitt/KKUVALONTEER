@@ -20,26 +20,6 @@
                     </p>
                 </div>
                 <div class="mt-4 flex gap-3 md:mt-0">
-                    <button
-                        onclick="updateProgress()"
-                        class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-3 font-medium text-white transition-colors duration-200 hover:bg-blue-700"
-                        id="updateBtn"
-                    >
-                        <svg
-                            class="mr-2 h-5 w-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                            ></path>
-                        </svg>
-                        อัปเดตความคืบหน้า
-                    </button>
                     <a
                         href="{{ route("goals.create") }}"
                         class="inline-flex items-center rounded-lg bg-emerald-500 px-6 py-3 font-medium text-white transition-colors duration-200 hover:bg-emerald-600"
@@ -66,7 +46,16 @@
                 <div
                     class="rounded-xl bg-white p-6 shadow-md transition-shadow duration-300 hover:shadow-lg"
                 >
-                    <div class="flex items-center">
+                    <div class="flex items-center justify-between">
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">
+                                เป้าหมายที่บรรลุ
+                            </p>
+                            <p class="text-2xl font-bold text-gray-900">
+                                {{ $completedGoals->count() }}
+                            </p>
+                        </div>
+
                         <div class="rounded-full bg-green-100 p-3">
                             <svg
                                 class="h-6 w-6 text-green-600"
@@ -82,21 +71,22 @@
                                 ></path>
                             </svg>
                         </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">
-                                เป้าหมายที่บรรลุ
-                            </p>
-                            <p class="text-2xl font-bold text-gray-900">
-                                {{ $completedGoals->count() }}
-                            </p>
-                        </div>
                     </div>
                 </div>
 
                 <div
                     class="rounded-xl bg-white p-6 shadow-md transition-shadow duration-300 hover:shadow-lg"
                 >
-                    <div class="flex items-center">
+                    <div class="flex items-center justify-between">
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">
+                                เป้าหมายที่กำลังดำเนิน
+                            </p>
+                            <p class="text-2xl font-bold text-gray-900">
+                                {{ $activeGoals->count() }}
+                            </p>
+                        </div>
+
                         <div class="rounded-full bg-blue-100 p-3">
                             <svg
                                 class="h-6 w-6 text-blue-600"
@@ -112,21 +102,22 @@
                                 ></path>
                             </svg>
                         </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">
-                                เป้าหมายที่กำลังดำเนิน
-                            </p>
-                            <p class="text-2xl font-bold text-gray-900">
-                                {{ $activeGoals->count() }}
-                            </p>
-                        </div>
                     </div>
                 </div>
 
                 <div
                     class="rounded-xl bg-white p-6 shadow-md transition-shadow duration-300 hover:shadow-lg"
                 >
-                    <div class="flex items-center">
+                    <div class="flex items-center justify-between">
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">
+                                เป้าหมายที่หมดเวลา
+                            </p>
+                            <p class="text-2xl font-bold text-gray-900">
+                                {{ $overdueGoals->count() }}
+                            </p>
+                        </div>
+
                         <div class="rounded-full bg-red-100 p-3">
                             <svg
                                 class="h-6 w-6 text-red-600"
@@ -142,21 +133,22 @@
                                 ></path>
                             </svg>
                         </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">
-                                เป้าหมายที่หมดเวลา
-                            </p>
-                            <p class="text-2xl font-bold text-gray-900">
-                                {{ $overdueGoals->count() }}
-                            </p>
-                        </div>
                     </div>
                 </div>
 
                 <div
                     class="rounded-xl bg-white p-6 shadow-md transition-shadow duration-300 hover:shadow-lg"
                 >
-                    <div class="flex items-center">
+                    <div class="flex items-center justify-between">
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">
+                                เป้าหมายทั้งหมด
+                            </p>
+                            <p class="text-2xl font-bold text-gray-900">
+                                {{ $activeGoals->count() + $completedGoals->count() + $overdueGoals->count() }}
+                            </p>
+                        </div>
+
                         <div class="rounded-full bg-purple-100 p-3">
                             <svg
                                 class="h-6 w-6 text-purple-600"
@@ -171,14 +163,6 @@
                                     d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
                                 ></path>
                             </svg>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">
-                                เป้าหมายทั้งหมด
-                            </p>
-                            <p class="text-2xl font-bold text-gray-900">
-                                {{ $activeGoals->count() + $completedGoals->count() + $overdueGoals->count() }}
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -201,7 +185,7 @@
                                 clip-rule="evenodd"
                             />
                         </svg>
-                        เป้าหมายที่กำลังดำเนิน
+                        <div>เป้าหมายที่กำลังดำเนิน</div>
                     </h2>
                     <div
                         class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
@@ -315,7 +299,7 @@
                                         </a>
                                         <a
                                             href="{{ route("goals.edit", $goal) }}"
-                                            class="rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-emerald-600"
+                                            class="rounded-lg border border-emerald-500 px-4 py-2 text-emerald-500 transition-colors duration-200 hover:bg-emerald-500 hover:text-white"
                                         >
                                             แก้ไข
                                         </a>
@@ -591,7 +575,7 @@
 
                                     @if ($activity->status === "checked_in")
                                         <span
-                                            class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800"
+                                            class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-nowrap text-green-800"
                                         >
                                             <svg
                                                 class="mr-1 h-3 w-3"
@@ -608,7 +592,7 @@
                                         </span>
                                     @elseif ($activity->status === "completed")
                                         <span
-                                            class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800"
+                                            class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-1 text-xs font-medium text-nowrap text-purple-800"
                                         >
                                             <svg
                                                 class="mr-1 h-3 w-3"
@@ -623,7 +607,7 @@
                                         </span>
                                     @elseif ($activity->status === "registered")
                                         <span
-                                            class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
+                                            class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-nowrap text-blue-800"
                                         >
                                             <svg
                                                 class="mr-1 h-3 w-3"
@@ -640,7 +624,7 @@
                                         </span>
                                     @else
                                         <span
-                                            class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
+                                            class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-nowrap text-gray-800"
                                         >
                                             <svg
                                                 class="mr-1 h-3 w-3"
