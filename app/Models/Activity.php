@@ -49,7 +49,7 @@ class Activity extends Model
         'total_hour' => 'integer'
     ];
 
-    public function creator()
+    public function user()
     {
         return $this->belongsTo(User::class, 'create_by');
     }

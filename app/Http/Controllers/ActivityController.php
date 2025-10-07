@@ -8,12 +8,17 @@ use Illuminate\Http\Request;
 
 class ActivityController extends Controller
 {
+   
+    public function showAdminActivity(Request $request) {
+    $query = Activity::with('user');
 
-    public function showAdminActivity() {
-    $rec = Activity::all()->map(function ($activity) {
+    if ($request->has('search') && !empty($request->search)) {
+        $query->where('name_th', 'like', '%' . $request->search . '%');
+    }
+
+    $rec = $query->get()->map(function ($activity) {
         $start = new \DateTime($activity->start_time);
         $now = new \DateTime();
-
 
         $diff = $now->diff($start);
         $activity->day_left = $start < $now ? 0 : (int)$diff->days;

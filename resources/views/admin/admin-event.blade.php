@@ -6,13 +6,15 @@
 
 
 @php
-    function thaiDate($dateString) {
-        $months = ["", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-        $ts = strtotime($dateString);
-        $day = date("j", $ts);
-        $month = $months[(int)date("n", $ts)];
-        $year = date("Y", $ts) + 543;
-        return "$day $month $year";
+   if (!function_exists('thaiDate')) {
+        function thaiDate($dateString) {
+            $months = ["", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+            $ts = strtotime($dateString);
+            $day = date("j", $ts);
+            $month = $months[(int)date("n", $ts)];
+            $year = date("Y", $ts) + 543;
+            return "$day $month $year";
+        }
     }
 @endphp
 
@@ -184,12 +186,16 @@
                             <option value="">b</option>
                             <option value="">c</option>
                         </select>
-                        <input
-                            type="text"
-                            placeholder="ชื่อกิจกรรม..."
-                            class=" rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
-                        />
-                        <button class="btn btn-sm sm:btn-md btn-info text-white">ค้นหา</button>
+                       <form method="GET" action="/admin/event" class="flex gap-2">
+                            <input
+                                type="text"
+                                name="search"
+                                value="{{ request('search') }}"
+                                placeholder="ชื่อกิจกรรม..."
+                                class="rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
+                            />
+                            <button class="btn btn-sm sm:btn-md btn-info text-white">ค้นหา</button>
+                        </form>
                     </section>
                 </div>
             </div>
@@ -208,7 +214,9 @@
             </script>
             <div class="mx-auto grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-6">
                 @foreach ($rec as $activity)
-                    
+                    <script>
+                        console.log(@json($activity))
+                    </script>
                     <div class="w-full rounded-xl shadow-md">
                         <div class="p-4">
                             <section>
