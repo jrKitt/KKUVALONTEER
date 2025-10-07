@@ -17,7 +17,7 @@
             <div class="flex gap-2">
                 <a
                     href="{{ route("goals.edit", $goal) }}"
-                    class="btn btn-outline btn-sm"
+                    class="flex items-center justify-center rounded-md border px-2 py-1 transition-all hover:border-white hover:bg-gray-200"
                 >
                     <svg
                         class="mr-2 h-4 w-4"
@@ -36,7 +36,7 @@
                 </a>
                 <a
                     href="{{ route("goals.index") }}"
-                    class="btn btn-outline btn-sm"
+                    class="flex items-center justify-center rounded-md border px-2 py-1 transition-all hover:border-white hover:bg-gray-200"
                 >
                     <svg
                         class="mr-2 h-4 w-4"
@@ -60,7 +60,7 @@
             <!-- Goal Details -->
             <div class="space-y-6 lg:col-span-2">
                 <!-- Goal Info Card -->
-                <div class="rounded-xl bg-white p-6 shadow-md">
+                <div class="flex flex-col gap-4 rounded-xl bg-white p-6 shadow-md">
                     <div class="mb-4 flex items-start justify-between">
                         <div>
                             <h2
@@ -452,7 +452,7 @@
                     <div class="space-y-3">
                         <a
                             href="{{ route("goals.edit", $goal) }}"
-                            class="btn btn-outline btn-sm w-full"
+                            class="flex items-center justify-center rounded-md bg-gray-500 py-2 text-white transition-all hover:bg-gray-600"
                         >
                             <svg
                                 class="mr-2 h-4 w-4"
@@ -479,22 +479,24 @@
                             @method("DELETE")
                             <button
                                 type="submit"
-                                class="btn btn-outline btn-error btn-sm w-full"
+                                class="w-full cursor-pointer rounded-md border border-red-500 py-2 text-red-500 transition-all hover:bg-red-500 hover:text-white"
                             >
-                                <svg
-                                    class="mr-2 h-4 w-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                    />
-                                </svg>
-                                ลบเป้าหมาย
+                                <div class="flex items-center justify-center">
+                                    <svg
+                                        class="mr-2 h-4 w-4"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                        />
+                                    </svg>
+                                    ลบเป้าหมาย
+                                </div>
                             </button>
                         </form>
                     </div>
