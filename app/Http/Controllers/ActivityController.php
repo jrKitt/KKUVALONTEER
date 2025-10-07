@@ -31,48 +31,49 @@ class ActivityController extends Controller
         return view("events", compact("rec"));
     }
 
-    //
-    public function createActivity(Request $req) {
-        $req->validate([
-            'activity_name' => 'required|string|max:255',
-            'des' => 'nullable|string',
-            'location' => 'nullable|string|max:255',
-            'start_time' => 'required|date',
-            'end_time' => 'nullable|date|after:start_time',
-            'accept_amount' => 'required|integer|min:1',
-            'total_hour' => 'nullable|integer|min:0',
-            'activity_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-        ]);
+    public function createActivity(Request $req){
+    $req->validate([
+        'activity_name' => 'required|string|max:255',
+        'des' => 'nullable|string',
+        'location' => 'nullable|string|max:255',
+        'start_time' => 'required|date',
+        'end_time' => 'nullable|date|after:start_time',
+        'accept_amount' => 'required|integer|min:1',
+        'total_hour' => 'nullable|integer|min:0',
+        'activity_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+        'tag' => 'array',
+        'tag.*' => 'string|max:255',
+    ]);
 
-        error_log($req->input("start_time"));
+    $new_activity = new Activity();
+    $new_activity->name_th = $req->input('activity_name');
+    $new_activity->description = $req->input('des');
+    $new_activity->location = $req->input('location');
+    $new_activity->start_time = $req->input('start_time');
+    $new_activity->end_time = $req->input('end_time');
+    $new_activity->accept_amount = $req->input('accept_amount');
+    $new_activity->total_hour = $req->input('total_hour');
+    $new_activity->create_by = auth()->id() ?? 0;
+    $new_activity->status = 'pending';
 
-        $new_activity = new Activity();
-        $new_activity->name_th = $req->input("activity_name");
-        $new_activity->description = $req->input("des");
-        $new_activity->location = $req->input("location");
-        $new_activity->start_time = $req->input("start_time");
-        $new_activity->end_time = $req->input("end_time");
-        $new_activity->accept_amount = $req->input("accept_amount");
-        $new_activity->total_hour = $req->input("total_hour");
-        $new_activity->create_by = auth()->id() ?? 0;
-        $new_activity->status = 'pending';
-        if ($req->hasFile('activity_image')) {
-            $file = $req->file('activity_image');
-            $uploadPath = public_path('uploads/activities');
-            if (!file_exists($uploadPath)) {
-                mkdir($uploadPath, 0777, true);
-            }
-            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+    $tags = $req->input('tag', []);
+    $new_activity->tags = json_encode($tags);
 
-            $file->move($uploadPath, $filename);
-
-            $new_activity->image_file_name = $filename;
+    if ($req->hasFile('activity_image')) {
+        $file = $req->file('activity_image');
+        $uploadPath = public_path('uploads/activities');
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
         }
-
-        $new_activity->save();
-
-        return redirect("/admin/event")->with('success', 'สร้างกิจกรรมเรียบร้อยแล้ว');
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move($uploadPath, $filename);
+        $new_activity->image_file_name = $filename;
     }
+
+    $new_activity->save();
+
+    return redirect('/admin/event')->with('success', 'สร้างกิจกรรมเรียบร้อยแล้ว');
+}
 
     public function registerActivity(Request $request) {
         $activityId = $request->input('activity_id');
@@ -169,5 +170,22 @@ class ActivityController extends Controller
             'success' => true,
             'message' => 'ยกเลิกการสมัครสำเร็จ'
         ]);
+    }
+
+
+    public function deleteActivity($id){
+    $activity = Activity::findOrFail($id);
+
+    // ลบรูปภาพ
+    if ($activity->image_file_name) {
+        $path = public_path('uploads/activities/' . $activity->image_file_name);
+        if (file_exists($path)) {
+            unlink($path);
+        }
+    }
+
+    $activity->delete();
+
+    return redirect()->back()->with('success', 'ลบกิจกรรมเรียบร้อยแล้ว');
     }
 }

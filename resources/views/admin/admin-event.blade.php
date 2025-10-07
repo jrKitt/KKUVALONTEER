@@ -92,6 +92,15 @@
         </div>
 
         <main>
+            <script>
+                function confirmDelete(e) {
+                    if (!confirm('ยืนยันการลบกิจกรรมนี้หรือไม่?')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                 return true;
+                }
+            </script>
             <div class="mx-auto grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-6">
                 @foreach ($rec as $activity)
                     <div
@@ -160,16 +169,20 @@
                             </section>
                             <section class="flex flex-col sm:flex-row gap-2 sm:gap-5">
                                 <button
-                                    class="w-full rounded-xl bg-amber-400/80 py-2 text-sm sm:text-base text-white"
+                                    class="w-1/2 rounded-xl bg-amber-400/80 py-2 text-sm sm:text-base text-white"
                                     onclick="my_modal_1.showModal()"
                                 >
                                     แก้ไขข้อมูล
                                 </button>
-                                <button
-                                    class="w-full rounded-xl border border-red-400 py-2 text-sm sm:text-base text-red-400 shadow"
-                                >
-                                    ลบข้อมูล
-                                </button>
+                                <form class="w-1/2" action="{{ route('activity.delete', $activity->id) }}" method="POST" onsubmit="return confirmDelete(event)">
+                                     @csrf
+                                     @method('DELETE')
+                                    <button
+                                        type="submit"
+                                        class="w-full rounded-xl border border-red-400 py-2 text-sm sm:text-base text-red-400 shadow">
+                                        ลบข้อมูล
+                                    </button>
+                                </form>
                             </section>
                         </div>
                     </div>
@@ -393,5 +406,5 @@
                     `${fileName} (${fileSize} MB)`;
             }
         };
-    </scrip>
+    </script>
 @endsection
