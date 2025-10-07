@@ -35,7 +35,7 @@ class AuthController extends Controller
             if ($user->role === 'admin') {
                 return redirect('/admin/dashboard')->with('success', 'เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับสู่ระบบผู้ดูแล');
             } else {
-                return redirect()->intended('/dashboard')->with('success', 'เข้าสู่ระบบสำเร็จ!');
+                return redirect('/dashboard')->with('success', 'เข้าสู่ระบบสำเร็จ!');
             }
         }
 

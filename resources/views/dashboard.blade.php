@@ -162,17 +162,24 @@
                                         {{ $activity->activity_name }}
                                     </h4>
 
-                                    <div class="mb-4 flex items-center gap-2">
-                                        <span
-                                            class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
-                                        >
-                                            #กิจกรรมอาสา
-                                        </span>
-                                        <span
-                                            class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800"
-                                        >
-                                            #มข.
-                                        </span>
+                                    <div
+                                        class="mb-4 flex flex-wrap items-center gap-2"
+                                    >
+                                        @if (isset($activity->tags) && is_array($activity->tags))
+                                            @foreach (array_slice($activity->tags, 0, 3) as $tag)
+                                                <span
+                                                    class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
+                                                >
+                                                    {{ $tag }}
+                                                </span>
+                                            @endforeach
+                                        @else
+                                            <span
+                                                class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
+                                            >
+                                                #กิจกรรมอาสา
+                                            </span>
+                                        @endif
                                     </div>
 
                                     @if ($activity->description)

@@ -14,9 +14,22 @@
                             />
                         </div>
                     </a>
-                    <button class="md:hidden flex items-center" id="mobile-menu-button">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    <button
+                        class="flex items-center md:hidden"
+                        id="mobile-menu-button"
+                    >
+                        <svg
+                            class="h-6 w-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"
+                            />
                         </svg>
                     </button>
                     <nav class="hidden space-x-8 md:flex">
@@ -124,16 +137,32 @@
                     </div>
                 </div>
             </div>
-            <div class="md:hidden hidden bg-white border-t border-gray-200" id="mobile-menu">
+            <div
+                class="hidden border-t border-gray-200 bg-white md:hidden"
+                id="mobile-menu"
+            >
                 <nav class="flex flex-col space-y-2 px-4 py-4">
-                    <a href="/dashboard" class="text-gray-700 hover:text-blue-600 py-2">หน้าแรก</a>
-                    <a href="{{ route('user.activities') }}" class="text-gray-700 hover:text-blue-600 py-2">กิจกรรมจิตอาสา</a>
-                    <a href="/about" class="text-gray-700 hover:text-blue-600 py-2">ชั่วโมงจิตอาสา</a>
+                    <a
+                        href="/dashboard"
+                        class="py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        หน้าแรก
+                    </a>
+                    <a
+                        href="{{ route("user.activities") }}"
+                        class="py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        กิจกรรมจิตอาสา
+                    </a>
+                    <a
+                        href="/about"
+                        class="py-2 text-gray-700 hover:text-blue-600"
+                    >
+                        ชั่วโมงจิตอาสา
+                    </a>
                 </nav>
             </div>
         </header>
-
-        @include("components.alert")
 
         <div class="bg-gray-50 pt-16">
             @yield("layout-content")
@@ -229,11 +258,13 @@
     </div>
 @endsection
 
-@section('scripts')
-<script>
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
-        const menu = document.getElementById('mobile-menu');
-        menu.classList.toggle('hidden');
-    });
-</script>
+@section("scripts")
+    <script>
+        document
+            .getElementById('mobile-menu-button')
+            .addEventListener('click', function () {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.toggle('hidden');
+            });
+    </script>
 @endsection
