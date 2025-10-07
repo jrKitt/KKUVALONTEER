@@ -11,13 +11,15 @@
             <div class="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <!-- Current Status Card -->
                 <div
-                    class="rounded-2xl bg-red-600 p-6 text-center text-white md:p-8"
+                    class="flex items-center justify-center rounded-2xl bg-red-600 p-6 text-white md:p-8"
                 >
-                    <h2 class="mb-2 text-lg font-semibold md:text-xl">
-                        สถานะปัจจุบัน
-                    </h2>
-                    <div class="text-3xl font-bold md:text-4xl">
-                        {{ $totalHours ?? 0 }} ชั่วโมง
+                    <div class="text-center">
+                        <h2 class="mb-2 text-lg font-semibold md:text-xl">
+                            สถานะปัจจุบัน
+                        </h2>
+                        <div class="text-3xl font-bold md:text-4xl">
+                            {{ $totalHours ?? 0 }} ชั่วโมง
+                        </div>
                     </div>
                 </div>
 
@@ -157,92 +159,88 @@
                 @endif
             </div>
 
-            <div class="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-4">
+            <div class="mb-8 flex gap-5 max-sm:flex-col">
                 <!-- Stats Cards -->
-                <div
-                    class="grid grid-cols-1 gap-6 md:grid-cols-3 lg:col-span-3"
-                >
-                    <div class="rounded-xl bg-white p-6 shadow-md">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">
-                                    รวมชั่วโมงทั้งหมด
-                                </p>
-                                <p class="text-2xl font-bold text-gray-900">
-                                    {{ $totalHours ?? 0 }}
-                                </p>
-                            </div>
-                            <div class="rounded-full bg-blue-100 p-3">
-                                <svg
-                                    class="h-6 w-6 text-blue-600"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                    ></path>
-                                </svg>
-                            </div>
+                <div class="grow rounded-xl bg-white p-6 shadow-md">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">
+                                รวมชั่วโมงทั้งหมด
+                            </p>
+                            <p class="text-2xl font-bold text-gray-900">
+                                {{ $totalHours ?? 0 }}
+                            </p>
+                        </div>
+                        <div class="rounded-full bg-blue-100 p-3">
+                            <svg
+                                class="h-6 w-6 text-blue-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                ></path>
+                            </svg>
                         </div>
                     </div>
+                </div>
 
-                    <div class="rounded-xl bg-white p-6 shadow-md">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">
-                                    เช็คชื่อแล้ว
-                                </p>
-                                <p class="text-2xl font-bold text-green-600">
-                                    {{ $approvedHours ?? 0 }}
-                                </p>
-                            </div>
-                            <div class="rounded-full bg-green-100 p-3">
-                                <svg
-                                    class="h-6 w-6 text-green-600"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M5 13l4 4L19 7"
-                                    ></path>
-                                </svg>
-                            </div>
+                <div class="grow rounded-xl bg-white p-6 shadow-md">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">
+                                เช็คชื่อแล้ว
+                            </p>
+                            <p class="text-2xl font-bold text-green-600">
+                                {{ $approvedHours ?? 0 }}
+                            </p>
+                        </div>
+                        <div class="rounded-full bg-green-100 p-3">
+                            <svg
+                                class="h-6 w-6 text-green-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M5 13l4 4L19 7"
+                                ></path>
+                            </svg>
                         </div>
                     </div>
+                </div>
 
-                    <div class="rounded-xl bg-white p-6 shadow-md">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-medium text-gray-600">
-                                    รออนุมัติ
-                                </p>
-                                <p class="text-2xl font-bold text-yellow-600">
-                                    {{ $pendingHours ?? 0 }}
-                                </p>
-                            </div>
-                            <div class="rounded-full bg-yellow-100 p-3">
-                                <svg
-                                    class="h-6 w-6 text-yellow-600"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                                    ></path>
-                                </svg>
-                            </div>
+                <div class="grow rounded-xl bg-white p-6 shadow-md">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">
+                                รออนุมัติ
+                            </p>
+                            <p class="text-2xl font-bold text-yellow-600">
+                                {{ $pendingHours ?? 0 }}
+                            </p>
+                        </div>
+                        <div class="rounded-full bg-yellow-100 p-3">
+                            <svg
+                                class="h-6 w-6 text-yellow-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                                ></path>
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -260,7 +258,7 @@
                     >
                         @foreach ($recentActivities as $activity)
                             <div
-                                class="overflow-hidden rounded-xl bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl"
+                                class="flex h-full flex-col justify-between overflow-hidden rounded-xl bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl"
                             >
                                 <div class="relative">
                                     @if ($activity->image_file_name)
@@ -292,7 +290,8 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="p-6">
+
+                                <div class="flex grow flex-col p-6">
                                     <h4
                                         class="mb-3 text-lg leading-tight font-bold text-gray-900"
                                     >
@@ -377,23 +376,23 @@
                                             {{ $activity->hours }} ชั่วโมง
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="flex gap-2">
-                                        <a
-                                            href="{{ route("activity.detail", $activity->id) }}"
-                                            class="flex-1 cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
+                                <div class="m-4 flex gap-2">
+                                    <a
+                                        href="{{ route("activity.detail", $activity->id) }}"
+                                        class="flex-1 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-all hover:bg-blue-700 active:scale-90"
+                                    >
+                                        ดูรายละเอียด
+                                    </a>
+                                    @if ($activity->status === "registered")
+                                        <button
+                                            class="cursor-pointer rounded-lg border border-red-600 px-4 py-2 font-medium text-red-600 transition-all hover:bg-red-50 active:scale-90"
+                                            onclick="cancelRegistration({{ $activity->id }})"
                                         >
-                                            ดูรายละเอียด
-                                        </a>
-                                        @if ($activity->status === "registered")
-                                            <button
-                                                class="cursor-pointer rounded-lg border border-red-600 px-4 py-2 font-medium text-red-600 transition-all hover:bg-red-50 active:scale-90"
-                                                onclick="cancelRegistration({{ $activity->id }})"
-                                            >
-                                                ยกเลิก
-                                            </button>
-                                        @endif
-                                    </div>
+                                            ยกเลิก
+                                        </button>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
