@@ -74,7 +74,52 @@ class ActivityController extends Controller
     $new_activity->save();
 
     return redirect('/admin/event')->with('success', 'สร้างกิจกรรมเรียบร้อยแล้ว');
-}
+    }
+
+    public function updateActivity(Request $req, $id)
+    {
+        $req->validate([
+            'activity_name' => 'required|string|max:255',
+            'des' => 'nullable|string',
+            'location' => 'nullable|string|max:255',
+            'start_time' => 'required|date',
+            'end_time' => 'nullable|date|after:start_time',
+            'accept_amount' => 'required|integer|min:1',
+            'total_hour' => 'nullable|integer|min:0',
+            'activity_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:50',
+        ]);
+
+        $activity = Activity::findOrFail($id);
+        $activity->name_th = $req->input('activity_name');
+        $activity->description = $req->input('des');
+        $activity->location = $req->input('location');
+        $activity->start_time = $req->input('start_time');
+        $activity->end_time = $req->input('end_time');
+        $activity->accept_amount = $req->input('accept_amount');
+        $activity->total_hour = $req->input('total_hour');
+        $activity->tags = json_encode($req->input('tags', []));
+
+        if ($req->hasFile('activity_image')) {
+            $file = $req->file('activity_image');
+            $uploadPath = public_path('uploads/activities');
+            if (!file_exists($uploadPath)) mkdir($uploadPath, 0777, true);
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($uploadPath, $filename);
+
+            if ($activity->image_file_name) {
+                $oldPath = public_path('uploads/activities/' . $activity->image_file_name);
+                if (file_exists($oldPath)) unlink($oldPath);
+            }
+
+            $activity->image_file_name = $filename;
+        }
+
+        $activity->save();
+
+        return redirect('/admin/event')->with('success', 'อัปเดตกิจกรรมเรียบร้อยแล้ว');
+    }
 
     public function registerActivity(Request $request) {
         $activityId = $request->input('activity_id');
