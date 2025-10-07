@@ -157,12 +157,9 @@
                 @endif
             </div>
 
-            <div class="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-4">
+            <div class="mb-8 flex gap-5 max-sm:flex-col">
                 <!-- Stats Cards -->
-                <div
-                    class="grid grid-cols-1 gap-6 md:grid-cols-3 lg:col-span-3"
-                >
-                    <div class="rounded-xl bg-white p-6 shadow-md">
+                    <div class="rounded-xl grow bg-white p-6 shadow-md ">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-600">
@@ -190,7 +187,7 @@
                         </div>
                     </div>
 
-                    <div class="rounded-xl bg-white p-6 shadow-md">
+                    <div class="rounded-xl grow bg-white p-6 shadow-md">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-600">
@@ -218,7 +215,7 @@
                         </div>
                     </div>
 
-                    <div class="rounded-xl bg-white p-6 shadow-md">
+                    <div class="rounded-xl bg-white p-6 shadow-md grow">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm font-medium text-gray-600">
@@ -245,7 +242,6 @@
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
 
             @if (isset($recentActivities) && $recentActivities->count() > 0)
@@ -260,7 +256,7 @@
                     >
                         @foreach ($recentActivities as $activity)
                             <div
-                                class="overflow-hidden rounded-xl bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl"
+                                class="overflow-hidden rounded-xl bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl h-full flex flex-col justify-between"
                             >
                                 <div class="relative">
                                     @if ($activity->image_file_name)
@@ -292,7 +288,8 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="p-6">
+
+                                <div class="p-6 flex flex-col grow">
                                     <h4
                                         class="mb-3 text-lg leading-tight font-bold text-gray-900"
                                     >
@@ -378,22 +375,23 @@
                                         </div>
                                     </div>
 
-                                    <div class="flex gap-2">
-                                        <a
-                                            href="{{ route("activity.detail", $activity->id) }}"
-                                            class="flex-1 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-all hover:bg-blue-700 active:scale-90"
+                                </div>
+
+                                <div class="flex gap-2 m-4 ">
+                                    <a
+                                        href="{{ route("activity.detail", $activity->id) }}"
+                                        class="flex-1 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-center font-medium text-white transition-all hover:bg-blue-700 active:scale-90"
+                                    >
+                                        ดูรายละเอียด
+                                    </a>
+                                    @if ($activity->status === "registered")
+                                        <button
+                                            class="cursor-pointer rounded-lg border border-red-600 px-4 py-2 font-medium text-red-600 transition-all hover:bg-red-50 active:scale-90"
+                                            onclick="cancelRegistration({{ $activity->id }})"
                                         >
-                                            ดูรายละเอียด
-                                        </a>
-                                        @if ($activity->status === "registered")
-                                            <button
-                                                class="cursor-pointer rounded-lg border border-red-600 px-4 py-2 font-medium text-red-600 transition-all hover:bg-red-50 active:scale-90"
-                                                onclick="cancelRegistration({{ $activity->id }})"
-                                            >
-                                                ยกเลิก
-                                            </button>
-                                        @endif
-                                    </div>
+                                            ยกเลิก
+                                        </button>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach
