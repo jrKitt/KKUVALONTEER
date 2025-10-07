@@ -190,6 +190,9 @@
             </div>
         </main>
 
+
+        {{-- addm activity modal --}}
+
         <dialog id="my_modal_1" class="modal">
             <script>
            
@@ -238,7 +241,7 @@
                     class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
                 >
                     <div class="card">
-                        <div class="card-title mb-4">+ สร้างกิจกรรมใหม่่</div>
+                        <div class="card-title mb-4">สร้างกิจกรรมใหม่่</div>
                         <hr class="text-gray-300" />
                         <div class="card-body grid grid-cols-12 gap-5">
                             <div class="fieldset col-span-6 max-md:col-span-12">
@@ -474,78 +477,123 @@
             <form id="editForm" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="modal-box w-11/12 max-w-5xl rounded-xl">
+                <div class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg">
                     <div class="card">
-                        <div class="card-title mb-4">✏️ แก้ไขกิจกรรม</div>
+                        <div class="card-title mb-4">แก้ไขกิจกรรม</div>
                         <hr class="text-gray-300" />
                         <div class="card-body grid grid-cols-12 gap-5">
                             <input type="hidden" name="activity_id" id="edit_id" />
 
-                            <div class="col-span-6">
+                            <div class="fieldset col-span-6 max-md:col-span-12">
                                 <label>ชื่อกิจกรรม</label>
                                 <input type="text" id="edit_name" name="activity_name"
                                     class="rounded-md border border-gray-400 px-4 py-2" required />
                             </div>
 
-                            <div class="col-span-12">
+                            <div class="fieldset col-span-12">
                                 <label>รายละเอียดกิจกรรม</label>
                                 <textarea id="edit_des" name="des"
                                     class="rounded-md border border-gray-400 px-4 py-2" rows="4"></textarea>
                             </div>
 
-                            <div class="col-span-4">
+                            <div class="fieldset col-span-4 max-md:col-span-12">
                                 <label>วัน/เวลาเริ่มกิจกรรม</label>
                                 <input type="datetime-local" id="edit_start" name="start_time"
                                     class="rounded-md border border-gray-400 px-4 py-2" />
                             </div>
 
-                            <div class="col-span-4">
+                            <div class="fieldset col-span-4 max-md:col-span-12">
                                 <label>วัน/เวลาจบกิจกรรม</label>
                                 <input type="datetime-local" id="edit_end" name="end_time"
                                     class="rounded-md border border-gray-400 px-4 py-2" />
                             </div>
 
-                            <div class="col-span-4">
+                            <div class="fieldset col-span-4 max-md:col-span-12">
                                 <label>จำนวนชั่วโมงรวม</label>
                                 <input type="number" id="edit_hour" name="total_hour"
                                     class="rounded-md border border-gray-400 px-4 py-2" />
                             </div>
 
-                            <div class="col-span-4">
+                            <div class="fieldset col-span-4 max-md:col-span-12">
                                 <label>จำนวนผู้เข้าร่วมสูงสุด</label>
                                 <input type="number" id="edit_accept" name="accept_amount"
                                     class="rounded-md border border-gray-400 px-4 py-2" />
                             </div>
 
-                            <div class="col-span-8">
+                            <div class="fieldset col-span-4 max-md:col-span-12">
                                 <label>สถานที่</label>
                                 <input type="text" id="edit_location" name="location"
                                     class="rounded-md border border-gray-400 px-4 py-2" />
                             </div>
 
                             <div class="col-span-12">
-                                <label>แท็กกิจกรรม</label>
-                                <div id="editTagsContainer"
-                                    class="flex flex-wrap gap-2 rounded-md border-2 border-gray-300 p-3"></div>
-                                <input type="text" id="editTagInput"
-                                    class="mt-2 rounded-md border border-gray-400 px-4 py-2"
-                                    placeholder="ชื่อแท็ก..." onkeypress="handleEditTagKey(event)" />
-                                <button type="button" class="btn ml-2" onclick="addEditTag()">เพิ่มแท็ก</button>
+                                <label for="">แท็กกิจกรรม</label>
+                                <div
+                                    id="editTagsContainer"
+                                    class="flex min-h-20 w-full flex-wrap gap-2 rounded-md border-2 border-gray-300 p-3"
+                                ></div>
+                                <div class="mt-2 flex">
+                                    <input
+                                        type="text"
+                                        id="editTagInput"
+                                        class="flex-1 rounded-md border border-gray-400 px-4 py-2"
+                                        placeholder="ชื่อแท็ก..."
+                                        onkeypress="handleEditTagKey(event)"
+                                    />
+                                    <button
+                                        type="button"
+                                        class="btn ml-1"
+                                        onclick="addEditTag()"
+                                    >
+                                        เพิ่มแท็ก
+                                    </button>
+                                </div>
+                                <div class="mt-1 text-sm text-gray-500">
+                                    กด Enter หรือคลิก "เพิ่มแท็ก" เพื่อเพิ่มแท็กใหม่
+                                </div>
                             </div>
 
                             <div class="col-span-12">
-                                <label>รูปภาพใหม่ (ถ้ามี)</label>
-                                <input type="file" name="activity_image" accept="image/*"
-                                    class="rounded-md border border-gray-400 px-4 py-2" />
+                                <label class="">รูปภาพกิจกรรม</label>
+                                <div
+                                    class="flex items-center space-x-2 rounded-md border border-gray-300"
+                                >
+                                    <label
+                                        for="edit-file-upload"
+                                        class="cursor-pointer bg-gray-100 px-4 py-2 text-sm hover:bg-gray-200"
+                                    >
+                                        เลือกรูปภาพ...
+                                    </label>
+
+                                    <input
+                                        id="edit-file-upload"
+                                        name="activity_image"
+                                        type="file"
+                                        accept="image/*"
+                                        class="hidden"
+                                        onchange="updateEditFileName(this)"
+                                    />
+
+                                    <span
+                                        id="edit-file-name"
+                                        class="text-sm text-gray-500"
+                                    >
+                                        ยังไม่ได้เลือกไฟล์
+                                    </span>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-500">
+                                    รองรับไฟล์: JPG, PNG, GIF (ขนาดไม่เกิน 5MB)
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <hr class="text-gray-300" />
 
                     <div class="modal-action">
-                        <button type="button" class="border border-gray-400 px-6 py-2 rounded-md"
+                        <button type="button" class="cursor-pointer rounded-xl border-2 border-sky-400 px-12 py-2 text-sky-400 transition-all hover:bg-gray-100 active:scale-90"
                             onclick="edit_modal.close()">ยกเลิก</button>
                         <button type="submit"
-                            class="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600">บันทึกการแก้ไข</button>
+                            class="cursor-pointer rounded-xl border-2 bg-sky-400 px-12 py-2 text-white transition-all hover:bg-sky-500 active:scale-90">บันทึกการแก้ไข</button>
                     </div>
                 </div>
             </form>
