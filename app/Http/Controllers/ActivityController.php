@@ -91,6 +91,7 @@ class ActivityController extends Controller
             'tags.*' => 'string|max:50',
         ]);
 
+
         $activity = Activity::findOrFail($id);
         $activity->name_th = $req->input('activity_name');
         $activity->description = $req->input('des');
@@ -209,7 +210,7 @@ class ActivityController extends Controller
             return response()->json(['success' => false, 'message' => 'ไม่พบการสมัครกิจกรรมนี้']);
         }
 
-        // Update status to cancelled instead of deleting
+     
         $registration->update(['status' => 'cancelled']);
 
         return response()->json([
@@ -222,7 +223,7 @@ class ActivityController extends Controller
     public function deleteActivity($id){
     $activity = Activity::findOrFail($id);
 
-    // ลบรูปภาพ
+
     if ($activity->image_file_name) {
         $path = public_path('uploads/activities/' . $activity->image_file_name);
         if (file_exists($path)) {

@@ -326,16 +326,16 @@
                            <div class="col-span-12">
                                 <label for="">แท็กกิจกรรม</label>
                                 <div
-                                    id="tagsContainer"
+                                    id="tag-container"
                                     class="flex min-h-20 w-full flex-wrap gap-2 rounded-md border-2 border-gray-300 p-3"
                                 ></div>
                                 <div class="mt-2 flex">
                                     <input
                                         type="text"
-                                        id="tagInput"
+                                        id="tag-input"
                                         class="flex-1 rounded-md border border-gray-400 px-4 py-2"
                                         placeholder="ชื่อแท็ก..."
-                                        onkeypress="handleTagKeyPress(event)"
+                                 
                                     />
                                     <button
                                         type="button"
@@ -413,8 +413,8 @@
                 document.getElementById('edit_id').value = activity.id
                 document.getElementById('edit_name').value = activity.name_th
                 document.getElementById('edit_des').value = activity.description || ''
-                document.getElementById('edit_start').value = activity.start_time?.replace(' ', 'T')
-                document.getElementById('edit_end').value = activity.end_time?.replace(' ', 'T')
+                document.getElementById('edit_start').value = activity.start_time?.slice(0,16).replace(' ', 'T')
+                document.getElementById('edit_end').value = activity.end_time?.slice(0,16).replace(' ', 'T')
                 document.getElementById('edit_hour').value = activity.total_hour
                 document.getElementById('edit_accept').value = activity.accept_amount
                 document.getElementById('edit_location').value = activity.location
@@ -429,7 +429,7 @@
             }
 
             function addEditTag() {
-                const input = document.getElementById('editTagInput')
+                const input = document.getElementById('edit-tag-input')
                 const value = input.value.trim()
                 if (value && !editTags.includes(value)) {
                     editTags.push(value)
@@ -443,36 +443,22 @@
                 renderEditTags()
             }
 
-            function handleEditTagKey(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault()
-                    addEditTag()
-                }
-            }
-
             function renderEditTags() {
-                const container = document.getElementById('editTagsContainer')
+                const container = document.getElementById('edit-tag-container')
                 container.innerHTML = ''
-                const form = document.getElementById('editForm')
-
-                document.querySelectorAll('input[name="tags[]"]').forEach(i => i.remove())
 
                 editTags.forEach((tag, index) => {
-                    const span = document.createElement('span')
-                    span.className = 'inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm'
-                    span.innerHTML = `${tag}
-                        <button type="button" class="ml-2 text-blue-600 hover:text-blue-800" onclick="removeEditTag(${index})">×</button>
+                    const tagEl = document.createElement('div')
+                    tagEl.className = 'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm'
+                    tagEl.innerHTML = `
+                        <p class="text-xs">${tag}</p>
+                        <button type="button" class="text-xs text-red-500" onclick="removeEditTag(${index})">x</button>
                         <input type="hidden" name="tags[]" value="${tag}">
                     `
-                    container.appendChild(span)
-                    const hidden = document.createElement('input')
-                    hidden.type = 'hidden'
-                    hidden.name = 'tags[]'
-                    hidden.value = tag
-                    form.appendChild(hidden)
+                    container.appendChild(tagEl)
                 })
             }
-            </script>
+        </script>
 
             <form id="editForm" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -496,7 +482,7 @@
                                     class="rounded-md border border-gray-400 px-4 py-2" rows="4"></textarea>
                             </div>
 
-                            <div class="fieldset col-span-4 max-md:col-span-12">
+                            <div class="fieldset col-span-4 max-md:col-span-12 mr-3">
                                 <label>วัน/เวลาเริ่มกิจกรรม</label>
                                 <input type="datetime-local" id="edit_start" name="start_time"
                                     class="rounded-md border border-gray-400 px-4 py-2" />
@@ -520,7 +506,7 @@
                                     class="rounded-md border border-gray-400 px-4 py-2" />
                             </div>
 
-                            <div class="fieldset col-span-4 max-md:col-span-12">
+                            <div class="fieldset col-span-8 max-md:col-span-12">
                                 <label>สถานที่</label>
                                 <input type="text" id="edit_location" name="location"
                                     class="rounded-md border border-gray-400 px-4 py-2" />
@@ -529,16 +515,15 @@
                             <div class="col-span-12">
                                 <label for="">แท็กกิจกรรม</label>
                                 <div
-                                    id="editTagsContainer"
+                                    id="edit-tag-container"
                                     class="flex min-h-20 w-full flex-wrap gap-2 rounded-md border-2 border-gray-300 p-3"
                                 ></div>
                                 <div class="mt-2 flex">
                                     <input
                                         type="text"
-                                        id="editTagInput"
+                                        id="edit-tag-input"
                                         class="flex-1 rounded-md border border-gray-400 px-4 py-2"
                                         placeholder="ชื่อแท็ก..."
-                                        onkeypress="handleEditTagKey(event)"
                                     />
                                     <button
                                         type="button"
