@@ -133,6 +133,15 @@
                                     <td>{{ $item->total_hour }}</td>
                                     <td>{{ $item->created_at }}</td>
                                     <td>{{ $item->updated_at }}</td>
+                                    
+                                    <td>
+                                        <div
+                                            class="rounded-md border px-4 py-2"
+                                            onclick="edit.showModal()"
+                                        >
+                                            Edit
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforeach
                         @endif
@@ -161,9 +170,11 @@
             </div>
 
             <div class="modal-action">
+                <button class="btn">
+                    บันทึก
+                </button>
                 <form method="dialog">
-                    <!-- if there is a button in form, it will close the modal -->
-                    <button class="btn">Close</button>
+                    <button class="btn">ปิด</button>
                 </form>
             </div>
         </div>
