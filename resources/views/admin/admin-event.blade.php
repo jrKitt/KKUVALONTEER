@@ -1,7 +1,7 @@
 @extends("components/layouts/layoutAdmin")
 
 @section("title")
-    admin event | KKU VOLUNTEER
+    activities | KKU VOLUNTEER
 @endsection
 
 @section("layout-content")
@@ -51,7 +51,7 @@
             <div
                 class="my-6 flex w-full items-center justify-between max-md:flex-col gap-4"
             >
-                <div class="text-3xl sm:text-4xl md:text-5xl font-bold">จัดการกิจกรรม</div>
+                <div class="text-3xl sm:text-4xl md:text-5xl font-semibold">จัดการกิจกรรม</div>
                 <div class="flex flex-col gap-3 sm:gap-5 w-full md:w-auto">
                     <section
                         class="flex w-full items-center justify-end gap-3 sm:gap-5"
@@ -178,6 +178,43 @@
         </main>
 
         <dialog id="my_modal_1" class="modal">
+            <script>
+           
+                let tags = []
+
+                function renderTags() {
+                    const container = document.getElementById('tag-container')
+                    container.innerHTML = ''
+
+                    tags.forEach((tag, index) => {
+                        const tagEl = document.createElement('div')
+                        tagEl.className = 'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm'
+                        tagEl.innerHTML = `
+                            <p class="text-xs">${tag}</p>
+                            <button type="button" class="text-xs text-red-500" onclick="removeTag(${index})">x</button>
+                            <input type="hidden" name="tag[]" value="${tag}">
+                        `
+                        container.appendChild(tagEl)
+                    })
+                 }
+
+
+                function addTag() {
+                    const input = document.getElementById('tag-input')
+                    const value = input.value.trim()
+                    if (value && !tags.includes(value)) {
+                        tags.push(value)
+                        renderTags()
+                        input.value = ''
+                    }
+                }
+
+                function removeTag(index) {
+                    tags.splice(index, 1)
+                    renderTags()
+                }
+
+            </script>
             <form
                 action="/activity"
                 method="POST"
@@ -270,17 +307,22 @@
                                 />
                             </div>
 
-                            <div class="col-span-12">
+                           <div class="col-span-12">
                                 <label for="">แท็กกิจกรรม</label>
-                                <div
-                                    class="h-20 w-full rounded-md border-2 border-gray-300"
-                                ></div>
-                                <input
-                                    type="text"
-                                    class="mt-2 rounded-md border border-gray-400 px-4 py-2"
-                                    placeholder="ชื่อแท็ก..."
-                                />
-                                <button class="btn ml-1">เพิ่มแท็ก</button>
+
+                                <div id="tag-container"
+                                    class="h-20 w-full rounded-md border-2 border-gray-300 flex flex-wrap gap-1 p-2 overflow-y-auto">
+                                </div>
+
+                                <div class="flex mt-2">
+                                    <input
+                                        type="text"
+                                        id="tag-input"
+                                        class="flex-1 rounded-md border border-gray-400 px-4 py-2"
+                                        placeholder="ชื่อแท็ก..."
+                                    />
+                                    <button type="button" class="btn ml-2" onclick="addTag()">เพิ่มแท็ก</button>
+                                </div>
                             </div>
 
                             <div class="fieldset col-span-12">
@@ -351,5 +393,5 @@
                     `${fileName} (${fileSize} MB)`;
             }
         };
-    </script>
+    </scrip>
 @endsection
