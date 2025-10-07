@@ -10,9 +10,19 @@ class ActivityController extends Controller
 {
 
     public function showAdminActivity() {
-        $rec = Activity::all();
-       return view("admin/admin-event" , compact("rec"));
-    }
+    $rec = Activity::all()->map(function ($activity) {
+        $start = new \DateTime($activity->start_time);
+        $now = new \DateTime();
+
+
+        $diff = $now->diff($start);
+        $activity->day_left = $start < $now ? 0 : (int)$diff->days;
+
+        return $activity;
+    });
+
+    return view("admin/admin-event", compact("rec"));
+}
 
     public function showUserActivity() {
         $rec = Activity::orderBy('created_at', 'desc')->get();

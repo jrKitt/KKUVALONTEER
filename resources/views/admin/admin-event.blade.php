@@ -4,6 +4,111 @@
     activities | KKU VOLUNTEER
 @endsection
 
+
+@php
+    function thaiDate($dateString) {
+        $months = ["", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+        $ts = strtotime($dateString);
+        $day = date("j", $ts);
+        $month = $months[(int)date("n", $ts)];
+        $year = date("Y", $ts) + 543;
+        return "$day $month $year";
+    }
+@endphp
+
+
+<script>
+
+                let tags = []
+
+                function renderTags() {
+                    const container = document.getElementById('tag-container')
+                    container.innerHTML = ''
+
+                    tags.forEach((tag, index) => {
+                        const tagEl = document.createElement('div')
+                        tagEl.className = 'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm'
+                        tagEl.innerHTML = `
+                            <p class="text-xs">${tag}</p>
+                            <button type="button" class="text-xs text-red-500" onclick="removeTag(${index})">x</button>
+                            <input type="hidden" name="tag[]" value="${tag}">
+                        `
+                        container.appendChild(tagEl)
+                    })
+                 }
+
+
+                function addTag() {
+                    const input = document.getElementById('tag-input')
+                    const value = input.value.trim()
+                    if (value && !tags.includes(value)) {
+                        tags.push(value)
+                        renderTags()
+                        input.value = ''
+                    }
+                }
+
+                function removeTag(index) {
+                    tags.splice(index, 1)
+                    renderTags()
+                }
+
+
+             let editTags = []
+
+            function openEditModal(activity) {
+                document.getElementById('editForm').action = `/activity/${activity.id}`
+                document.getElementById('edit_id').value = activity.id
+                document.getElementById('edit_name').value = activity.name_th
+                document.getElementById('edit_des').value = activity.description || ''
+                document.getElementById('edit_start').value = activity.start_time?.slice(0,16).replace(' ', 'T')
+                document.getElementById('edit_end').value = activity.end_time?.slice(0,16).replace(' ', 'T')
+                document.getElementById('edit_hour').value = activity.total_hour
+                document.getElementById('edit_accept').value = activity.accept_amount
+                document.getElementById('edit_location').value = activity.location
+
+                editTags = []
+                try {
+                    editTags = JSON.parse(activity.tags || '[]')
+                } catch (e) {}
+
+                renderEditTags()
+                edit_modal.showModal()
+            }
+
+            function addEditTag() {
+                const input = document.getElementById('edit-tag-input')
+                const value = input.value.trim()
+                if (value && !editTags.includes(value)) {
+                    editTags.push(value)
+                    renderEditTags()
+                    input.value = ''
+                }
+            }
+
+            function removeEditTag(index) {
+                editTags.splice(index, 1)
+                renderEditTags()
+            }
+
+            function renderEditTags() {
+                const container = document.getElementById('edit-tag-container')
+                container.innerHTML = ''
+
+                editTags.forEach((tag, index) => {
+                    const tagEl = document.createElement('div')
+                    tagEl.className = 'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm'
+                    tagEl.innerHTML = `
+                        <p class="text-xs">${tag}</p>
+                        <button type="button" class="text-xs text-red-500" onclick="removeEditTag(${index})">x</button>
+                        <input type="hidden" name="tags[]" value="${tag}">
+                    `
+                    container.appendChild(tagEl)
+                })
+            }
+
+</script>
+
 @section("layout-content")
     <div class="mx-4 min-h-screen bg-gray-50 text-black">
         <!-- Success/Error Messages -->
@@ -56,11 +161,11 @@
                     <section
                         class="flex w-full items-center justify-end gap-3 sm:gap-5"
                     >
-                        <div
+                        {{-- <div
                             class="cursor-pointer rounded-lg border-2 border-gray-400 p-1 transition-all hover:bg-stone-500/20 active:scale-90"
                         >
                             <i class="fa-solid fa-calendar"></i>
-                        </div>
+                        </div> --}}
                         <button
                             class="cursor-pointer rounded-md bg-green-500/80 px-3 py-1 text-sm whitespace-nowrap text-white transition-all hover:bg-green-600/80 active:scale-90 sm:px-4 sm:text-base"
                             onclick="my_modal_1.showModal()"
@@ -82,9 +187,9 @@
                         <input
                             type="text"
                             placeholder="ชื่อกิจกรรม..."
-                            class="w-full rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
+                            class=" rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
                         />
-                        <button class="btn btn-sm sm:btn-md">ค้นหา</button>
+                        <button class="btn btn-sm sm:btn-md btn-info text-white">ค้นหา</button>
                     </section>
                 </div>
             </div>
@@ -103,14 +208,18 @@
             </script>
             <div class="mx-auto grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-6">
                 @foreach ($rec as $activity)
+                    
                     <div class="w-full rounded-xl shadow-md">
                         <div class="p-4">
                             <section>
                                 <div
+                                    id="activity_card_{{$activity->id}}"
                                     class="py- absolute m-2 rounded-full bg-red-100 px-2 text-sm text-red-600/80"
                                 >
-                                    15 days left
+                                    {{ $activity->day_left }} Day left
                                 </div>
+
+                               
 
                                 @if ($activity->image_file_name)
                                     <img
@@ -138,7 +247,7 @@
                                     <h6 class="text-gray-600">
                                         {{ $activity->name_th }}
                                     </h6>
-                                    <p class="text-gray-600">
+                                    <p class="text-gray-600 line-clamp-3">
                                         {{ $activity->description }}
                                     </p>
                                 </div>
@@ -146,22 +255,23 @@
                                     <div
                                         class="mb-3 flex items-center justify-between text-sm text-gray-500"
                                     >
-                                        <div class="flex items-center">
+                                        <div class="flex items-center ">
                                             <i
                                                 class="fa-solid fa-location-dot"
                                             ></i>
-                                            {{ $activity->location }}
+                                            <p class=" line-clamp-1">
+
+                                                {{ $activity->location }}
+                                            </p>
                                         </div>
-                                        <div class="flex items-center">
+                                        <div class="flex items-center text-xs">
                                             <i class="fa-solid fa-clock"></i>
                                             {{ $activity->total_hour }} ชั่วโมง
                                         </div>
                                     </div>
-                                    <div class="mb-3 text-xs text-gray-500">
-                                        <i
-                                            class="fa-solid fa-calendar-days"
-                                        ></i>
-                                        8 พ.ย. 2568
+                                  <div class="mb-3 text-xs text-gray-500">
+                                        <i class="fa-solid fa-calendar-days"></i>
+                                        {{ thaiDate($activity->start_time) }}
                                     </div>
                                 </div>
                             </section>
@@ -194,43 +304,7 @@
         {{-- addm activity modal --}}
 
         <dialog id="my_modal_1" class="modal">
-            <script>
            
-                let tags = []
-
-                function renderTags() {
-                    const container = document.getElementById('tag-container')
-                    container.innerHTML = ''
-
-                    tags.forEach((tag, index) => {
-                        const tagEl = document.createElement('div')
-                        tagEl.className = 'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm'
-                        tagEl.innerHTML = `
-                            <p class="text-xs">${tag}</p>
-                            <button type="button" class="text-xs text-red-500" onclick="removeTag(${index})">x</button>
-                            <input type="hidden" name="tag[]" value="${tag}">
-                        `
-                        container.appendChild(tagEl)
-                    })
-                 }
-
-
-                function addTag() {
-                    const input = document.getElementById('tag-input')
-                    const value = input.value.trim()
-                    if (value && !tags.includes(value)) {
-                        tags.push(value)
-                        renderTags()
-                        input.value = ''
-                    }
-                }
-
-                function removeTag(index) {
-                    tags.splice(index, 1)
-                    renderTags()
-                }
-
-            </script>
             <form
                 action="/activity"
                 method="POST"
@@ -406,58 +480,7 @@
 
         <dialog id="edit_modal" class="modal">
             <script>
-            let editTags = []
-
-            function openEditModal(activity) {
-                document.getElementById('editForm').action = `/activity/${activity.id}`
-                document.getElementById('edit_id').value = activity.id
-                document.getElementById('edit_name').value = activity.name_th
-                document.getElementById('edit_des').value = activity.description || ''
-                document.getElementById('edit_start').value = activity.start_time?.slice(0,16).replace(' ', 'T')
-                document.getElementById('edit_end').value = activity.end_time?.slice(0,16).replace(' ', 'T')
-                document.getElementById('edit_hour').value = activity.total_hour
-                document.getElementById('edit_accept').value = activity.accept_amount
-                document.getElementById('edit_location').value = activity.location
-
-                editTags = []
-                try {
-                    editTags = JSON.parse(activity.tags || '[]')
-                } catch (e) {}
-
-                renderEditTags()
-                edit_modal.showModal()
-            }
-
-            function addEditTag() {
-                const input = document.getElementById('edit-tag-input')
-                const value = input.value.trim()
-                if (value && !editTags.includes(value)) {
-                    editTags.push(value)
-                    renderEditTags()
-                    input.value = ''
-                }
-            }
-
-            function removeEditTag(index) {
-                editTags.splice(index, 1)
-                renderEditTags()
-            }
-
-            function renderEditTags() {
-                const container = document.getElementById('edit-tag-container')
-                container.innerHTML = ''
-
-                editTags.forEach((tag, index) => {
-                    const tagEl = document.createElement('div')
-                    tagEl.className = 'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm'
-                    tagEl.innerHTML = `
-                        <p class="text-xs">${tag}</p>
-                        <button type="button" class="text-xs text-red-500" onclick="removeEditTag(${index})">x</button>
-                        <input type="hidden" name="tags[]" value="${tag}">
-                    `
-                    container.appendChild(tagEl)
-                })
-            }
+            
         </script>
 
             <form id="editForm" method="POST" enctype="multipart/form-data">
@@ -587,6 +610,8 @@
     </div>
 
     <script>
+
+
         let tags = [];
 
         const updateFileName = (input) => {
