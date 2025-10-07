@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ActivityController extends Controller
 {
-   
+
     public function showAdminActivity(Request $request) {
     $rec = Activity::with('user')
     ->when($request->search, fn($q) => $q->where('name_th', 'like', "%{$request->search}%"))
@@ -20,7 +20,7 @@ class ActivityController extends Controller
    public function showUserActivity(Request $request) {
     $query = Activity::orderBy('created_at', 'desc');
 
-   
+
     if ($request->has('faculty') && !empty($request->faculty)) {
         $query->whereHas('user', function($q) use ($request) {
             $q->where('faculty', $request->faculty);
@@ -135,47 +135,59 @@ class ActivityController extends Controller
     }
 
     public function registerActivity(Request $request) {
-        $activityId = $request->input('activity_id');
-        $userId = auth()->id();
+        try {
+            $activityId = $request->input('activity_id');
+            $userId = auth()->id();
 
-        if (!$userId) {
-            return response()->json(['success' => false, 'message' => 'กรุณาเข้าสู่ระบบก่อน']);
+            if (!$userId) {
+                return response()->json(['success' => false, 'message' => 'กรุณาเข้าสู่ระบบก่อน']);
+            }
+
+            $activity = Activity::find($activityId);
+            if (!$activity) {
+                return response()->json(['success' => false, 'message' => 'ไม่พบกิจกรรมนี้']);
+            }
+
+            if ($activity->status !== 'pending' && $activity->status !== 'ongoing') {
+                return response()->json(['success' => false, 'message' => 'กิจกรรมนี้ปิดรับสมัครแล้ว']);
+            }
+
+            $existingRegistration = ActivityParticipant::where('activity_id', $activityId)
+                ->where('user_id', $userId)
+                ->first();
+
+            if ($existingRegistration) {
+                return response()->json(['success' => false, 'message' => 'คุณได้สมัครกิจกรรมนี้แล้ว']);
+            }
+
+            $currentParticipants = ActivityParticipant::where('activity_id', $activityId)->count();
+            if ($currentParticipants >= $activity->accept_amount) {
+                return response()->json(['success' => false, 'message' => 'กิจกรรมนี้เต็มแล้ว']);
+            }
+
+            $participant = ActivityParticipant::create([
+                'activity_id' => $activityId,
+                'user_id' => $userId,
+                'status' => 'registered',
+                'registered_at' => now()
+            ]);
+
+            if (!$participant) {
+                return response()->json(['success' => false, 'message' => 'ไม่สามารถลงทะเบียนได้ กรุณาลองใหม่']);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'ลงทะเบียนสำเร็จ',
+                'activity' => $activity
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Registration error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง'
+            ]);
         }
-
-        $activity = Activity::find($activityId);
-        if (!$activity) {
-            return response()->json(['success' => false, 'message' => 'ไม่พบกิจกรรมนี้']);
-        }
-
-        if ($activity->status !== 'pending' && $activity->status !== 'ongoing') {
-            return response()->json(['success' => false, 'message' => 'กิจกรรมนี้ปิดรับสมัครแล้ว']);
-        }
-
-        $existingRegistration = ActivityParticipant::where('activity_id', $activityId)
-            ->where('user_id', $userId)
-            ->first();
-
-        if ($existingRegistration) {
-            return response()->json(['success' => false, 'message' => 'คุณได้สมัครกิจกรรมนี้แล้ว']);
-        }
-
-        $currentParticipants = ActivityParticipant::where('activity_id', $activityId)->count();
-        if ($currentParticipants >= $activity->accept_amount) {
-            return response()->json(['success' => false, 'message' => 'กิจกรรมนี้เต็มแล้ว']);
-        }
-
-        ActivityParticipant::create([
-            'activity_id' => $activityId,
-            'user_id' => $userId,
-            'status' => 'registered',
-            'registered_at' => now()
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'ลงทะเบียนสำเร็จ',
-            'activity' => $activity
-        ]);
     }
 
     public function getActivityDetail($id) {
@@ -222,7 +234,7 @@ class ActivityController extends Controller
             return response()->json(['success' => false, 'message' => 'ไม่พบการสมัครกิจกรรมนี้']);
         }
 
-     
+
         $registration->update(['status' => 'cancelled']);
 
         return response()->json([

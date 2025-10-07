@@ -54,6 +54,11 @@ class Activity extends Model
         return $this->belongsTo(User::class, 'create_by');
     }
 
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'create_by');
+    }
+
     public function scopeByStatus($query, $status)
     {
         return $query->where('status', $status);

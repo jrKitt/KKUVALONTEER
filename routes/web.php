@@ -154,8 +154,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/activities', [ActivityController::class, "showUserActivity"])->name('user.activities');
-Route::post('/activities/register', [ActivityController::class, "registerActivity"])->name('activities.register');
-Route::post('/activities/cancel', [ActivityController::class, "cancelRegistration"])->name('activities.cancel');
+Route::post('/activities/register', [ActivityController::class, "registerActivity"])->name('activities.register')->middleware('auth');
+Route::post('/activities/cancel', [ActivityController::class, "cancelRegistration"])->name('activities.cancel')->middleware('auth');
 Route::get('/detail/{id}', [ActivityController::class, "showActivityDetail"])->name('activity.detail');
 
 Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");

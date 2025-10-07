@@ -11,7 +11,7 @@
         </div>
 
         <div class="flex flex-col gap-6 lg:flex-row">
-            <div class="w-full lg:w-1/2 px-2 sm:px-0">
+            <div class="w-full px-2 sm:px-0 lg:w-1/2">
                 <div
                     class="rounded-lg border border-gray-200 bg-white shadow-sm"
                 >
@@ -42,16 +42,15 @@
                                 class="space-y-2 border-t border-gray-100 pt-2"
                             >
                                 <div class="flex items-center gap-2">
-                                    <span>📍 {{ $event->location }}</span>
+                                    <span>{{ $event->location }}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span>
-                                        📅
                                         {{ date("j F Y", strtotime($event->date)) }}
                                     </span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <span>⏰ {{ $event->hours }} ชั่วโมง</span>
+                                    <span>{ $event->hours }} ชั่วโมง</span>
                                 </div>
                             </div>
                         </div>
@@ -59,13 +58,15 @@
                 </div>
             </div>
 
-            <div class="w-full lg:w-1/2 px-2 sm:px-0">
+            <div class="w-full px-2 sm:px-0 lg:w-1/2">
                 <div
                     class="rounded-lg border border-gray-200 bg-white shadow-sm"
                 >
                     <div class="p-3 sm:p-6">
                         <div class="mb-4 flex items-center justify-between">
-                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">
+                            <h3
+                                class="text-base font-semibold text-gray-900 sm:text-lg"
+                            >
                                 รายชื่อผู้เข้าร่วมกิจกรรม
                             </h3>
                         </div>
@@ -75,22 +76,22 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th
-                                            class="px-2 sm:px-4 py-2 sm:py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                                            class="px-2 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase sm:px-4 sm:py-3"
                                         >
                                             ชื่อ-นามสกุล
                                         </th>
                                         <th
-                                            class="px-2 sm:px-4 py-2 sm:py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase hidden sm:table-cell"
+                                            class="hidden px-2 py-2 text-center text-xs font-medium tracking-wider text-gray-500 uppercase sm:table-cell sm:px-4 sm:py-3"
                                         >
                                             ทำไปกี่ชม
                                         </th>
                                         <th
-                                            class="px-2 sm:px-4 py-2 sm:py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase hidden sm:table-cell"
+                                            class="hidden px-2 py-2 text-center text-xs font-medium tracking-wider text-gray-500 uppercase sm:table-cell sm:px-4 sm:py-3"
                                         >
                                             เหลืออีกกี่ชม
                                         </th>
                                         <th
-                                            class="px-2 sm:px-4 py-2 sm:py-3 text-center text-xs font-medium tracking-wider text-gray-500 uppercase"
+                                            class="px-2 py-2 text-center text-xs font-medium tracking-wider text-gray-500 uppercase sm:px-4 sm:py-3"
                                         >
                                             เช็คชื่อ
                                         </th>
@@ -103,26 +104,28 @@
                                         <tr
                                             class="participant-row hover:bg-gray-50"
                                         >
-                                            <td class="px-2 sm:px-4 py-3 sm:py-4">
+                                            <td
+                                                class="px-2 py-3 sm:px-4 sm:py-4"
+                                            >
                                                 <div class="flex items-center">
                                                     <div
-                                                        class="h-8 w-8 sm:h-10 sm:w-10 flex-shrink-0"
+                                                        class="h-8 w-8 flex-shrink-0 sm:h-10 sm:w-10"
                                                     >
                                                         <img
-                                                            class="h-8 w-8 sm:h-10 sm:w-10 rounded-full object-cover"
+                                                            class="h-8 w-8 rounded-full object-cover sm:h-10 sm:w-10"
                                                             src="{{ $participant->avatar ?? "https://ui-avatars.com/api/?name=" . urlencode($participant->firstname . "+" . $participant->lastname) . "&background=random&color=fff" }}"
                                                             alt=""
                                                         />
                                                     </div>
                                                     <div class="ml-2 sm:ml-3">
                                                         <div
-                                                            class="participant-name text-xs sm:text-sm font-medium text-gray-900"
+                                                            class="participant-name text-xs font-medium text-gray-900 sm:text-sm"
                                                         >
                                                             {{ $participant->firstname }}
                                                             {{ $participant->lastname }}
                                                         </div>
                                                         <div
-                                                            class="text-xs text-gray-500 hidden sm:block"
+                                                            class="hidden text-xs text-gray-500 sm:block"
                                                         >
                                                             {{ $participant->faculty }}
                                                             - ปี
@@ -131,7 +134,9 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="px-2 sm:px-4 py-3 sm:py-4 text-center hidden sm:table-cell">
+                                            <td
+                                                class="hidden px-2 py-3 text-center sm:table-cell sm:px-4 sm:py-4"
+                                            >
                                                 <span
                                                     class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
                                                 >
@@ -139,7 +144,9 @@
                                                     ชม.
                                                 </span>
                                             </td>
-                                            <td class="px-2 sm:px-4 py-3 sm:py-4 text-center hidden sm:table-cell">
+                                            <td
+                                                class="hidden px-2 py-3 text-center sm:table-cell sm:px-4 sm:py-4"
+                                            >
                                                 @php
                                                     $totalHours = $participant->volunteer_hours->sum("hours") ?? 0;
                                                     $remainingHours = max(0, 40 - $totalHours);
@@ -151,16 +158,18 @@
                                                     {{ $remainingHours }} ชม.
                                                 </span>
                                             </td>
-                                            <td class="px-2 sm:px-4 py-3 sm:py-4 text-center">
+                                            <td
+                                                class="px-2 py-3 text-center sm:px-4 sm:py-4"
+                                            >
                                                 @if ($participant->pivot->checked_in)
                                                     <span
-                                                        class="inline-flex items-center rounded-full bg-green-100 px-2 sm:px-3 py-1 text-xs font-medium text-green-800"
+                                                        class="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 sm:px-3"
                                                     >
                                                         ✓
                                                     </span>
                                                 @else
                                                     <button
-                                                        class="inline-flex items-center rounded-md border border-transparent bg-green-600 px-2 sm:px-3 py-1 text-xs font-medium text-white transition-colors duration-200 hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none"
+                                                        class="inline-flex items-center rounded-md border border-transparent bg-green-600 px-2 py-1 text-xs font-medium text-white transition-colors duration-200 hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none sm:px-3"
                                                     >
                                                         เช็ค
                                                     </button>
@@ -198,7 +207,6 @@
 
 @section("scripts")
     <script>
-        // ฟังก์ชันแสดง notification
         function showNotification(message, type = 'success') {
             const notification = document.getElementById('notification');
             const messageElement = document.getElementById(
@@ -213,7 +221,6 @@
             }, 3000);
         }
 
-        // เพิ่ม event listener ให้ปุ่มเช็คชื่อ
         document
             .querySelectorAll('button:not([disabled])')
             .forEach((button) => {

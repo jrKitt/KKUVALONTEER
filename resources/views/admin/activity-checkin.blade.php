@@ -33,7 +33,6 @@
         </div>
 
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            <!-- Activity Info -->
             <div class="rounded-xl bg-white p-6 shadow-md">
                 <h3 class="mb-4 text-lg font-semibold text-gray-900">
                     ข้อมูลกิจกรรม
@@ -133,9 +132,7 @@
                 @endif
             </div>
 
-            <!-- Checkin Stats & Actions -->
             <div class="space-y-6 lg:col-span-2">
-                <!-- Stats Cards -->
                 <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
                     <div class="rounded-xl bg-white p-4 text-center shadow-md">
                         <div class="text-2xl font-bold text-blue-600">
@@ -233,7 +230,6 @@
                     </div>
                 </div>
 
-                <!-- Participants List -->
                 <div class="overflow-hidden rounded-xl bg-white shadow-md">
                     <div class="border-b border-gray-200 p-6">
                         <div class="flex items-center justify-between">
@@ -331,7 +327,7 @@
                                             <div class="flex items-center">
                                                 @if ($participant->user->profile_image)
                                                     <img
-                                                        src="{{ asset("uploads/profiles/" . $participant->user->profile_image) }}"
+                                                        src="{{ asset($participant->user->profile_image) }}"
                                                         alt="{{ $participant->user->firstname }}"
                                                         class="mr-3 h-8 w-8 rounded-full"
                                                     />
@@ -374,7 +370,6 @@
                                             <span
                                                 class="{{ $badge["class"] }} inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
                                             >
-                                                {{ $badge["icon"] }}
                                                 {{ $badge["text"] }}
                                             </span>
                                         </td>
@@ -395,15 +390,9 @@
                                             @if ($participant->checked_in)
                                                 <button
                                                     onclick="undoCheckin({{ $participant->id }})"
-                                                    class="mr-3 text-red-600 hover:text-red-900"
+                                                    class="mr-3 border-none text-red-600 hover:text-red-900"
                                                 >
                                                     ยกเลิก
-                                                </button>
-                                                <button
-                                                    onclick="showCheckinDetails({{ $participant->id }})"
-                                                    class="text-blue-600 hover:text-blue-900"
-                                                >
-                                                    รายละเอียด
                                                 </button>
                                             @else
                                                 <button
@@ -424,7 +413,6 @@
         </div>
     </div>
 
-    <!-- Checkin Modal -->
     <dialog id="checkinModal" class="modal">
         <div class="modal-box">
             <h3 class="mb-4 text-lg font-bold">เช็คชื่อผู้เข้าร่วม</h3>
@@ -473,7 +461,6 @@
         </div>
     </dialog>
 
-    <!-- Details Modal -->
     <dialog id="detailsModal" class="modal">
         <div class="modal-box">
             <h3 class="mb-4 text-lg font-bold">รายละเอียดการเช็คชื่อ</h3>
@@ -489,18 +476,120 @@
         </div>
     </dialog>
 
-    <script>
-        // Global variables
-        let selectedParticipants = [];
+    <dialog id="confirmModal" class="modal">
+        <div class="modal-box">
+            <h3 class="mb-4 text-center text-lg font-bold" id="confirmTitle">
+                ยืนยันการดำเนินการ
+            </h3>
+            <div class="mb-6 text-center">
+                <div
+                    class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100"
+                >
+                    <svg
+                        class="h-6 w-6 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+                        ></path>
+                    </svg>
+                </div>
+                <p class="text-gray-600" id="confirmMessage">
+                    คุณแน่ใจหรือไม่ที่จะดำเนินการนี้?
+                </p>
+            </div>
+            <div class="modal-action justify-center">
+                <button
+                    class="btn btn-outline"
+                    onclick="document.getElementById('confirmModal').close()"
+                >
+                    ยกเลิก
+                </button>
+                <button
+                    class="btn btn-error"
+                    id="confirmButton"
+                    onclick="executeConfirmedAction()"
+                >
+                    ยืนยัน
+                </button>
+            </div>
+        </div>
+    </dialog>
 
-        // Initialize
+    <!-- Bulk Checkin Confirmation Modal -->
+    <dialog id="bulkConfirmModal" class="modal">
+        <div class="modal-box">
+            <h3 class="mb-4 text-center text-lg font-bold">
+                ยืนยันการเช็คชื่อแบบกลุ่ม
+            </h3>
+            <div class="mb-6 text-center">
+                <div
+                    class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100"
+                >
+                    <svg
+                        class="h-6 w-6 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                    </svg>
+                </div>
+                <p class="text-gray-600" id="bulkConfirmMessage">
+                    คุณแน่ใจหรือไม่ที่จะเช็คชื่อผู้เข้าร่วม?
+                </p>
+                <div class="mt-4 rounded-lg bg-gray-50 p-4">
+                    <div class="text-sm text-gray-600">
+                        <div class="flex justify-between">
+                            <span>จำนวนผู้เข้าร่วม:</span>
+                            <span class="font-semibold" id="bulkCountDisplay">
+                                0 คน
+                            </span>
+                        </div>
+                        <div class="mt-2 flex justify-between">
+                            <span>ชั่วโมงที่บันทึก:</span>
+                            <span class="font-semibold" id="bulkHoursDisplay">
+                                0 ชั่วโมง
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-action justify-center">
+                <button
+                    class="btn btn-outline"
+                    onclick="document.getElementById('bulkConfirmModal').close()"
+                >
+                    ยกเลิก
+                </button>
+                <button class="btn btn-primary" onclick="executeBulkCheckin()">
+                    ยืนยันเช็คชื่อ
+                </button>
+            </div>
+        </div>
+    </dialog>
+
+    <script>
+        let selectedParticipants = [];
+        let pendingAction = null;
+        let pendingActionData = null;
+
         document.addEventListener('DOMContentLoaded', function () {
             updateBulkActionButton();
             setupEventListeners();
         });
 
         function setupEventListeners() {
-            // Search functionality
             document
                 .getElementById('searchParticipant')
                 .addEventListener('input', filterParticipants);
@@ -508,7 +597,6 @@
                 .getElementById('filterStatus')
                 .addEventListener('change', filterParticipants);
 
-            // Select all checkbox
             document
                 .getElementById('selectAllCheckbox')
                 .addEventListener('change', function () {
@@ -521,12 +609,10 @@
                     updateSelectedParticipants();
                 });
 
-            // Individual checkboxes
             document.querySelectorAll('.participant-checkbox').forEach((cb) => {
                 cb.addEventListener('change', updateSelectedParticipants);
             });
 
-            // Checkin form
             document
                 .getElementById('checkinForm')
                 .addEventListener('submit', function (e) {
@@ -613,7 +699,7 @@
                 .then((response) => response.json())
                 .then((data) => {
                     if (data.success) {
-                        location.reload(); // Simple reload for now
+                        location.reload();
                     } else {
                         alert('เกิดข้อผิดพลาด: ' + data.message);
                     }
@@ -627,10 +713,18 @@
         }
 
         function undoCheckin(participantId) {
-            if (!confirm('คุณแน่ใจหรือไม่ที่จะยกเลิกการเช็คชื่อ?')) {
-                return;
-            }
+            document.getElementById('confirmTitle').textContent =
+                'ยืนยันการยกเลิกเช็คชื่อ';
+            document.getElementById('confirmMessage').textContent =
+                'คุณแน่ใจหรือไม่ที่จะยกเลิกการเช็คชื่อของผู้เข้าร่วมคนนี้?';
 
+            pendingAction = 'undoCheckin';
+            pendingActionData = { participantId: participantId };
+
+            document.getElementById('confirmModal').showModal();
+        }
+
+        function executeUndoCheckin(participantId) {
             fetch(`/admin/activities/{{ $activity->id }}/checkin/undo`, {
                 method: 'POST',
                 headers: {
@@ -661,13 +755,18 @@
 
             const actualHours = document.getElementById('bulkHours').value;
 
-            if (
-                !confirm(
-                    `คุณแน่ใจหรือไม่ที่จะเช็คชื่อ ${selectedParticipants.length} คน?`,
-                )
-            ) {
-                return;
-            }
+            document.getElementById('bulkConfirmMessage').textContent =
+                `คุณแน่ใจหรือไม่ที่จะเช็คชื่อผู้เข้าร่วมที่เลือกไว้?`;
+            document.getElementById('bulkCountDisplay').textContent =
+                `${selectedParticipants.length} คน`;
+            document.getElementById('bulkHoursDisplay').textContent =
+                `${actualHours} ชั่วโมง`;
+
+            document.getElementById('bulkConfirmModal').showModal();
+        }
+
+        function executeBulkCheckin() {
+            const actualHours = document.getElementById('bulkHours').value;
 
             fetch(`/admin/activities/{{ $activity->id }}/checkin/bulk`, {
                 method: 'POST',
@@ -684,24 +783,37 @@
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    alert(data.message);
+                    document.getElementById('bulkConfirmModal').close();
+
                     if (data.success) {
+                        alert(data.message);
                         location.reload();
+                    } else {
+                        alert('เกิดข้อผิดพลาด: ' + data.message);
                     }
                 })
                 .catch((error) => {
                     console.error('Error:', error);
+                    document.getElementById('bulkConfirmModal').close();
                     alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
                 });
         }
 
         function showCheckinDetails(participantId) {
-            // Find participant data
             const row = document.querySelector(
                 `[data-participant-id="${participantId}"]`,
             );
-            // Implementation for showing details - you can customize this
             document.getElementById('detailsModal').showModal();
+        }
+
+        function executeConfirmedAction() {
+            if (pendingAction === 'undoCheckin') {
+                executeUndoCheckin(pendingActionData.participantId);
+            }
+
+            document.getElementById('confirmModal').close();
+            pendingAction = null;
+            pendingActionData = null;
         }
     </script>
 @endsection

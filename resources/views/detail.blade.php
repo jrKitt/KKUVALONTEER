@@ -130,13 +130,22 @@
                             เต็มแล้ว
                         </button>
                     @elseif ($activity->status === "pending" || $activity->status === "ongoing")
-                        <button
-                            type="button"
-                            class="active:scale-90 transition-all cursor-pointer rounded-md bg-blue-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-blue-600"
-                            onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
-                        >
-                            สมัครเข้าร่วม
-                        </button>
+                        @auth
+                            <button
+                                type="button"
+                                class="active:scale-90 transition-all cursor-pointer rounded-md bg-blue-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-blue-600"
+                                onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
+                            >
+                                สมัครเข้าร่วม
+                            </button>
+                        @else
+                            <a 
+                                href="{{ route('login') }}" 
+                                class="active:scale-90 transition-all cursor-pointer rounded-md bg-blue-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-blue-600 text-center inline-block"
+                            >
+                                เข้าสู่ระบบเพื่อสมัคร
+                            </a>
+                        @endauth
                     @else
                         <button
                             type="button"
@@ -277,13 +286,22 @@
                                             เต็มแล้ว
                                         </button>
                                     @elseif ($otherActivity->status === "pending" || $otherActivity->status === "ongoing")
-                                        <button
-                                            type="button"
-                                            class="cursor-pointer rounded-md bg-blue-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-blue-600 active:scale-90"
-                                            onclick="registerForActivity({{ $otherActivity->id }}, '{{ $otherActivity->name_th }}')"
-                                        >
-                                            สมัคร
-                                        </button>
+                                        @auth
+                                            <button
+                                                type="button"
+                                                class="cursor-pointer rounded-md bg-blue-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-blue-600 active:scale-90"
+                                                onclick="registerForActivity({{ $otherActivity->id }}, '{{ $otherActivity->name_th }}')"
+                                            >
+                                                สมัคร
+                                            </button>
+                                        @else
+                                            <a 
+                                                href="{{ route('login') }}" 
+                                                class="cursor-pointer rounded-md bg-blue-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-blue-600 active:scale-90 text-center inline-block"
+                                            >
+                                                เข้าสู่ระบบ
+                                            </a>
+                                        @endauth
                                     @else
                                         <button
                                             type="button"
@@ -385,9 +403,21 @@
                     activity_id: activityId,
                 }),
             })
-                .then((response) => response.json())
+                .then((response) => {
+                    // Check if response is redirecting (usually means not authenticated)
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                        return;
+                    }
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    return response.json();
+                })
                 .then((data) => {
-                    if (data.success) {
+                    if (data && data.success) {
                         showAlert(
                             'success',
                             'ลงทะเบียนสำเร็จ!',
@@ -400,8 +430,10 @@
                         }, 2000);
 
                         return;
-                    } else {
+                    } else if (data && data.message) {
                         showAlert('error', 'เกิดข้อผิดพลาด!', data.message);
+                    } else {
+                        showAlert('error', 'เกิดข้อผิดพลาด!', 'ไม่สามารถลงทะเบียนได้');
                     }
                 })
                 .catch((error) => {
@@ -409,7 +441,7 @@
                     showAlert(
                         'error',
                         'เกิดข้อผิดพลาด!',
-                        'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
+                        'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่อและลองใหม่',
                     );
                 })
                 .finally(() => {
