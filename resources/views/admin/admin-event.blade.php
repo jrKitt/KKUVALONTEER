@@ -5,15 +5,41 @@
 @endsection
 
 @php
-    function thaiDate($dateString)
-    {
-        $months = ["", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
-        $ts = strtotime($dateString);
-        $day = date("j", $ts);
-        $month = $months[(int) date("n", $ts)];
-        $year = date("Y", $ts) + 543;
-        return "$day $month $year";
+    if (! function_exists("thaiDate")) {
+        function thaiDate($dateString)
+        {
+            $months = ["", "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+            $ts = strtotime($dateString);
+            $day = date("j", $ts);
+            $month = $months[(int) date("n", $ts)];
+            $year = date("Y", $ts) + 543;
+            return "$day $month $year";
+        }
     }
+
+    $faculties = [
+        "กลุ่มสาขาวิชาวิทยาศาสตร์เทคโนโลยี" => ["คณะเกษตรศาสตร์", "คณะเทคโนโลยี", "คณะวิศวกรรมศาสตร์", "คณะวิทยาศาสตร์", "คณะสถาปัตยกรรมศาสตร์", "วิทยาลัยการคอมพิวเตอร์"],
+        "กลุ่มสาขาวิชาวิทยาศาสตร์สุขภาพ" => [
+            "คณะพยาบาลศาสตร์",
+            "คณะแพทยศาสตร์",
+            "คณะเทคนิคการแพทย์",
+            "คณะสาธารณสุขศาสตร์",
+            "คณะทันตแพทยศาสตร์",
+            "คณะเภสัชศาสตร์",
+            "คณะสัตวแพทยศาสตร์",
+        ],
+        "กลุ่มสาขาวิชามนุษยศาสตร์และสังคมศาสตร์" => [
+            "คณะศึกษาศาสตร์",
+            "คณะมนุษยศาสตร์และสังคมศาสตร์",
+            "คณะบริหารธุรกิจและการบัญชี",
+            "คณะศิลปกรรมศาสตร์",
+            "คณะเศรษฐศาสตร์",
+            "คณะนิติศาสตร์",
+            "วิทยาลัยการปกครองท้องถิ่น",
+            "วิทยาลัยบัณฑิตศึกษาการจัดการ",
+        ],
+        "กลุ่มสหสาขาวิชา" => ["บัณฑิตวิทยาลัย", "วิทยาลัยนานาชาติ", "คณะสหวิทยาการ"],
+    ];
 @endphp
 
 <script>
@@ -179,26 +205,50 @@
                         </button>
                     </section>
                     <section class="flex flex-col gap-2 sm:flex-row">
-                        <select
-                            class="w-full rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
+                        <form
+                            method="GET"
+                            action="/admin/event"
+                            class="flex gap-2"
                         >
-                            <option value="" disabled selected>
-                                -- ทุกคณะ --
-                            </option>
-                            <option value="">a</option>
-                            <option value="">b</option>
-                            <option value="">c</option>
-                        </select>
-                        <input
-                            type="text"
-                            placeholder="ชื่อกิจกรรม..."
-                            class="rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
-                        />
-                        <button
-                            class="btn btn-sm sm:btn-md btn-info text-white"
-                        >
-                            ค้นหา
-                        </button>
+                            <select
+                                name="faculty"
+                                class="w-full rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
+                                onchange="this.form.submit()"
+                            >
+                                <option
+                                    value=""
+                                    disabled
+                                    {{ request("faculty") ? "" : "selected" }}
+                                >
+                                    -- ทุกคณะ --
+                                </option>
+                                @foreach ($faculties as $group => $items)
+                                    <optgroup label="{{ $group }}">
+                                        @foreach ($items as $faculty)
+                                            <option
+                                                value="{{ $faculty }}"
+                                                {{ request("faculty") == $faculty ? "selected" : "" }}
+                                            >
+                                                {{ $faculty }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
+                                @endforeach
+                            </select>
+
+                            <input
+                                type="text"
+                                name="search"
+                                value="{{ request("search") }}"
+                                placeholder="ชื่อกิจกรรม..."
+                                class="rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
+                            />
+                            <button
+                                class="btn btn-sm sm:btn-md btn-info text-white"
+                            >
+                                ค้นหา
+                            </button>
+                        </form>
                     </section>
                 </div>
             </div>
@@ -219,6 +269,11 @@
                 class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 pb-6 sm:grid-cols-2 lg:grid-cols-3"
             >
                 @foreach ($rec as $activity)
+                    <<<<<<< HEAD =======
+                    <script>
+                        console.log(@json($activity));
+                    </script>
+                    >>>>>>> 45177bab1b3a7ef56e9fab2436786f4c63a0d8ba
                     <div class="w-full rounded-xl shadow-md">
                         <div class="p-4">
                             <section>
@@ -248,8 +303,11 @@
                                 <div
                                     class="] flex gap-2 [&_div]:rounded-full [&_div]:px-2 [&_div]:py-1 [&_div]:text-sm [&_div]:text-white"
                                 >
-                                    <div class="bg-green-500">#เกษตรศาสตร์</div>
-                                    <div class="bg-gray-400">#กลางแจ้ง</div>
+                                    <div class="bg-green-500">
+                                        #
+                                        {{ $activity->user->faculty ?? "ไม่ทราบคณะ" }}
+                                    </div>
+                                    {{-- <div class="bg-gray-400">#กลางแจ้ง</div> --}}
                                 </div>
                                 <div>
                                     <h6 class="text-gray-600">

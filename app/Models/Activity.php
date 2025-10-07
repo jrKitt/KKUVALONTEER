@@ -49,7 +49,7 @@ class Activity extends Model
         'total_hour' => 'integer'
     ];
 
-    public function creator()
+    public function user()
     {
         return $this->belongsTo(User::class, 'create_by');
     }
@@ -62,5 +62,15 @@ class Activity extends Model
     public function scopeActive($query)
     {
         return $query->whereIn('status', ['pending', 'ongoing']);
+    }
+
+    protected $appends = ['day_left'];
+
+    public function getDayLeftAttribute() {
+        $start = new \DateTime($this->start_time);
+        $now = new \DateTime();
+
+        $diff = $now->diff($start);
+        return $start < $now ? 0 : (int)$diff->days;
     }
 }
