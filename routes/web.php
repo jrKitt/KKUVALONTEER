@@ -107,3 +107,6 @@ Route::post('/activities/cancel', [ActivityController::class, "cancelRegistratio
 Route::get('/detail/{id}', [ActivityController::class, "showActivityDetail"])->name('activity.detail');
 
 Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");
+
+
+Route::delete('/activity/{id}', [ActivityController::class, 'deleteActivity'])->name('activity.delete');

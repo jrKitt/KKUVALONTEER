@@ -1,7 +1,7 @@
 @extends("components/layouts/layoutAdmin")
 
 @section("title")
-    admin event | KKU VOLUNTEER
+    activities | KKU VOLUNTEER
 @endsection
 
 @section("layout-content")
@@ -51,10 +51,15 @@
             <div
                 class="my-6 flex w-full items-center justify-between gap-4 max-md:flex-col"
             >
+<<<<<<< HEAD
                 <div class="text-3xl font-bold sm:text-4xl md:text-5xl">
                     จัดการกิจกรรม
                 </div>
                 <div class="flex w-full flex-col gap-3 sm:gap-5 md:w-auto">
+=======
+                <div class="text-3xl sm:text-4xl md:text-5xl font-semibold">จัดการกิจกรรม</div>
+                <div class="flex flex-col gap-3 sm:gap-5 w-full md:w-auto">
+>>>>>>> 1b89e4e6473a467c6bbc05eaa4df015758d083b3
                     <section
                         class="flex w-full items-center justify-end gap-3 sm:gap-5"
                     >
@@ -94,9 +99,22 @@
         </div>
 
         <main>
+<<<<<<< HEAD
             <div
                 class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 pb-6 sm:grid-cols-2 lg:grid-cols-3"
             >
+=======
+            <script>
+                function confirmDelete(e) {
+                    if (!confirm('ยืนยันการลบกิจกรรมนี้หรือไม่?')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                 return true;
+                }
+            </script>
+            <div class="mx-auto grid w-full max-w-6xl grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-6">
+>>>>>>> 1b89e4e6473a467c6bbc05eaa4df015758d083b3
                 @foreach ($rec as $activity)
                     <div class="w-full rounded-xl shadow-md">
                         <div class="p-4">
@@ -164,16 +182,32 @@
                                 class="flex flex-col gap-2 sm:flex-row sm:gap-5"
                             >
                                 <button
+<<<<<<< HEAD
                                     class="w-full rounded-xl bg-amber-400/80 py-2 text-sm text-white sm:text-base"
+=======
+                                    class="w-1/2 rounded-xl bg-amber-400/80 py-2 text-sm sm:text-base text-white"
+>>>>>>> 1b89e4e6473a467c6bbc05eaa4df015758d083b3
                                     onclick="my_modal_1.showModal()"
                                 >
                                     แก้ไขข้อมูล
                                 </button>
+<<<<<<< HEAD
                                 <button
                                     class="w-full rounded-xl border border-red-400 py-2 text-sm text-red-400 shadow sm:text-base"
                                 >
                                     ลบข้อมูล
                                 </button>
+=======
+                                <form class="w-1/2" action="{{ route('activity.delete', $activity->id) }}" method="POST" onsubmit="return confirmDelete(event)">
+                                     @csrf
+                                     @method('DELETE')
+                                    <button
+                                        type="submit"
+                                        class="w-full rounded-xl border border-red-400 py-2 text-sm sm:text-base text-red-400 shadow">
+                                        ลบข้อมูล
+                                    </button>
+                                </form>
+>>>>>>> 1b89e4e6473a467c6bbc05eaa4df015758d083b3
                             </section>
                         </div>
                     </div>
@@ -182,6 +216,43 @@
         </main>
 
         <dialog id="my_modal_1" class="modal">
+            <script>
+           
+                let tags = []
+
+                function renderTags() {
+                    const container = document.getElementById('tag-container')
+                    container.innerHTML = ''
+
+                    tags.forEach((tag, index) => {
+                        const tagEl = document.createElement('div')
+                        tagEl.className = 'bg-gray-200 h-7 flex gap-1 items-center px-3 rounded-sm'
+                        tagEl.innerHTML = `
+                            <p class="text-xs">${tag}</p>
+                            <button type="button" class="text-xs text-red-500" onclick="removeTag(${index})">x</button>
+                            <input type="hidden" name="tag[]" value="${tag}">
+                        `
+                        container.appendChild(tagEl)
+                    })
+                 }
+
+
+                function addTag() {
+                    const input = document.getElementById('tag-input')
+                    const value = input.value.trim()
+                    if (value && !tags.includes(value)) {
+                        tags.push(value)
+                        renderTags()
+                        input.value = ''
+                    }
+                }
+
+                function removeTag(index) {
+                    tags.splice(index, 1)
+                    renderTags()
+                }
+
+            </script>
             <form
                 action="/activity"
                 method="POST"
@@ -274,8 +345,9 @@
                                 />
                             </div>
 
-                            <div class="col-span-12">
+                           <div class="col-span-12">
                                 <label for="">แท็กกิจกรรม</label>
+<<<<<<< HEAD
                                 <div
                                     id="tagsContainer"
                                     class="flex min-h-20 w-full flex-wrap gap-2 rounded-md border-2 border-gray-300 p-3"
@@ -299,6 +371,21 @@
                                 <div class="mt-1 text-sm text-gray-500">
                                     กด Enter หรือคลิก "เพิ่มแท็ก"
                                     เพื่อเพิ่มแท็กใหม่
+=======
+
+                                <div id="tag-container"
+                                    class="h-20 w-full rounded-md border-2 border-gray-300 flex flex-wrap gap-1 p-2 overflow-y-auto">
+                                </div>
+
+                                <div class="flex mt-2">
+                                    <input
+                                        type="text"
+                                        id="tag-input"
+                                        class="flex-1 rounded-md border border-gray-400 px-4 py-2"
+                                        placeholder="ชื่อแท็ก..."
+                                    />
+                                    <button type="button" class="btn ml-2" onclick="addTag()">เพิ่มแท็ก</button>
+>>>>>>> 1b89e4e6473a467c6bbc05eaa4df015758d083b3
                                 </div>
                             </div>
 
