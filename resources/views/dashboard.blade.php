@@ -537,14 +537,14 @@
                                         <a
                                             href="{{ route("activities.register") }}"
                                             onclick="event.preventDefault(); registerActivity({{ $event["id"] }});"
-                                            class="flex-1 inline-block cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
+                                            class="inline-block flex-1 cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
                                         >
                                             สมัครเลย
                                         </a>
                                     @else
                                         <a
                                             href="{{ route("login") }}"
-                                            class="flex-1 inline-block cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
+                                            class="inline-block flex-1 cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
                                         >
                                             เข้าสู่ระบบเพื่อสมัคร
                                         </a>
@@ -577,9 +577,15 @@
     <script>
         function registerActivity(activityId) {
             try {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                const csrfToken = document.querySelector(
+                    'meta[name="csrf-token"]',
+                );
                 if (!csrfToken) {
-                    showAlert('error', 'ข้อผิดพลาด!', 'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่');
+                    showAlert(
+                        'error',
+                        'ข้อผิดพลาด!',
+                        'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่',
+                    );
                     return;
                 }
 
@@ -604,7 +610,11 @@
                 form.submit();
             } catch (err) {
                 console.error('registerActivity failed', err);
-                showAlert('error', 'ข้อผิดพลาด!', 'เกิดข้อผิดพลาดภายใน โปรดลองอีกครั้ง');
+                showAlert(
+                    'error',
+                    'ข้อผิดพลาด!',
+                    'เกิดข้อผิดพลาดภายใน โปรดลองอีกครั้ง',
+                );
             }
         }
 
