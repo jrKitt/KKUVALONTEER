@@ -118,7 +118,6 @@ class ActivityController extends Controller
     {
         $activity = Activity::findOrFail($id);
 
-        // Check if activity is finished - prevent editing
         if ($activity->status === 'finished') {
             return redirect()->back()->with('error', 'ไม่สามารถแก้ไขกิจกรรมที่เสร็จสิ้นแล้วได้');
         }
