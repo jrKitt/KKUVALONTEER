@@ -293,10 +293,9 @@ class ActivityController extends Controller
 
     public function getAdminDashboard() {
         $recs = ActivityParticipant::with('user')->get();
-
-
-
-        return view("admin/admin-dashboard" ,compact('recs'));
+        $activities = Activity::with('user')
+        ->get();
+        return view("admin/admin-dashboard" ,compact('recs',"activities"));
     }
 
     public function finishActivity($id) {
