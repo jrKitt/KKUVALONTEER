@@ -237,33 +237,30 @@
                                 </a>
                             @endif
 
-                            {{--
-                                <select
+                            <select
                                 name="faculty"
                                 class="w-full rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
                                 onchange="this.form.submit()"
-                                >
+                            >
                                 <option
-                                value=""
-                                disabled
-                                {{ request("faculty") ? "" : "selected" }}
+                                    value=""
+                                    {{ request("faculty") ? "" : "selected" }}
                                 >
-                                -- ทุกคณะ --
+                                    -- ทุกคณะ --
                                 </option>
                                 @foreach ($faculties as $group => $items)
-                                <optgroup label="{{ $group }}">
-                                @foreach ($items as $faculty)
-                                <option
-                                value="{{ $faculty }}"
-                                {{ request("faculty") == $faculty ? "selected" : "" }}
-                                >
-                                {{ $faculty }}
-                                </option>
+                                    <optgroup label="{{ $group }}">
+                                        @foreach ($items as $faculty)
+                                            <option
+                                                value="{{ $faculty }}"
+                                                {{ request("faculty") == $faculty ? "selected" : "" }}
+                                            >
+                                                {{ $faculty }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
                                 @endforeach
-                                </optgroup>
-                                @endforeach
-                                </select>
-                            --}}
+                            </select>
 
                             <input
                                 type="text"

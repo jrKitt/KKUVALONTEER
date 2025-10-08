@@ -28,7 +28,7 @@
 @section("layout-content")
     <div class="min-h-screen bg-gray-50 text-black">
         <div class="mx-auto aspect-auto max-w-6xl px-2">
-            <div class="my-6 text-5xl font-bold">Dashboard</div>
+            <div class="my-6 text-5xl font-medium">ภาพรวม กิจกรรม</div>
             <div class="flex h-fit gap-5 p-4 max-lg:flex-col">
                 <div class="roucnded-lg w-full shadow-md shadow-zinc-400/80">
                     <div class="p-2 sm:p-4">
@@ -249,7 +249,7 @@
                                                             @endphp
 
                                                             <td
-                                                                class="{{ in_array($currentDate, $dates) ? "bg-green-200 font-semibold" : "" }} p-2"
+                                                                class="{{ in_array($currentDate, $dates) ? "rounded-md bg-green-200 font-semibold" : "" }} p-2"
                                                             >
                                                                 {{ $day }}
                                                             </td>
