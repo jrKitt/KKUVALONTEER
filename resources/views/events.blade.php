@@ -12,11 +12,9 @@
     @include("components.alert")
     <div class="min-h-screen bg-gray-50">
         <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-            <!-- Carousel Section -->
             <div
                 class="relative mx-auto w-full max-w-6xl overflow-hidden rounded-md"
             >
-                {{-- text on image --}}
                 <div class="absolute z-1 w-2/3 p-6 max-md:w-2/5 max-sm:w-2/3">
                     <div>
                         <h1
@@ -41,7 +39,6 @@
                     </div>
                 </div>
 
-                {{-- carousel --}}
                 <div class="animate-slide flex w-[300%] brightness-50">
                     @if ($rec->isNotEmpty())
                         @foreach ($rec->take(3) as $index => $activity)
@@ -89,7 +86,6 @@
 
             <hr class="my-8 text-gray-400" />
 
-            <!-- Search and Filter Section -->
             <main>
                 <section class="mb-8">
                     <div
@@ -102,11 +98,11 @@
                                 กิจกรรมทั้งหมด
                             </h3>
                             <p class="text-sm text-gray-600" id="resultsInfo">
-                                พบ {{ $rec->count() }} กิจกรรม
+                                พบ {{ $rec->total() }} กิจกรรม (หน้าที่
+                                {{ $rec->currentPage() }}/{{ $rec->lastPage() }})
                             </p>
                         </div>
                         <div class="flex gap-5 max-md:flex-col">
-                            <!-- Simple Search Input -->
                             <input
                                 type="text"
                                 id="searchInput"
@@ -114,28 +110,18 @@
                                 class="rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
                             />
 
-                            <!-- Tags Filter -->
                             <select
                                 id="tagFilter"
                                 class="rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
                             >
-                                <option value="">ทุก Tags</option>
+                                <option value="">-- ทั้งหมด --</option>
                                 @php
                                     $allTags = [];
                                     foreach ($rec as $activity) {
                                         if ($activity->tags) {
-                                            // แก้ไขการ decode โดยใช้ JSON_UNESCAPED_UNICODE
-                                            $decodedTags = json_decode($activity->tags, true, 512, JSON_UNESCAPED_UNICODE);
-                                            if (is_array($decodedTags)) {
-                                                foreach ($decodedTags as $tag) {
-                                                    // ทำการ decode unicode escape sequences
-                                                    $cleanTag = json_decode('"' . $tag . '"');
-                                                    if ($cleanTag) {
-                                                        $allTags[] = $cleanTag;
-                                                    } else {
-                                                        $allTags[] = $tag;
-                                                    }
-                                                }
+                                            $tags = json_decode($activity->tags, true);
+                                            if (is_array($tags)) {
+                                                $allTags = array_merge($allTags, $tags);
                                             }
                                         }
                                     }
@@ -150,7 +136,6 @@
                                 @endforeach
                             </select>
 
-                            <!-- Status Filter -->
                             <select
                                 id="statusFilter"
                                 class="rounded-lg border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
@@ -160,6 +145,13 @@
                                 <option value="ongoing">กำลังดำเนินการ</option>
                                 <option value="finished">เสร็จสิ้น</option>
                             </select>
+
+                            <button
+                                onclick="applyFilterWithPagination()"
+                                class="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            >
+                                ค้นหา
+                            </button>
                         </div>
                     </div>
 
@@ -358,6 +350,114 @@
                             </div>
                         @endforelse
                     </div>
+
+                    @if ($rec->hasPages())
+                        <div class="mt-8 flex justify-center">
+                            <nav
+                                class="flex items-center space-x-1"
+                                role="navigation"
+                                aria-label="Pagination Navigation"
+                            >
+                                @if ($rec->onFirstPage())
+                                    <span
+                                        class="relative inline-flex cursor-default items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm leading-5 font-medium text-gray-300"
+                                    >
+                                        <svg
+                                            class="h-5 w-5"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </span>
+                                @else
+                                    <a
+                                        href="{{ $rec->previousPageUrl() }}"
+                                        class="focus:shadow-outline-cyan relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm leading-5 font-medium text-gray-500 transition duration-150 ease-in-out hover:text-gray-400 focus:z-10 focus:border-cyan-300 focus:outline-none active:bg-gray-100 active:text-gray-500"
+                                    >
+                                        <svg
+                                            class="h-5 w-5"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </a>
+                                @endif
+
+                                @foreach ($rec->getUrlRange(1, $rec->lastPage()) as $page => $url)
+                                    @if ($page == $rec->currentPage())
+                                        <span
+                                            class="relative -ml-px inline-flex cursor-default items-center border border-cyan-300 bg-cyan-400 px-4 py-2 text-sm leading-5 font-medium text-white"
+                                        >
+                                            {{ $page }}
+                                        </span>
+                                    @else
+                                        <a
+                                            href="{{ $url }}"
+                                            class="focus:shadow-outline-cyan relative -ml-px inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-medium text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:z-10 focus:border-cyan-300 focus:outline-none active:bg-gray-100 active:text-gray-700"
+                                        >
+                                            {{ $page }}
+                                        </a>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+
+                                @if ($rec->hasMorePages())
+                                    <a
+                                        href="{{ $rec->nextPageUrl() }}"
+                                        class="focus:shadow-outline-cyan relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm leading-5 font-medium text-gray-500 transition duration-150 ease-in-out hover:text-gray-400 focus:z-10 focus:border-cyan-300 focus:outline-none active:bg-gray-100 active:text-gray-500"
+                                    >
+                                        <svg
+                                            class="h-5 w-5"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </a>
+                                @else
+                                    <span
+                                        class="relative -ml-px inline-flex cursor-default items-center rounded-r-md border border-gray-300 bg-white px-2 py-2 text-sm leading-5 font-medium text-gray-300"
+                                    >
+                                        <svg
+                                            class="h-5 w-5"
+                                            fill="currentColor"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </span>
+                                @endif
+                            </nav>
+                        </div>
+
+                        <!-- Pagination Info -->
+                        <div class="mt-4 text-center">
+                            <p class="text-sm text-gray-700">
+                                แสดง {{ $rec->firstItem() }} ถึง
+                                {{ $rec->lastItem() }} จาก {{ $rec->total() }}
+                                รายการ
+                            </p>
+                        </div>
+                    @endif
                 </section>
             </main>
         </section>
@@ -397,23 +497,16 @@
                 const status = card.dataset.status || '';
                 const tags = card.dataset.tags || '';
 
-                console.log('Card search data:', searchText);
-                console.log('Card status:', status);
-                console.log('Card tags:', tags);
-
                 let showCard = true;
 
-                // Search filter
                 if (searchTerm && !searchText.includes(searchTerm)) {
                     showCard = false;
                 }
 
-                // Status filter
                 if (statusFilter && statusFilter !== status) {
                     showCard = false;
                 }
 
-                // Tag filter
                 if (tagFilter) {
                     const cardTags = tags.split(',').map((tag) => tag.trim());
                     if (!cardTags.includes(tagFilter)) {
@@ -421,7 +514,6 @@
                     }
                 }
 
-                // Update visibility
                 if (showCard) {
                     visibleCount++;
                     card.style.display = 'block';
@@ -430,10 +522,9 @@
                 }
             });
 
-            // Update results info
             const resultsInfo = document.getElementById('resultsInfo');
             if (resultsInfo) {
-                let resultText = `พบ ${visibleCount} กิจกรรม`;
+                let resultText = `พบ ${visibleCount} กิจกรรม (ในหน้านี้)`;
                 const filters = [];
                 if (searchTerm) filters.push(`ค้นหา: "${searchTerm}"`);
                 if (tagFilter) filters.push(`Tag: ${tagFilter}`);
@@ -453,7 +544,6 @@
                 resultsInfo.textContent = resultText;
             }
 
-            // Show no results message
             let noResultsMessage = document.getElementById('noResultsMessage');
             const container = document.getElementById('activitiesGrid');
 
@@ -516,11 +606,41 @@
             }
         }
 
-        // Initialize event listeners
+        function applyFilterWithPagination() {
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const tagFilter = document.getElementById('tagFilter');
+
+            const searchTerm = searchInput ? searchInput.value : '';
+            const status = statusFilter ? statusFilter.value : '';
+            const tag = tagFilter ? tagFilter.value : '';
+
+            const params = new URLSearchParams();
+            if (searchTerm) params.append('search', searchTerm);
+            if (status) params.append('status', status);
+            if (tag) params.append('tag', tag);
+
+            const url =
+                '{{ route("user.activities") }}' +
+                (params.toString() ? '?' + params.toString() : '');
+            window.location.href = url;
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
             const statusFilter = document.getElementById('statusFilter');
             const tagFilter = document.getElementById('tagFilter');
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (searchInput && urlParams.get('search')) {
+                searchInput.value = urlParams.get('search');
+            }
+            if (statusFilter && urlParams.get('status')) {
+                statusFilter.value = urlParams.get('status');
+            }
+            if (tagFilter && urlParams.get('tag')) {
+                tagFilter.value = urlParams.get('tag');
+            }
 
             if (searchInput) {
                 searchInput.addEventListener('input', searchActivities);

@@ -44,7 +44,7 @@ class ActivityController extends Controller
         $query->where('status', $request->status);
     }
 
-    $rec = $query->get();
+    $rec = $query->paginate(9)->appends($request->query());
 
     if (auth()->check()) {
         $userRegistrations = ActivityParticipant::where('user_id', auth()->id())
