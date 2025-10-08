@@ -4,6 +4,10 @@
     หน้าหลัก | KKU VOLUNTEER
 @endsection
 
+@push("head")
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+@endpush
+
 @section("layout-content")
     <div class="min-h-screen bg-gray-50">
         <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -553,35 +557,161 @@
 
 @push("scripts")
     <script>
+        function showAlert(type, title, message) {
+            const alertId = 'alert-' + type + '-' + Date.now();
+            const alertHTML = `
+                <div id="${alertId}" role="alert" class="alert-modern alert-${type}-modern fixed top-6 right-6 z-[9999] min-w-80 max-w-96" style="opacity: 0; transform: translateX(100%);">
+                    <div class="flex items-center p-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-8 h-8 bg-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-500 rounded-full flex items-center justify-center shadow-lg">
+                                ${
+                                    type === 'success'
+                                        ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>'
+                                        : '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>'
+                                }
+                            </div>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <p class="text-sm font-semibold text-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-800">${title}</p>
+                            <p class="text-sm text-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-700">${message}</p>
+                        </div>
+                        <button type="button" class="flex-shrink-0 ml-4 text-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-400 hover:text-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-600 transition-colors duration-200" onclick="closeAlert('${alertId}')">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', alertHTML);
+            const alertElement = document.getElementById(alertId);
+
+            setTimeout(() => {
+                alertElement.style.opacity = '1';
+                alertElement.style.transform = 'translateX(0)';
+                alertElement.style.transition =
+                    'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            }, 100);
+
+            setTimeout(() => {
+                closeAlert(alertId);
+            }, 5000);
+        }
+
+        function closeAlert(alertId) {
+            const alertElement = document.getElementById(alertId);
+            if (alertElement) {
+                alertElement.style.transform = 'translateX(100%)';
+                alertElement.style.opacity = '0';
+                setTimeout(() => {
+                    if (alertElement.parentNode) {
+                        alertElement.remove();
+                    }
+                }, 300);
+            }
+        }
+
         function registerForActivity(activityId, activityName) {
+            console.log('Registering for activity:', activityId, activityName);
+
             if (!confirm(`คุณต้องการสมัครกิจกรรม "${activityName}" หรือไม่?`)) {
                 return;
             }
+
+            console.log('Starting registration process...');
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfToken) {
+                console.error('CSRF token not found');
+                showAlert(
+                    'error',
+                    'ข้อผิดพลาด!',
+                    'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่',
+                );
+                return;
+            }
+
+            console.log('CSRF token found');
+
+            // Disable the button during the request
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = 'กำลังสมัคร...';
+            button.disabled = true;
 
             fetch('/activities/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content'),
+                    'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
                 },
                 body: JSON.stringify({
                     activity_id: activityId,
                 }),
             })
-                .then((response) => response.json())
+                .then((response) => {
+                    console.log('Response status:', response.status);
+
+                    // Check if response is redirecting (usually means not authenticated)
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                        return;
+                    }
+
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            // Not authenticated - redirect to login
+                            window.location.href = '/login';
+                            return;
+                        }
+                        throw new Error(
+                            `HTTP error! status: ${response.status}`,
+                        );
+                    }
+
+                    return response.json();
+                })
                 .then((data) => {
-                    if (data.success) {
-                        alert('ลงทะเบียนสำเร็จ!');
-                        location.reload();
+                    console.log('Response data:', data);
+                    if (data && data.success) {
+                        showAlert(
+                            'success',
+                            'ลงทะเบียนสำเร็จ!',
+                            `คุณได้สมัครเข้าร่วมกิจกรรม "${activityName}" เรียบร้อยแล้ว`,
+                        );
+
+                        // Update button state
+                        button.textContent = 'สมัครแล้ว';
+                        button.className =
+                            'flex-1 cursor-not-allowed rounded-lg bg-green-500 px-4 py-2 text-center font-medium text-white';
+                        button.disabled = true;
+
+                        return;
+                    } else if (data && data.message) {
+                        showAlert('error', 'เกิดข้อผิดพลาด!', data.message);
                     } else {
-                        alert('เกิดข้อผิดพลาด: ' + data.message);
+                        showAlert(
+                            'error',
+                            'เกิดข้อผิดพลาด!',
+                            'ไม่สามารถลงทะเบียนได้',
+                        );
                     }
                 })
                 .catch((error) => {
                     console.error('Error:', error);
-                    alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                    showAlert(
+                        'error',
+                        'เกิดข้อผิดพลาด!',
+                        'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่อและลองใหม่',
+                    );
+                })
+                .finally(() => {
+                    // Restore button if it still shows "กำลังสมัคร..."
+                    if (button.textContent === 'กำลังสมัคร...') {
+                        button.textContent = originalText;
+                        button.disabled = false;
+                    }
                 });
         }
 
@@ -590,31 +720,99 @@
                 return;
             }
 
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfToken) {
+                showAlert(
+                    'error',
+                    'ข้อผิดพลาด!',
+                    'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่',
+                );
+                return;
+            }
+
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = 'กำลังยกเลิก...';
+            button.disabled = true;
+
             fetch('/activities/cancel', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content'),
+                    'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
                 },
                 body: JSON.stringify({
                     activity_id: activityId,
                 }),
             })
-                .then((response) => response.json())
+                .then((response) => {
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            window.location.href = '/login';
+                            return;
+                        }
+                        throw new Error(
+                            `HTTP error! status: ${response.status}`,
+                        );
+                    }
+                    return response.json();
+                })
                 .then((data) => {
-                    if (data.success) {
-                        alert('ยกเลิกการสมัครสำเร็จ!');
-                        location.reload();
+                    if (data && data.success) {
+                        showAlert(
+                            'success',
+                            'ยกเลิกสำเร็จ!',
+                            'ยกเลิกการสมัครกิจกรรมเรียบร้อยแล้ว',
+                        );
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
                     } else {
-                        alert('เกิดข้อผิดพลาด: ' + data.message);
+                        showAlert(
+                            'error',
+                            'เกิดข้อผิดพลาด!',
+                            data.message || 'ไม่สามารถยกเลิกการสมัครได้',
+                        );
                     }
                 })
                 .catch((error) => {
                     console.error('Error:', error);
-                    alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                    showAlert(
+                        'error',
+                        'เกิดข้อผิดพลาด!',
+                        'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
+                    );
+                })
+                .finally(() => {
+                    if (button.textContent === 'กำลังยกเลิก...') {
+                        button.textContent = originalText;
+                        button.disabled = false;
+                    }
                 });
         }
     </script>
+
+    <style>
+        .alert-modern {
+            background: white;
+            border-radius: 12px;
+            box-shadow:
+                0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(8px);
+        }
+
+        .alert-success-modern {
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-error-modern {
+            border-left: 4px solid #ef4444;
+        }
+
+        .alert-info-modern {
+            border-left: 4px solid #3b82f6;
+        }
+    </style>
 @endpush

@@ -77,23 +77,19 @@ class VolunteerGoal extends Model
 
     public function updateCurrentHours()
     {
-        // Get hours from volunteer_hours table
         $volunteerHours = $this->user->volunteerHours()
             ->whereBetween('date', [$this->start_date, $this->end_date])
             ->where('status', 'approved')
             ->sum('hours');
 
-        // Get hours from checked-in activities within goal period
+
         $checkedInHours = \DB::table('activity_participants')
             ->join('activities', 'activity_participants.activity_id', '=', 'activities.id')
             ->where('activity_participants.user_id', $this->user_id)
             ->where('activity_participants.checked_in', true)
-            ->whereDate('activities.start_time', '>=', $this->start_date)
-            ->whereDate('activities.start_time', '<=', $this->end_date)
             ->sum(\DB::raw('COALESCE(activity_participants.actual_hours, activities.total_hour)'));
 
-        // Use the maximum of both calculations to ensure we don't miss any hours
-        $totalHours = max($volunteerHours, $checkedInHours);
+        $totalHours = $checkedInHours;
 
         $this->update([
             'current_hours' => $totalHours,

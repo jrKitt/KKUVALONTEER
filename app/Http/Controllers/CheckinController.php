@@ -43,7 +43,7 @@ class CheckinController extends Controller
         ]);
 
         $participant = ActivityParticipant::findOrFail($request->participant_id);
-        
+
         if ($participant->activity_id !== $activity->id) {
             return response()->json(['success' => false, 'message' => 'Invalid participant']);
         }
@@ -59,14 +59,7 @@ class CheckinController extends Controller
                 'status' => 'completed'
             ]);
 
-            VolunteerHour::create([
-                'user_id' => $participant->user_id,
-                'activity_name' => $activity->name_th,
-                'description' => "เข้าร่วมกิจกรรม: {$activity->name_th}",
-                'hours' => $request->actual_hours ?? $activity->total_hour,
-                'date' => $activity->start_time ? $activity->start_time->toDateString() : now()->toDateString(),
-                'status' => 'approved'
-            ]);
+
 
             $user = $participant->user;
             $activeGoals = $user->volunteerGoals()->active()->get();
@@ -77,7 +70,7 @@ class CheckinController extends Controller
             DB::commit();
 
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => 'เช็คชื่อเรียบร้อยแล้ว',
                 'participant' => $participant->fresh()->load('user')
             ]);
@@ -96,7 +89,7 @@ class CheckinController extends Controller
         ]);
 
         $participant = ActivityParticipant::findOrFail($request->participant_id);
-        
+
         if ($participant->activity_id !== $activity->id) {
             return response()->json(['success' => false, 'message' => 'Invalid participant']);
         }
@@ -126,7 +119,7 @@ class CheckinController extends Controller
             DB::commit();
 
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => 'ยกเลิกการเช็คชื่อเรียบร้อยแล้ว',
                 'participant' => $participant->fresh()->load('user')
             ]);
@@ -153,7 +146,7 @@ class CheckinController extends Controller
         try {
             foreach ($request->participant_ids as $participantId) {
                 $participant = ActivityParticipant::find($participantId);
-                
+
                 if (!$participant || $participant->activity_id !== $activity->id) {
                     $errors[] = "Invalid participant ID: {$participantId}";
                     continue;
