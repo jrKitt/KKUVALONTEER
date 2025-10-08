@@ -294,6 +294,13 @@ class ActivityController extends Controller
         $recs = ActivityParticipant::with('user')->get();
         $activities = Activity::with('user')
         ->get();
+
+
+        foreach ($activities as $activity) {
+            $activity->is_expired = $activity->start_time && now() > $activity->start_time;
+            $activity->can_finish = $activity->is_expired && $activity->status !== 'finished';
+            $activity->participants_count = $activity->participants()->count();
+        }
         return view("admin/admin-dashboard" ,compact('recs',"activities"));
     }
 
