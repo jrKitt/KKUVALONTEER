@@ -238,7 +238,6 @@
                                     placeholder="ค้นหาชื่อกิจกรรม, สถานที่, หรือรายละเอียด"
                                     id="searchInput"
                                     value="{{ request("search") }}"
-                                    oninput="searchActivities()"
                                 />
                                 <i
                                     class="fa-solid fa-search absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400"
@@ -249,7 +248,6 @@
                                     name="tag"
                                     id="tagFilter"
                                     class="w-72 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
-                                    onchange="filterActivities()"
                                 >
                                     <option value=""># แท็ก</option>
                                     <optgroup label="วิทยาศาสตร์เทคโนโลยี">
@@ -409,7 +407,6 @@
                                     name="status"
                                     id="statusFilter"
                                     class="w-50 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
-                                    onchange="filterActivities()"
                                 >
                                     <option value="">สถานะ</option>
                                     <option
@@ -433,7 +430,6 @@
                                 </select>
                                 <button
                                     id="clearButton"
-                                    onclick="clearFilters()"
                                     class="rounded-xl border border-gray-400 px-4 py-1 text-gray-600 transition-colors hover:bg-gray-50"
                                     title="ล้างตัวกรอง"
                                     style="display: none"
@@ -726,10 +722,191 @@
 @endsection
 
 @section("scripts")
+    @parent
     <script>
         const activitiesData = @json($rec);
 
+        // Make functions globally available
+        window.filterActivities = function() {
+            console.log('filterActivities called');
+            if (typeof window.applyAllFilters === 'function') {
+                window.applyAllFilters();
+            }
+        };
 
+        window.searchActivities = function() {
+            console.log('searchActivities called');
+            clearTimeout(window.searchTimeout);
+            window.searchTimeout = setTimeout(() => {
+                if (typeof window.applyAllFilters === 'function') {
+                    window.applyAllFilters();
+                }
+            }, 300);
+        };
+
+        window.applyAllFilters = function() {
+            console.log('applyAllFilters called');
+            const searchTerm = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
+            const statusFilter = document.getElementById('statusFilter')?.value || '';
+            const tagFilter = document.getElementById('tagFilter')?.value || '';
+            const cards = document.querySelectorAll('.activity-card');
+
+            console.log('Filters:', { searchTerm, statusFilter, tagFilter, cardsCount: cards.length });
+
+            let visibleCount = 0;
+            let statusCounts = {
+                'pending': 0,
+                'ongoing': 0,
+                'finished': 0
+            };
+
+            cards.forEach((card) => {
+                let showCard = true;
+                const searchData = card.dataset.search || '';
+                const cardStatus = card.dataset.status || '';
+                const cardTags = card.dataset.tags || '';
+
+                if (searchTerm && !searchData.includes(searchTerm)) {
+                    showCard = false;
+                }
+
+                if (statusFilter && cardStatus !== statusFilter) {
+                    showCard = false;
+                }
+
+                if (tagFilter && !cardTags.includes(tagFilter)) {
+                    showCard = false;
+                }
+
+                if (showCard) {
+                    visibleCount++;
+                    if (statusCounts.hasOwnProperty(cardStatus)) {
+                        statusCounts[cardStatus]++;
+                    }
+                }
+
+                if (showCard) {
+                    card.classList.remove('hidden-card');
+                    card.classList.add('visible-card');
+                } else {
+                    card.classList.remove('visible-card');
+                    card.classList.add('hidden-card');
+                }
+            });
+
+            updateResultsMessage(visibleCount, searchTerm, statusFilter, tagFilter, statusCounts);
+        };
+
+        window.updateResultsMessage = function(visibleCount, searchTerm, statusFilter, tagFilter, statusCounts) {
+            const noResultsMsg = document.getElementById('noResultsMessage');
+            const resultsInfo = document.getElementById('resultsInfo');
+            const clearButton = document.getElementById('clearButton');
+
+            const hasFilters = searchTerm || statusFilter || tagFilter;
+            if (clearButton) {
+                clearButton.style.display = hasFilters ? 'block' : 'none';
+            }
+
+            if (resultsInfo) {
+                let filterText = '';
+                if (hasFilters) {
+                    const filters = [];
+                    if (searchTerm) filters.push(`<span class="font-medium text-blue-600">ค้นหา: "${searchTerm}"</span>`);
+                    if (tagFilter) filters.push(`<span class="font-medium text-green-600">แท็ก: ${tagFilter}</span>`);
+                    if (statusFilter) {
+                        const statusTexts = {
+                            'pending': 'รอดำเนินการ',
+                            'ongoing': 'กำลังดำเนินการ',
+                            'finished': 'เสร็จสิ้น'
+                        };
+                        filters.push(`<span class="font-medium text-orange-600">สถานะ: ${statusTexts[statusFilter] || statusFilter}</span>`);
+                    }
+                    filterText = filters.join(' | ') + ' | ';
+                }
+
+                let statusInfo = '';
+                if (!statusFilter && visibleCount > 0) {
+                    const statusDisplay = [];
+                    if (statusCounts.pending > 0) statusDisplay.push(`<span class="text-yellow-600">${statusCounts.pending} รออนุมัติ</span>`);
+                    if (statusCounts.ongoing > 0) statusDisplay.push(`<span class="text-blue-600">${statusCounts.ongoing} ดำเนินการ</span>`);
+                    if (statusCounts.finished > 0) statusDisplay.push(`<span class="text-gray-600">${statusCounts.finished} เสร็จสิ้น</span>`);
+                    if (statusDisplay.length > 0) {
+                        statusInfo = ` (${statusDisplay.join(', ')})`;
+                    }
+                }
+
+                resultsInfo.innerHTML = `${filterText}พบ <span class="font-semibold text-gray-800">${visibleCount}</span> กิจกรรม${statusInfo}`;
+            }
+
+            if (visibleCount === 0) {
+                if (!noResultsMsg) {
+                    const gridContainer = document.getElementById('activitiesGrid');
+                    if (gridContainer) {
+                        const noResults = document.createElement('div');
+                        noResults.id = 'noResultsMessage';
+                        noResults.className = 'col-span-full py-12 text-center';
+                        noResults.innerHTML = `
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">ไม่พบกิจกรรม</h3>
+                            <p class="mt-1 text-sm text-gray-500">ลองปรับเปลี่ยนคำค้นหาหรือเงื่อนไขการกรอง</p>
+                        `;
+                        gridContainer.appendChild(noResults);
+                    }
+                }
+            } else {
+                if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
+            }
+        };
+
+        window.clearFilters = function() {
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const tagFilter = document.getElementById('tagFilter');
+
+            if (searchInput) searchInput.value = '';
+            if (statusFilter) statusFilter.value = '';
+            if (tagFilter) tagFilter.value = '';
+
+
+            window.applyAllFilters();
+        };
+
+        function registerActivity(activityId) {
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                if (!csrfToken) {
+                    showAlert('error', 'ข้อผิดพลาด!', 'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่');
+                    return;
+                }
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ route("activities.register") }}';
+                form.style.display = 'none';
+
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = csrfToken.getAttribute('content');
+
+                const activityInput = document.createElement('input');
+                activityInput.type = 'hidden';
+                activityInput.name = 'activity_id';
+                activityInput.value = activityId;
+
+                form.appendChild(csrfInput);
+                form.appendChild(activityInput);
+                document.body.appendChild(form);
+                form.submit();
+            } catch (err) {
+                console.error('registerActivity failed', err);
+                showAlert('error', 'ข้อผิดพลาด!', 'เกิดข้อผิดพลาดภายใน โปรดลองอีกครั้ง');
+            }
+        }
 
         function showAlert(type, title, message) {
             const alertId = 'alert-' + type + '-' + Date.now();
@@ -786,149 +963,7 @@
             }
         }
 
-        let searchTimeout;
-
-        function searchActivities() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                applyAllFilters();
-            }, 300); // ดีเลย์ 300ms
-        }
-
-        function filterActivities() {
-            applyAllFilters();
-        }
-
-        function applyAllFilters() {
-
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            const statusFilter = document.getElementById('statusFilter').value;
-            const tagFilter = document.getElementById('tagFilter').value;
-            const cards = document.querySelectorAll('.activity-card');
-
-
-
-            let visibleCount = 0;
-            let statusCounts = {
-                'pending': 0,
-                'ongoing': 0,
-                'finished': 0
-            };
-
-            cards.forEach((card) => {
-                let showCard = true;
-                const searchData = card.dataset.search || '';
-                const cardStatus = card.dataset.status || '';
-                const cardTags = card.dataset.tags || '';
-
-                // Apply search filter
-                if (searchTerm && !searchData.includes(searchTerm)) {
-                    showCard = false;
-                }
-
-                // Apply status filter
-                if (statusFilter && cardStatus !== statusFilter) {
-                    showCard = false;
-                }
-
-                // Apply tag filter
-                if (tagFilter && !cardTags.includes(tagFilter)) {
-                    showCard = false;
-                }
-
-                if (showCard) {
-                    visibleCount++;
-                    if (statusCounts.hasOwnProperty(cardStatus)) {
-                        statusCounts[cardStatus]++;
-                    }
-                }
-
-
-
-                if (showCard) {
-                    card.classList.remove('hidden-card');
-                    card.classList.add('visible-card');
-
-                } else {
-                    card.classList.remove('visible-card');
-                    card.classList.add('hidden-card');
-
-                }
-            });
-
-
-            updateResultsMessage(visibleCount, searchTerm, statusFilter, tagFilter, statusCounts);
-        }
-
-        function updateResultsMessage(visibleCount, searchTerm, statusFilter, tagFilter, statusCounts) {
-            const noResultsMsg = document.getElementById('noResultsMessage');
-            const resultsInfo = document.getElementById('resultsInfo');
-            const clearButton = document.getElementById('clearButton');
-
-            const hasFilters = searchTerm || statusFilter || tagFilter;
-            if (clearButton) {
-                clearButton.style.display = hasFilters ? 'block' : 'none';
-            }
-
-            if (resultsInfo) {
-                let filterText = '';
-                if (hasFilters) {
-                    const filters = [];
-                    if (searchTerm) filters.push(`<span class="font-medium text-blue-600">ค้นหา: "${searchTerm}"</span>`);
-                    if (tagFilter) filters.push(`<span class="font-medium text-green-600">แท็ก: ${tagFilter}</span>`);
-                    if (statusFilter) {
-                        const statusTexts = {
-                            'pending': 'รอดำเนินการ',
-                            'ongoing': 'กำลังดำเนินการ',
-                            'finished': 'เสร็จสิ้น'
-                        };
-                        filters.push(`<span class="font-medium text-orange-600">สถานะ: ${statusTexts[statusFilter] || statusFilter}</span>`);
-                    }
-                    filterText = filters.join(' | ') + ' | ';
-                }
-
-                let statusInfo = '';
-                if (!statusFilter && visibleCount > 0) {
-                    const statusDisplay = [];
-                    if (statusCounts.pending > 0) statusDisplay.push(`<span class="text-yellow-600">${statusCounts.pending} รออนุมัติ</span>`);
-                    if (statusCounts.ongoing > 0) statusDisplay.push(`<span class="text-blue-600">${statusCounts.ongoing} ดำเนินการ</span>`);
-                    if (statusCounts.finished > 0) statusDisplay.push(`<span class="text-gray-600">${statusCounts.finished} เสร็จสิ้น</span>`);
-                    if (statusDisplay.length > 0) {
-                        statusInfo = ` (${statusDisplay.join(', ')})`;
-                    }
-                }
-
-                resultsInfo.innerHTML = `${filterText}พบ <span class="font-semibold text-gray-800">${visibleCount}</span> กิจกรรม${statusInfo}`;
-            }
-
-            if (visibleCount === 0) {
-                if (!noResultsMsg) {
-                    const gridContainer = document.getElementById('activitiesGrid');
-                    const noResults = document.createElement('div');
-                    noResults.id = 'noResultsMessage';
-                    noResults.className = 'col-span-full py-12 text-center';
-                    noResults.innerHTML = `
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                        <h3 class="mt-2 text-sm font-medium text-gray-900">ไม่พบกิจกรรม</h3>
-                        <p class="mt-1 text-sm text-gray-500">ลองปรับเปลี่ยนคำค้นหาหรือเงื่อนไขการกรอง</p>
-                    `;
-                    gridContainer.appendChild(noResults);
-                }
-            } else {
-                if (noResultsMsg) {
-                    noResultsMsg.remove();
-                }
-            }
-        }
-
-        function clearFilters() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('statusFilter').value = '';
-            document.getElementById('tagFilter').value = '';
-            applyAllFilters();
-        }
+        // Functions now defined at top of script section
 
         const carouselData = [
             @if ($rec->isNotEmpty())
@@ -1027,10 +1062,33 @@
         }, 5000);
 
         document.addEventListener('DOMContentLoaded', function () {
-            applyAllFilters();
+            // Set up event listeners
+            const searchInput = document.getElementById('searchInput');
+            const tagFilter = document.getElementById('tagFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const clearButton = document.getElementById('clearButton');
 
+            if (searchInput) {
+                searchInput.addEventListener('input', window.searchActivities);
+            }
+
+            if (tagFilter) {
+                tagFilter.addEventListener('change', window.applyAllFilters);
+            }
+
+            if (statusFilter) {
+                statusFilter.addEventListener('change', window.applyAllFilters);
+            }
+
+            if (clearButton) {
+                clearButton.addEventListener('click', window.clearFilters);
+            }
+
+            // Apply initial filter
+            window.applyAllFilters();
+
+            // Card hover effects
             const cards = document.querySelectorAll('.activity-card');
-
             cards.forEach((card) => {
                 card.addEventListener('mouseenter', function () {
                     this.style.transform = 'translateY(-4px)';
@@ -1040,8 +1098,6 @@
                     this.style.transform = 'translateY(0)';
                 });
             });
-
-            applyAllFilters();
         });
     </script>
 

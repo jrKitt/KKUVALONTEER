@@ -40,7 +40,6 @@
                                     class="w-70 rounded-xl border border-gray-400 px-2 py-1"
                                     placeholder="ค้นหากิจกรรม"
                                     id="searchInput"
-                                    onkeyup="searchActivities()"
                                 />
                             </div>
                             <div class="flex gap-5 max-md:flex-col">
@@ -48,7 +47,6 @@
                                     name=""
                                     id="statusFilter"
                                     class="w-50 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
-                                    onchange="filterActivities()"
                                 >
                                     <option value="">สถานะทั้งหมด</option>
                                     <option value="pending">สมัครแล้ว</option>
@@ -298,12 +296,20 @@
         }
 
         function filterActivities() {
-            const searchTerm = document
-                .getElementById('searchInput')
-                .value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value;
-            const progressFilter =
-                document.getElementById('progressFilter').value;
+            const searchInput = document.getElementById('searchInput');
+            const statusFilterElement = document.getElementById('statusFilter');
+            const progressFilterElement =
+                document.getElementById('progressFilter');
+
+            const searchTerm = searchInput
+                ? searchInput.value.toLowerCase()
+                : '';
+            const statusFilter = statusFilterElement
+                ? statusFilterElement.value
+                : '';
+            const progressFilter = progressFilterElement
+                ? progressFilterElement.value
+                : '';
             const activityCards = document.querySelectorAll('.activity-card');
 
             activityCards.forEach((card) => {
@@ -375,8 +381,14 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+
             if (searchInput) {
                 searchInput.addEventListener('input', searchActivities);
+            }
+
+            if (statusFilter) {
+                statusFilter.addEventListener('change', filterActivities);
             }
         });
     </script>
