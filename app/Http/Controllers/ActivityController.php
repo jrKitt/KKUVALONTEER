@@ -293,8 +293,12 @@ class ActivityController extends Controller
             return response()->json(['success' => false, 'message' => 'ไม่พบการสมัครกิจกรรมนี้']);
         }
 
+        $activity = Activity::find($activityId);
+        if ($activity && $activity->start_time <= now()) {
+            return response()->json(['success' => false, 'message' => 'ไม่สามารถยกเลิกได้ เนื่องจากกิจกรรมเริ่มแล้ว']);
+        }
 
-        $registration->update(['status' => 'cancelled']);
+        $registration->delete();
 
         return response()->json([
             'success' => true,

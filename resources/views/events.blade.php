@@ -231,216 +231,28 @@
                             </p>
                         </div>
                         <div class="flex flex-col items-end gap-5">
-                            <div class="relative">
+                            <div>
                                 <input
                                     type="search"
-                                    class="w-70 rounded-xl border border-gray-400 px-4 py-2 pr-10"
-                                    placeholder="ค้นหาชื่อกิจกรรม, สถานที่, หรือรายละเอียด"
+                                    class="w-70 rounded-xl border border-gray-400 px-2 py-1"
+                                    placeholder="ค้นหากิจกรรม"
                                     id="searchInput"
-                                    value="{{ request("search") }}"
                                 />
-                                <i
-                                    class="fa-solid fa-search absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400"
-                                ></i>
                             </div>
-                            <div class="flex gap-3 max-md:flex-col">
+                            <div class="flex gap-5 max-md:flex-col">
                                 <select
-                                    name="tag"
-                                    id="tagFilter"
-                                    class="w-72 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
-                                >
-                                    <option value=""># แท็ก</option>
-                                    <optgroup label="วิทยาศาสตร์เทคโนโลยี">
-                                        <option
-                                            value="คณะเกษตรศาสตร์"
-                                            {{ request("tag") == "คณะเกษตรศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะเกษตรศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะเทคโนโลยี"
-                                            {{ request("tag") == "คณะเทคโนโลยี" ? "selected" : "" }}
-                                        >
-                                            คณะเทคโนโลยี
-                                        </option>
-                                        <option
-                                            value="คณะวิศวกรรมศาสตร์"
-                                            {{ request("tag") == "คณะวิศวกรรมศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะวิศวกรรมศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะวิทยาศาสตร์"
-                                            {{ request("tag") == "คณะวิทยาศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะวิทยาศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะสถาปัตยกรรมศาสตร์"
-                                            {{ request("tag") == "คณะสถาปัตยกรรมศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะสถาปัตยกรรมศาสตร์
-                                        </option>
-                                        <option
-                                            value="วิทยาลัยการคอมพิวเตอร์"
-                                            {{ request("tag") == "วิทยาลัยการคอมพิวเตอร์" ? "selected" : "" }}
-                                        >
-                                            วิทยาลัยการคอมพิวเตอร์
-                                        </option>
-                                    </optgroup>
-                                    <optgroup label="วิทยาศาสตร์สุขภาพ">
-                                        <option
-                                            value="คณะพยาบาลศาสตร์"
-                                            {{ request("tag") == "คณะพยาบาลศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะพยาบาลศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะแพทยศาสตร์"
-                                            {{ request("tag") == "คณะแพทยศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะแพทยศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะเทคนิคการแพทย์"
-                                            {{ request("tag") == "คณะเทคนิคการแพทย์" ? "selected" : "" }}
-                                        >
-                                            คณะเทคนิคการแพทย์
-                                        </option>
-                                        <option
-                                            value="คณะสาธารณสุขศาสตร์"
-                                            {{ request("tag") == "คณะสาธารณสุขศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะสาธารณสุขศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะทันตแพทยศาสตร์"
-                                            {{ request("tag") == "คณะทันตแพทยศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะทันตแพทยศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะเภสัชศาสตร์"
-                                            {{ request("tag") == "คณะเภสัชศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะเภสัชศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะสัตวแพทยศาสตร์"
-                                            {{ request("tag") == "คณะสัตวแพทยศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะสัตวแพทยศาสตร์
-                                        </option>
-                                    </optgroup>
-                                    <optgroup label="มนุษยศาสตร์และสังคมศาสตร์">
-                                        <option
-                                            value="คณะศึกษาศาสตร์"
-                                            {{ request("tag") == "คณะศึกษาศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะศึกษาศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะมนุษยศาสตร์และสังคมศาสตร์"
-                                            {{ request("tag") == "คณะมนุษยศาสตร์และสังคมศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะมนุษยศาสตร์และสังคมศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะบริหารธุรกิจและการบัญชี"
-                                            {{ request("tag") == "คณะบริหารธุรกิจและการบัญชี" ? "selected" : "" }}
-                                        >
-                                            คณะบริหารธุรกิจและการบัญชี
-                                        </option>
-                                        <option
-                                            value="คณะศิลปกรรมศาสตร์"
-                                            {{ request("tag") == "คณะศิลปกรรมศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะศิลปกรรมศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะเศรษฐศาสตร์"
-                                            {{ request("tag") == "คณะเศรษฐศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะเศรษฐศาสตร์
-                                        </option>
-                                        <option
-                                            value="คณะนิติศาสตร์"
-                                            {{ request("tag") == "คณะนิติศาสตร์" ? "selected" : "" }}
-                                        >
-                                            คณะนิติศาสตร์
-                                        </option>
-                                        <option
-                                            value="วิทยาลัยการปกครองท้องถิ่น"
-                                            {{ request("tag") == "วิทยาลัยการปกครองท้องถิ่น" ? "selected" : "" }}
-                                        >
-                                            วิทยาลัยการปกครองท้องถิ่น
-                                        </option>
-                                        <option
-                                            value="วิทยาลัยบัณฑิตศึกษาการจัดการ"
-                                            {{ request("tag") == "วิทยาลัยบัณฑิตศึกษาการจัดการ" ? "selected" : "" }}
-                                        >
-                                            วิทยาลัยบัณฑิตศึกษาการจัดการ
-                                        </option>
-                                    </optgroup>
-                                    <optgroup label="สหสาขาวิชา">
-                                        <option
-                                            value="บัณฑิตวิทยาลัย"
-                                            {{ request("tag") == "บัณฑิตวิทยาลัย" ? "selected" : "" }}
-                                        >
-                                            บัณฑิตวิทยาลัย
-                                        </option>
-                                        <option
-                                            value="วิทยาลัยนานาชาติ"
-                                            {{ request("tag") == "วิทยาลัยนานาชาติ" ? "selected" : "" }}
-                                        >
-                                            วิทยาลัยนานาชาติ
-                                        </option>
-                                        <option
-                                            value="คณะสหวิทยาการ"
-                                            {{ request("tag") == "คณะสหวิทยาการ" ? "selected" : "" }}
-                                        >
-                                            คณะสหวิทยาการ
-                                        </option>
-                                    </optgroup>
-                                </select>
-                                <select
-                                    name="status"
+                                    name=""
                                     id="statusFilter"
                                     class="w-50 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
                                 >
-                                    <option value="">สถานะ</option>
-                                    <option
-                                        value="pending"
-                                        {{ request("status") == "pending" ? "selected" : "" }}
-                                    >
-                                        รอดำเนินการ
-                                    </option>
-                                    <option
-                                        value="ongoing"
-                                        {{ request("status") == "ongoing" ? "selected" : "" }}
-                                    >
-                                        กำลังดำเนินการ
-                                    </option>
-                                    <option
-                                        value="finished"
-                                        {{ request("status") == "finished" ? "selected" : "" }}
-                                    >
-                                        เสร็จสิ้น
-                                    </option>
+                                    <option value="">สถานะทั้งหมด</option>
+                                    <option value="pending">รอดำเนินการ</option>
+                                    <option value="ongoing">กำลังดำเนินการ</option>
+                                    <option value="finished">เสร็จสิ้น</option>
                                 </select>
-                                <button
-                                    id="clearButton"
-                                    class="rounded-xl border border-gray-400 px-4 py-1 text-gray-600 transition-colors hover:bg-gray-50"
-                                    title="ล้างตัวกรอง"
-                                    style="display: none"
-                                >
-                                    <i class="fa-solid fa-times"></i>
-                                    ล้าง
-                                </button>
                             </div>
                         </div>
                     </div>
-
                     <div
                         class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
                         id="activitiesGrid"
@@ -458,7 +270,7 @@
                             @endphp
 
                             <div
-                                class="activity-card overflow-hidden rounded-lg bg-white shadow-md flex flex-col justify-between"
+                                class="activity-card overflow-hidden rounded-lg bg-white shadow-md"
                                 data-status="{{ $activity->status }}"
                                 data-search="{{ strtolower($activity->name_th . " " . $activity->description . " " . $activity->location) }}"
                                 data-tags="{{ ! empty($cardTags) ? implode(",", $cardTags) : "" }}"
@@ -476,7 +288,7 @@
                                         class="h-48 w-full object-cover"
                                     />
                                 @endif
-                                <div class="p-4 grow">
+                                <div class="p-4">
                                     <h4
                                         class="mb-2 font-semibold text-gray-900"
                                     >
@@ -613,82 +425,81 @@
                                         </div>
                                     @endif
 
-                                </div>
-
-                                <div class="flex gap-2 m-4 text-nowrap">
-                                    @if ($activity->status === "finished")
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-gray-500 px-4 py-2 text-white"
-                                            disabled
-                                        >
-                                            กิจกรรมเสร็จสิ้น
-                                        </button>
-                                    @elseif (isset($activity->is_registered) && $activity->is_registered)
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white"
-                                            disabled
-                                        >
-                                            สมัครแล้ว
-                                        </button>
-                                    @elseif (isset($activity->is_registration_closed) && $activity->is_registration_closed)
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
-                                            disabled
-                                        >
-                                            หมดเวลารับสมัคร
-                                        </button>
-                                    @elseif (($activity->participants_count ?? 0) >= $activity->accept_amount)
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
-                                            disabled
-                                        >
-                                            เต็มแล้ว
-                                        </button>
-                                    @elseif ($activity->status === "pending" || $activity->status === "ongoing")
-                                        @auth
-                                            <form
-                                                method="POST"
-                                                action="{{ route("activities.register") }}"
-                                                style="
-                                                    display: inline;
-                                                    width: 100%;
-                                                "
+                                    <div class="flex gap-2">
+                                        @if ($activity->status === "finished")
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-gray-500 px-4 py-2 text-white"
+                                                disabled
                                             >
-                                                @csrf
-                                                <input
-                                                    type="hidden"
-                                                    name="activity_id"
-                                                    value="{{ $activity->id }}"
-                                                />
-                                                <button
-                                                    type="submit"
-                                                    class="w-full flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-white transition-colors hover:bg-cyan-500"
+                                                กิจกรรมเสร็จสิ้น
+                                            </button>
+                                        @elseif (isset($activity->is_registered) && $activity->is_registered)
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white"
+                                                disabled
+                                            >
+                                                สมัครแล้ว
+                                            </button>
+                                        @elseif (isset($activity->is_registration_closed) && $activity->is_registration_closed)
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
+                                                disabled
+                                            >
+                                                หมดเวลารับสมัคร
+                                            </button>
+                                        @elseif (($activity->participants_count ?? 0) >= $activity->accept_amount)
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
+                                                disabled
+                                            >
+                                                เต็มแล้ว
+                                            </button>
+                                        @elseif ($activity->status === "pending" || $activity->status === "ongoing")
+                                            @auth
+                                                <form
+                                                    method="POST"
+                                                    action="{{ route("activities.register") }}"
+                                                    style="
+                                                        display: inline;
+                                                        width: 100%;
+                                                    "
                                                 >
-                                                    สมัครเลย
-                                                </button>
-                                            </form>
+                                                    @csrf
+                                                    <input
+                                                        type="hidden"
+                                                        name="activity_id"
+                                                        value="{{ $activity->id }}"
+                                                    />
+                                                    <button
+                                                        type="submit"
+                                                        class="w-full flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-white transition-colors hover:bg-cyan-500"
+                                                    >
+                                                        สมัครเลย
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <a
+                                                    href="{{ route("login") }}"
+                                                    class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-center text-white transition-colors hover:bg-cyan-500"
+                                                >
+                                                    เข้าสู่ระบบเพื่อสมัคร
+                                                </a>
+                                            @endauth
                                         @else
-                                            <a
-                                                href="{{ route("login") }}"
-                                                class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-center text-white transition-colors hover:bg-cyan-500"
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-white"
+                                                disabled
                                             >
-                                                เข้าสู่ระบบเพื่อสมัคร
-                                            </a>
-                                        @endauth
-                                    @else
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-white"
-                                            disabled
+                                                ปิดการสมัคร
+                                            </button>
+                                        @endif
+                                        <a
+                                            href="{{ route("activity.detail", $activity->id) }}"
+                                            class="rounded-lg border border-blue-500 px-4 py-2 text-blue-500 transition-colors hover:bg-blue-50"
                                         >
-                                            ปิดการสมัคร
-                                        </button>
-                                    @endif
-                                    <a
-                                        href="{{ route("activity.detail", $activity->id) }}"
-                                        class="rounded-lg border border-blue-500 px-4 py-2 text-blue-500 transition-colors hover:bg-blue-50"
-                                    >
-                                        ดูรายละเอียด
-                                    </a>
+                                            ดูรายละเอียด
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         @empty
@@ -726,162 +537,77 @@
 @section("scripts")
     @parent
     <script>
-        const activitiesData = @json($rec);
+        function searchActivities() {
+            const searchTerm = document
+                .getElementById('searchInput')
+                .value.toLowerCase();
+            filterActivities();
+        }
 
-        // Make functions globally available
-        window.filterActivities = function() {
-            console.log('filterActivities called');
-            if (typeof window.applyAllFilters === 'function') {
-                window.applyAllFilters();
-            }
-        };
+        function filterActivities() {
+            const searchInput = document.getElementById('searchInput');
+            const statusFilterElement = document.getElementById('statusFilter');
 
-        window.searchActivities = function() {
-            console.log('searchActivities called');
-            clearTimeout(window.searchTimeout);
-            window.searchTimeout = setTimeout(() => {
-                if (typeof window.applyAllFilters === 'function') {
-                    window.applyAllFilters();
-                }
-            }, 300);
-        };
+            const searchTerm = searchInput
+                ? searchInput.value.toLowerCase()
+                : '';
+            const statusFilter = statusFilterElement
+                ? statusFilterElement.value
+                : '';
+            const activityCards = document.querySelectorAll('.activity-card');
 
-        window.applyAllFilters = function() {
-            console.log('applyAllFilters called');
-            const searchTerm = document.getElementById('searchInput')?.value.toLowerCase().trim() || '';
-            const statusFilter = document.getElementById('statusFilter')?.value || '';
-            const tagFilter = document.getElementById('tagFilter')?.value || '';
-            const cards = document.querySelectorAll('.activity-card');
+            activityCards.forEach((card) => {
+                const searchText = card.dataset.search;
+                const status = card.dataset.status;
 
-            console.log('Filters:', { searchTerm, statusFilter, tagFilter, cardsCount: cards.length });
-
-            let visibleCount = 0;
-            let statusCounts = {
-                'pending': 0,
-                'ongoing': 0,
-                'finished': 0
-            };
-
-            cards.forEach((card) => {
                 let showCard = true;
-                const searchData = card.dataset.search || '';
-                const cardStatus = card.dataset.status || '';
-                const cardTags = card.dataset.tags || '';
 
-                if (searchTerm && !searchData.includes(searchTerm)) {
+                if (searchTerm && !searchText.includes(searchTerm)) {
                     showCard = false;
                 }
 
-                if (statusFilter && cardStatus !== statusFilter) {
+                if (statusFilter && statusFilter !== status) {
                     showCard = false;
                 }
 
-                if (tagFilter && !cardTags.includes(tagFilter)) {
-                    showCard = false;
-                }
-
-                if (showCard) {
-                    visibleCount++;
-                    if (statusCounts.hasOwnProperty(cardStatus)) {
-                        statusCounts[cardStatus]++;
-                    }
-                }
-
-                if (showCard) {
-                    card.classList.remove('hidden-card');
-                    card.classList.add('visible-card');
-                } else {
-                    card.classList.remove('visible-card');
-                    card.classList.add('hidden-card');
-                }
+                card.style.display = showCard ? 'block' : 'none';
             });
 
-            updateResultsMessage(visibleCount, searchTerm, statusFilter, tagFilter, statusCounts);
-        };
+            const visibleCards = Array.from(activityCards).filter(
+                (card) => card.style.display !== 'none',
+            );
+            const container = document.getElementById('activitiesGrid');
 
-        window.updateResultsMessage = function(visibleCount, searchTerm, statusFilter, tagFilter, statusCounts) {
-            const noResultsMsg = document.getElementById('noResultsMessage');
-            const resultsInfo = document.getElementById('resultsInfo');
-            const clearButton = document.getElementById('clearButton');
-
-            const hasFilters = searchTerm || statusFilter || tagFilter;
-            if (clearButton) {
-                clearButton.style.display = hasFilters ? 'block' : 'none';
-            }
-
-            if (resultsInfo) {
-                let filterText = '';
-                if (hasFilters) {
-                    const filters = [];
-                    if (searchTerm) filters.push(`<span class="font-medium text-blue-600">ค้นหา: "${searchTerm}"</span>`);
-                    if (tagFilter) filters.push(`<span class="font-medium text-green-600">แท็ก: ${tagFilter}</span>`);
-                    if (statusFilter) {
-                        const statusTexts = {
-                            'pending': 'รอดำเนินการ',
-                            'ongoing': 'กำลังดำเนินการ',
-                            'finished': 'เสร็จสิ้น'
-                        };
-                        filters.push(`<span class="font-medium text-orange-600">สถานะ: ${statusTexts[statusFilter] || statusFilter}</span>`);
-                    }
-                    filterText = filters.join(' | ') + ' | ';
-                }
-
-                let statusInfo = '';
-                if (!statusFilter && visibleCount > 0) {
-                    const statusDisplay = [];
-                    if (statusCounts.pending > 0) statusDisplay.push(`<span class="text-yellow-600">${statusCounts.pending} รออนุมัติ</span>`);
-                    if (statusCounts.ongoing > 0) statusDisplay.push(`<span class="text-blue-600">${statusCounts.ongoing} ดำเนินการ</span>`);
-                    if (statusCounts.finished > 0) statusDisplay.push(`<span class="text-gray-600">${statusCounts.finished} เสร็จสิ้น</span>`);
-                    if (statusDisplay.length > 0) {
-                        statusInfo = ` (${statusDisplay.join(', ')})`;
-                    }
-                }
-
-                resultsInfo.innerHTML = `${filterText}พบ <span class="font-semibold text-gray-800">${visibleCount}</span> กิจกรรม${statusInfo}`;
-            }
-
-            if (visibleCount === 0) {
-                if (!noResultsMsg) {
-                    const gridContainer = document.getElementById('activitiesGrid');
-                    if (gridContainer) {
-                        const noResults = document.createElement('div');
-                        noResults.id = 'noResultsMessage';
-                        noResults.className = 'col-span-full py-12 text-center';
-                        noResults.innerHTML = `
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            let noResultsMessage = document.getElementById('noResultsMessage');
+            if (visibleCards.length === 0) {
+                if (!noResultsMessage) {
+                    noResultsMessage = document.createElement('div');
+                    noResultsMessage.id = 'noResultsMessage';
+                    noResultsMessage.className =
+                        'col-span-full py-12 text-center w-full';
+                    noResultsMessage.innerHTML = `
+                        <div class="mx-auto h-12 w-12 text-gray-400 mb-4">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
-                            <h3 class="mt-2 text-sm font-medium text-gray-900">ไม่พบกิจกรรม</h3>
-                            <p class="mt-1 text-sm text-gray-500">ลองปรับเปลี่ยนคำค้นหาหรือเงื่อนไขการกรอง</p>
-                        `;
-                        gridContainer.appendChild(noResults);
-                    }
+                        </div>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">ไม่พบกิจกรรมที่ตรงกับเงื่อนไข</h3>
+                        <p class="mt-1 text-sm text-gray-500">ลองเปลี่ยนเงื่อนไขการค้นหาหรือกรองข้อมูล</p>
+                    `;
+                    container.appendChild(noResultsMessage);
                 }
             } else {
-                if (noResultsMsg) {
-                    noResultsMsg.remove();
+                if (noResultsMessage) {
+                    noResultsMessage.remove();
                 }
             }
-        };
-
-        window.clearFilters = function() {
-            const searchInput = document.getElementById('searchInput');
-            const statusFilter = document.getElementById('statusFilter');
-            const tagFilter = document.getElementById('tagFilter');
-
-            if (searchInput) searchInput.value = '';
-            if (statusFilter) statusFilter.value = '';
-            if (tagFilter) tagFilter.value = '';
-
-
-            window.applyAllFilters();
-        };
+        }
 
         function registerActivity(activityId) {
             try {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]');
                 if (!csrfToken) {
-                    showAlert('error', 'ข้อผิดพลาด!', 'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่');
+                    alert('ไม่พบ CSRF token กรุณาโหลดหน้าใหม่');
                     return;
                 }
 
@@ -906,114 +632,28 @@
                 form.submit();
             } catch (err) {
                 console.error('registerActivity failed', err);
-                showAlert('error', 'ข้อผิดพลาด!', 'เกิดข้อผิดพลาดภายใน โปรดลองอีกครั้ง');
+                alert('เกิดข้อผิดพลาด โปรดลองอีกครั้ง');
             }
         }
 
-        function showAlert(type, title, message) {
-            const alertId = 'alert-' + type + '-' + Date.now();
-            const alertHTML = `
-                <div id="${alertId}" role="alert" class="alert-modern alert-${type}-modern fixed top-6 right-6 z-[9999] min-w-80 max-w-96" style="opacity: 0; transform: translateX(100%);">
-                    <div class="flex items-center p-4">
-                        <div class="flex-shrink-0">
-                            <div class="w-8 h-8 bg-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-500 rounded-full flex items-center justify-center shadow-lg">
-                                ${
-                                    type === 'success'
-                                        ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>'
-                                        : '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>'
-                                }
-                            </div>
-                        </div>
-                        <div class="ml-4 flex-1">
-                            <p class="text-sm font-semibold text-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-800">${title}</p>
-                            <p class="text-sm text-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-700">${message}</p>
-                        </div>
-                        <button type="button" class="flex-shrink-0 ml-4 text-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-400 hover:text-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-600 transition-colors duration-200" onclick="closeAlert('${alertId}')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            document.body.insertAdjacentHTML('beforeend', alertHTML);
-            const alertElement = document.getElementById(alertId);
-
-            setTimeout(() => {
-                alertElement.style.opacity = '1';
-                alertElement.style.transform = 'translateX(0)';
-                alertElement.style.transition =
-                    'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-            }, 100);
-
-            setTimeout(() => {
-                closeAlert(alertId);
-            }, 5000);
-        }
-
-        function closeAlert(alertId) {
-            const alertElement = document.getElementById(alertId);
-            if (alertElement) {
-                alertElement.style.transform = 'translateX(100%)';
-                alertElement.style.opacity = '0';
-                setTimeout(() => {
-                    if (alertElement.parentNode) {
-                        alertElement.remove();
-                    }
-                }, 300);
-            }
-        }
-
-        // Functions now defined at top of script section
-
+        // Carousel functionality
         const carouselData = [
             @if ($rec->isNotEmpty())
                 @foreach ($rec->take(3) as $index => $activity)
                     {
                         title: "{{ $activity->name_th }}",
-                        description: "{{ Str::limit($activity->description ?: 'ค่ายปลุกฝันสอนน้อง จัดขึ้นเพื่อเป็นเวทีให้เยาวชนได้ค้นพบความฝันและศักยภาพของตนเอง', 300) }}",
+                        description: "{{ Str::limit($activity->description ?: 'ค่ายปลุกฝันสอนน้อง', 300) }}",
                         id: {{ $activity->id }},
                         is_registered: {{ isset($activity->is_registered) && $activity->is_registered ? 'true' : 'false' }},
                         participants_count: {{ $activity->participants_count ?? 0 }},
                         accept_amount: {{ $activity->accept_amount }},
                         status: "{{ $activity->status }}"
-                    }@if (!$loop->last),@endif
+                    }{{ !$loop->last ? ',' : '' }}
                 @endforeach
-                @for ($i = $rec->count(); $i < 3; $i++)
-                    @if ($i > 0 || $rec->count() > 0),@endif
-                    {
-                        title: "ค่ายปลุกฝันสอนน้อง",
-                        description: "ค่ายปลุกฝันสอนน้อง จัดขึ้นเพื่อเป็นเวทีให้เยาวชนได้ค้นพบความฝันและศักยภาพของตนเอง ผ่านกิจกรรมการเรียนรู้ การสอนทักษะ และการแนะแนวทางการพัฒนาตัวเองอย่างสร้างสรรค์",
-                        id: null,
-                        is_registered: false,
-                        participants_count: 0,
-                        accept_amount: 0,
-                        status: "pending"
-                    }
-                @endfor
             @else
                 {
                     title: "ค่ายปลุกฝันสอนน้อง",
-                    description: "ค่ายปลุกฝันสอนน้อง จัดขึ้นเพื่อเป็นเวทีให้เยาวชนได้ค้นพบความฝันและศักยภาพของตนเอง ผ่านกิจกรรมการเรียนรู้ การสอนทักษะ และการแนะแนวทางการพัฒนาตัวเองอย่างสร้างสรรค์ โดยมุ่งเน้นการสร้างแรงบันดาลใจ ปลูกฝังทัศนคติที่ดี และส่งเสริมความสามัคคีระหว่างรุ่นพี่และน้อง รวมถึงการเรียนรู้การทำงานเป็นทีมและการรับผิดชอบต่อสังคมในบรรยากาศที่สนุกสนานและเป็นมิตร",
-                    id: null,
-                    is_registered: false,
-                    participants_count: 0,
-                    accept_amount: 0,
-                    status: "pending"
-                },
-                {
-                    title: "ค่ายปลุกฝันสอนน้อง",
-                    description: "ค่ายปลุกฝันสอนน้อง จัดขึ้นเพื่อเป็นเวทีให้เยาวชนได้ค้นพบความฝันและศักยภาพของตนเอง ผ่านกิจกรรมการเรียนรู้ การสอนทักษะ และการแนะแนวทางการพัฒนาตัวเองอย่างสร้างสรรค์ โดยมุ่งเน้นการสร้างแรงบันดาลใจ ปลูกฝังทัศนคติที่ดี และส่งเสริมความสามัคคีระหว่างรุ่นพี่และน้อง รวมถึงการเรียนรู้การทำงานเป็นทีมและการรับผิดชอบต่อสังคมในบรรยากาศที่สนุกสนานและเป็นมิตร",
-                    id: null,
-                    is_registered: false,
-                    participants_count: 0,
-                    accept_amount: 0,
-                    status: "pending"
-                },
-                {
-                    title: "ค่ายปลุกฝันสอนน้อง",
-                    description: "ค่ายปลุกฝันสอนน้อง จัดขึ้นเพื่อเป็นเวทีให้เยาวชนได้ค้นพบความฝันและศักยภาพของตนเอง ผ่านกิจกรรมการเรียนรู้ การสอนทักษะ และการแนะแนวทางการพัฒนาตัวเองอย่างสร้างสรรค์ โดยมุ่งเน้นการสร้างแรงบันดาลใจ ปลูกฝังทัศนคติที่ดี และส่งเสริมความสามัคคีระหว่างรุ่นพี่และน้อง รวมถึงการเรียนรู้การทำงานเป็นทีมและการรับผิดชอบต่อสังคมในบรรยากาศที่สนุกสนานและเป็นมิตร",
+                    description: "ค่ายปลุกฝันสอนน้อง จัดขึ้นเพื่อเป็นเวทีให้เยาวชนได้ค้นพบความฝันและศักยภาพของตนเอง",
                     id: null,
                     is_registered: false,
                     participants_count: 0,
@@ -1026,7 +666,7 @@
         let currentSlide = 0;
 
         function updateCarouselText() {
-            const data = carouselData[currentSlide];
+            const data = carouselData[currentSlide % carouselData.length];
             const titleElement = document.querySelector('.carousel-title');
             const descriptionElement = document.querySelector('.carousel-description');
             const buttonsContainer = document.querySelector('.carousel-buttons');
@@ -1038,56 +678,37 @@
                 let buttonHTML = '';
 
                 if (data.status === "finished") {
-                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-gray-500 px-6 py-2 text-nowrap text-white" disabled><i class="fa-solid fa-check mr-1"></i>กิจกรรมเสร็จสิ้น</button>';
+                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-gray-500 px-6 py-2 text-nowrap text-white shadow-lg" disabled><i class="fa-solid fa-check mr-1"></i>กิจกรรมเสร็จสิ้น</button>';
                 } else if (data.is_registered) {
-                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-emerald-400 px-6 py-2 text-nowrap text-white" disabled>สมัครแล้ว</button>';
+                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-emerald-400 px-6 py-2 text-nowrap text-white shadow-lg" disabled>สมัครแล้ว</button>';
                 } else if (data.participants_count >= data.accept_amount) {
-                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-red-500 px-6 py-2 text-nowrap text-white" disabled>เต็มแล้ว</button>';
+                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-red-500 px-6 py-2 text-nowrap text-white shadow-lg" disabled>เต็มแล้ว</button>';
                 } else if (data.status === "pending" || data.status === "ongoing") {
                     @auth
-                        buttonHTML = `<form method="POST" action="{{ route('activities.register') }}" style="display: inline;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><input type="hidden" name="activity_id" value="${data.id}"><button type="submit" class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white hover:bg-cyan-500">สมัครเข้าร่วม</button></form>`;
+                        buttonHTML = `<a href="{{ route('activities.register') }}" onclick="event.preventDefault(); registerActivity(${data.id});" class="inline-block cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-center text-nowrap text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90">สมัครเข้าร่วม</a>`;
                     @else
-                        buttonHTML = `<a href="{{ route('login') }}" class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white hover:bg-cyan-500 text-center inline-block">เข้าสู่ระบบเพื่อสมัคร</a>`;
+                        buttonHTML = `<a href="{{ route('login') }}" class="inline-block cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-center text-nowrap text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90">เข้าสู่ระบบเพื่อสมัคร</a>`;
                     @endauth
                 } else {
-                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-gray-400 px-6 py-2 text-nowrap text-white" disabled>ปิดการสมัคร</button>';
+                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-gray-400 px-6 py-2 text-nowrap text-white shadow-lg" disabled>ปิดการสมัคร</button>';
                 }
 
-                buttonHTML += `<a href="/activity/detail/${data.id}" class="cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 hover:bg-gray-300">รายละเอียด</a>`;
+                buttonHTML += `<a href="/activity/detail/${data.id}" class="cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 shadow-lg transition-all hover:bg-gray-300 active:scale-90">รายละเอียด</a>`;
                 buttonsContainer.innerHTML = buttonHTML;
             }
         }
 
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % 3;
-            updateCarouselText();
-        }, 5000);
-
         document.addEventListener('DOMContentLoaded', function () {
-            // Set up event listeners
             const searchInput = document.getElementById('searchInput');
-            const tagFilter = document.getElementById('tagFilter');
             const statusFilter = document.getElementById('statusFilter');
-            const clearButton = document.getElementById('clearButton');
 
             if (searchInput) {
-                searchInput.addEventListener('input', window.searchActivities);
-            }
-
-            if (tagFilter) {
-                tagFilter.addEventListener('change', window.applyAllFilters);
+                searchInput.addEventListener('input', searchActivities);
             }
 
             if (statusFilter) {
-                statusFilter.addEventListener('change', window.applyAllFilters);
+                statusFilter.addEventListener('change', filterActivities);
             }
-
-            if (clearButton) {
-                clearButton.addEventListener('click', window.clearFilters);
-            }
-
-            // Apply initial filter
-            window.applyAllFilters();
 
             // Card hover effects
             const cards = document.querySelectorAll('.activity-card');
@@ -1100,6 +721,14 @@
                     this.style.transform = 'translateY(0)';
                 });
             });
+
+            // Start carousel if data exists
+            if (carouselData.length > 0) {
+                setInterval(() => {
+                    currentSlide = (currentSlide + 1) % carouselData.length;
+                    updateCarouselText();
+                }, 5000);
+            }
         });
     </script>
 
@@ -1254,46 +883,9 @@
             width: 12.5rem;
         }
 
-        /* Optgroup styling */
-        optgroup {
-            font-weight: bold;
-            color: #374151;
-            background-color: #f9fafb;
-        }
-
-        optgroup option {
-            font-weight: normal;
-            color: #6b7280;
-            padding-left: 1rem;
-        }
-
-        select option {
-            padding: 0.5rem 0.75rem;
-        }
-
         /* Status and Tags styling */
-        .activity-card .status-badge {
-            animation: none;
-        }
-
         .activity-card[data-status='finished'] {
             opacity: 0.85;
-        }
-
-        .activity-card[data-status='finished'] .status-badge {
-            background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
-        }
-
-        .activity-card[data-status='ongoing'] .status-badge {
-            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-        }
-
-        .activity-card[data-status='pending'] .status-badge {
-            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-        }
-
-        .tag-badge {
-            transition: none;
         }
     </style>
 @endsection
