@@ -9,6 +9,12 @@
     $activitiesThisMonth = collect($activities)->filter(function ($a) use ($now) {
         return \Carbon\Carbon::parse($a->start_time)->month === $now->month;
     });
+
+    \Carbon\Carbon::setLocale("th");
+    $colors = ["bg-green-400", "bg-blue-400", "bg-yellow-400", "bg-pink-400", "bg-purple-400", "bg-red-400", "bg-teal-400"];
+    $randomColor = $colors[array_rand($colors)];
+
+    $dates = $activities->map(fn ($a) => \Carbon\Carbon::parse($a->start_time)->format("Y-m-d"))->toArray();
 @endphp
 
 @section("layout-content")
@@ -16,7 +22,7 @@
         <div class="mx-auto aspect-auto max-w-6xl px-2">
             <div class="my-6 text-5xl font-bold">Dashboard</div>
             <div class="flex h-fit gap-5 p-4 max-lg:flex-col">
-                <div class="w-full rounded-lg shadow-md shadow-zinc-400/80">
+                <div class="roucnded-lg w-full shadow-md shadow-zinc-400/80">
                     <div class="p-2 sm:p-4">
                         <section
                             class="flex w-full flex-wrap items-center justify-between gap-2"
@@ -68,7 +74,7 @@
             <hr class="my-6 text-gray-400" />
         </div>
 
-        <main>
+        <main class="pb-12">
             <div
                 class="mx-auto w-full max-w-6xl rounded p-4 shadow shadow-zinc-400/80"
             >
@@ -96,16 +102,15 @@
                     </section>
 
                     <section
-                        class="flex w-full gap-5 max-md:flex-col-reverse max-md:items-center"
+                        class="mb-6 flex w-full gap-5 max-md:flex-col-reverse max-md:items-center"
                     >
-                        {{-- slot --}}
                         <div class="flex w-2/3 flex-col gap-10 max-md:w-full">
                             @foreach ($activitiesThisMonth as $a)
                                 <section
                                     class="flex h-fit w-full gap-3 rounded-lg shadow-md"
                                 >
                                     <div
-                                        class="max-h-full w-3 rounded-xl bg-green-500"
+                                        class="{{ $randomColor }} max-h-full w-3 rounded-xl"
                                     ></div>
 
                                     <div class="flex w-full flex-col px-4 py-2">
@@ -116,23 +121,21 @@
                                                 class="flex w-full items-center gap-3"
                                             >
                                                 <div
-                                                    class="h-3 w-3 rounded-full bg-green-400"
+                                                    class="{{ $randomColor }} h-3 w-3 rounded-full"
                                                 ></div>
                                                 <div
-                                                    class="text-xl font-bold text-black"
+                                                    class="text-xl font-medium text-black"
                                                 >
                                                     {{ $a->name_th }}
                                                 </div>
                                             </div>
 
                                             <div>
-                                                <section>
-                                                    <div
-                                                        class="w-fit rounded-md bg-red-400/80 px-2 py-1 font-bold text-red-500"
-                                                    >
-                                                        {{ $a->accept_amount }}
-                                                    </div>
-                                                </section>
+                                                <div
+                                                    class="w-fit rounded-md bg-gray-200 px-2 py-1 font-bold text-gray-500"
+                                                >
+                                                    {{ $a->participants_count }}/{{ $a->accept_amount }}
+                                                </div>
                                             </div>
                                         </section>
 
@@ -144,52 +147,63 @@
                                             >
                                                 <div class="text-gray-600">
                                                     <span>
+                                                        สถานที่ :
                                                         {{ $a->location }}
                                                     </span>
-                                                    <span>
+                                                </div>
+                                                <div class="flex text-gray-600">
+                                                    <p class="text-gray-500">
+                                                        รวม
                                                         {{ $a->total_hour }}
                                                         ชั่วโมง
+                                                    </p>
+                                                    <span
+                                                        class="mx-2 text-gray-500"
+                                                    >
+                                                        |
+                                                    </span>
+                                                    <span class="text-gray-500">
+                                                        {{ \Carbon\Carbon::parse($a->start_time)->translatedFormat("d F Y") }}
+                                                        <span class="mx-1">
+                                                            →
+                                                        </span>
+                                                        {{ \Carbon\Carbon::parse($a->end_time)->translatedFormat("d F Y") }}
                                                     </span>
                                                 </div>
-                                                <div class="text-gray-600">
-                                                    <span>
-                                                        {{ \Carbon\Carbon::parse($a->start_time)->format("d F Y") }}
-                                                    </span>
-                                                </div>
+
                                                 <div
                                                     class="flex max-sm:justify-center"
                                                 >
                                                     <div
-                                                        class="inline rounded-4xl bg-green-300 px-4 py-1 font-medium text-green-800/80"
+                                                        class="inline rounded-4xl bg-gray-300 px-4 py-1 font-medium text-gray-800"
                                                     >
-                                                        {{ $a->status }}
+                                                        {{ ["pending" => "รอดำเนินการ", "ongoing" => "กำลังดำเนินการ", "finished" => "เสร็จสิ้น"][$a->status] ?? $a->status }}
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {{--
-                                                <div
-                                                class="flex h-full items-end max-sm:justify-center"
-                                                >
-                                                <button
-                                                class="rounded-sm bg-yellow-500/70 px-4 py-2 text-white"
-                                                >
-                                                แก้ไขกิจกรรม
-                                                </button>
-                                                </div>
-                                            --}}
                                         </section>
                                     </div>
                                 </section>
                             @endforeach
                         </div>
-                        {{-- slot --}}
 
                         {{-- calendar --}}
+
                         <div class="flex h-fit w-full justify-center md:w-1/3">
                             <div class="w-full max-w-sm">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="{{ $randomColor }} mb-2 h-3 w-3 rounded-full"
+                                    ></div>
+                                    <p class="mb-2 text-xl font-medium">
+                                        วันจัดกิจกรรมตลอดทั้งปี
+                                    </p>
+                                </div>
                                 <calendar-date
                                     class="cally bg-base-100 rounded-box w-full shadow-lg"
+                                    :data="@json($dates)"
+                                    :highlight-dates="@json($dates)"
+                                    locale="th"
                                 >
                                     <svg
                                         aria-label="Previous"
@@ -203,6 +217,7 @@
                                             d="M15.75 19.5 8.25 12l7.5-7.5"
                                         ></path>
                                     </svg>
+
                                     <svg
                                         aria-label="Next"
                                         class="size-4 fill-current"
@@ -215,7 +230,11 @@
                                             d="m8.25 4.5 7.5 7.5-7.5 7.5"
                                         ></path>
                                     </svg>
-                                    <calendar-month class=""></calendar-month>
+
+                                    <calendar-month
+                                        :highlight-dates="@json($dates)"
+                                        locale="th"
+                                    ></calendar-month>
                                 </calendar-date>
                             </div>
                         </div>
