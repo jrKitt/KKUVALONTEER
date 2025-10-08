@@ -24,12 +24,11 @@
         "กลุ่มสหสาขาวิชา" => ["บัณฑิตวิทยาลัย", "วิทยาลัยนานาชาติ", "คณะสหวิทยาการ"],
     ];
 
-
-    $selectedFaculty = request('faculty');
-    $search = request('search');
-    $filtered = $rec->filter(function($activity) use ($selectedFaculty, $search) {
-        $matchFaculty = !$selectedFaculty || ($activity->user && $activity->user->faculty === $selectedFaculty);
-        $matchSearch = !$search || str_contains(strtolower($activity->name_th), strtolower($search));
+    $selectedFaculty = request("faculty");
+    $search = request("search");
+    $filtered = $rec->filter(function ($activity) use ($selectedFaculty, $search) {
+        $matchFaculty = ! $selectedFaculty || ($activity->user && $activity->user->faculty === $selectedFaculty);
+        $matchSearch = ! $search || str_contains(strtolower($activity->name_th), strtolower($search));
         return $matchFaculty && $matchSearch;
     });
 @endphp
@@ -171,6 +170,33 @@
             </div>
         @endif
 
+        <!-- Flash Messages -->
+        @if (session("success"))
+            <div class="mx-auto max-w-6xl px-2 py-2">
+                <div
+                    class="relative rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700"
+                    role="alert"
+                >
+                    <strong class="font-bold">สำเร็จ!</strong>
+                    <span class="block sm:inline">
+                        {{ session("success") }}
+                    </span>
+                </div>
+            </div>
+        @endif
+
+        @if (session("error"))
+            <div class="mx-auto max-w-6xl px-2 py-2">
+                <div
+                    class="relative rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
+                    role="alert"
+                >
+                    <strong class="font-bold">เกิดข้อผิดพลาด!</strong>
+                    <span class="block sm:inline">{{ session("error") }}</span>
+                </div>
+            </div>
+        @endif
+
         <div class="mx-auto aspect-auto max-w-6xl px-2">
             <div
                 class="my-6 flex w-full items-center justify-between gap-4 max-md:flex-col"
@@ -202,39 +228,42 @@
                             action="/admin/event"
                             class="flex gap-2"
                         >
-                            @if(request("faculty") || request("search"))
+                            @if (request("faculty") || request("search"))
                                 <a
-                                    href="{{ url('/admin/event') }}"
-                                    class="btn btn-sm sm:btn-md btn-ghost text-gray-700 border border-gray-300 hover:bg-gray-100 w-3"
+                                    href="{{ url("/admin/event") }}"
+                                    class="btn btn-sm sm:btn-md btn-ghost w-3 border border-gray-300 text-gray-700 hover:bg-gray-100"
                                 >
                                     <i class="fa-solid fa-rotate-right"></i>
                                 </a>
                             @endif
-                            {{-- <select
+
+                            {{--
+                                <select
                                 name="faculty"
                                 class="w-full rounded-xl border-2 border-gray-400 px-2 py-1 text-sm sm:w-auto"
                                 onchange="this.form.submit()"
-                            >
-                                <option
-                                    value=""
-                                    disabled
-                                    {{ request("faculty") ? "" : "selected" }}
                                 >
-                                    -- ทุกคณะ --
+                                <option
+                                value=""
+                                disabled
+                                {{ request("faculty") ? "" : "selected" }}
+                                >
+                                -- ทุกคณะ --
                                 </option>
                                 @foreach ($faculties as $group => $items)
-                                    <optgroup label="{{ $group }}">
-                                        @foreach ($items as $faculty)
-                                            <option
-                                                value="{{ $faculty }}"
-                                                {{ request("faculty") == $faculty ? "selected" : "" }}
-                                            >
-                                                {{ $faculty }}
-                                            </option>
-                                        @endforeach
-                                    </optgroup>
+                                <optgroup label="{{ $group }}">
+                                @foreach ($items as $faculty)
+                                <option
+                                value="{{ $faculty }}"
+                                {{ request("faculty") == $faculty ? "selected" : "" }}
+                                >
+                                {{ $faculty }}
+                                </option>
                                 @endforeach
-                            </select> --}}
+                                </optgroup>
+                                @endforeach
+                                </select>
+                            --}}
 
                             <input
                                 type="text"
@@ -248,8 +277,6 @@
                             >
                                 ค้นหา
                             </button>
-
-
                         </form>
                     </section>
                 </div>
@@ -268,192 +295,221 @@
                 }
 
                 function confirmFinish(e, activityName) {
-                    if (!confirm(`ยืนยันการเสร็จสิ้นกิจกรรม "${activityName}" หรือไม่?\n\nเมื่อจบกิจกรรมแล้วจะไม่สามารถแก้ไขได้`)) {
+                    if (
+                        !confirm(
+                            `ยืนยันการเสร็จสิ้นกิจกรรม "${activityName}" หรือไม่?\n\nเมื่อจบกิจกรรมแล้วจะไม่สามารถแก้ไขได้`,
+                        )
+                    ) {
                         e.preventDefault();
                         return false;
                     }
                     return true;
                 }
             </script>
-           @if ($filtered->isEmpty())
+            @if ($filtered->isEmpty())
                 <div class="mx-auto my-10 max-w-2xl text-center text-gray-500">
                     ไม่พบกิจกรรมที่ตรงกับการค้นหา
                 </div>
             @else
-                <div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 pb-6 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach ($filtered as $activity)
-                    <div class="w-full rounded-xl shadow-md">
-                        <div class="p-4">
-                            <section>
-                                <div
-                                    id="activity_card_{{ $activity->id }}"
-                                    class="py- absolute m-2 rounded-full bg-red-100 px-2 text-sm text-red-600/80"
-                                >
-                                    {{ $activity->day_left }} Day left
-                                </div>
+                <div
+                    class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 pb-6 sm:grid-cols-2 lg:grid-cols-3"
+                >
+                    @foreach ($filtered as $activity)
+                        <div class="w-full rounded-xl shadow-md">
+                            <div class="p-4">
+                                <section>
+                                    <div
+                                        id="activity_card_{{ $activity->id }}"
+                                        class="py- absolute m-2 rounded-full bg-red-100 px-2 text-sm text-red-600/80"
+                                    >
+                                        {{ $activity->day_left }} Day left
+                                    </div>
 
-                                @if ($activity->image_file_name)
-                                    <img
-                                        src="{{ asset("uploads/activities/" . $activity->image_file_name) }}"
-                                        alt="{{ $activity->name_th }}"
-                                        class="h-48 w-full rounded-xl object-cover"
-                                    />
-                                @else
-                                    <img
-                                        src="{{ asset("images/family.png") }}"
-                                        alt="img"
-                                        class="h-48 w-full rounded-xl object-cover"
-                                    />
-                                @endif
-                            </section>
-                            <section class="my-2 flex flex-col gap-2">
-                                <h1>{{ $activity->name_th }}</h1>
-                                <div
-                                    class="] flex gap-2 [&_div]:rounded-full [&_div]:px-2 [&_div]:py-1 [&_div]:text-sm [&_div]:text-white"
-                                >
+                                    @if ($activity->image_file_name)
+                                        <img
+                                            src="{{ asset("uploads/activities/" . $activity->image_file_name) }}"
+                                            alt="{{ $activity->name_th }}"
+                                            class="h-48 w-full rounded-xl object-cover"
+                                        />
+                                    @else
+                                        <img
+                                            src="{{ asset("images/family.png") }}"
+                                            alt="img"
+                                            class="h-48 w-full rounded-xl object-cover"
+                                        />
+                                    @endif
+                                </section>
+                                <section class="my-2 flex flex-col gap-2">
+                                    <h1>{{ $activity->name_th }}</h1>
+                                    <div
+                                        class="] flex gap-2 [&_div]:rounded-full [&_div]:px-2 [&_div]:py-1 [&_div]:text-sm [&_div]:text-white"
+                                    >
+                                        @php
+                                            $statusColors = [
+                                                "pending" => "bg-yellow-500",
+                                                "ongoing" => "bg-blue-500",
+                                                "finished" => "bg-gray-500",
+                                            ];
+                                            $statusTexts = [
+                                                "pending" => "รอดำเนินการ",
+                                                "ongoing" => "กำลังดำเนินการ",
+                                                "finished" => "เสร็จสิ้น",
+                                            ];
+                                        @endphp
+
+                                        <div
+                                            class="{{ $statusColors[$activity->status] ?? "bg-gray-500" }}"
+                                        >
+                                            {{ $statusTexts[$activity->status] ?? $activity->status }}
+                                        </div>
+
+                                        @if ($activity->is_expired && $activity->status !== "finished")
+                                            <div class="bg-red-500">หมดเขต</div>
+                                        @endif
+
+                                        <div class="bg-green-500">
+                                            #{{ $activity->user->faculty ?? "ไม่ทราบคณะ" }}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-gray-600">
+                                            {{ $activity->name_th }}
+                                        </h6>
+                                        <p class="line-clamp-3 text-gray-600">
+                                            {{ $activity->description }}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="mb-3 flex items-center justify-between text-sm text-gray-500"
+                                        >
+                                            <div class="flex items-center">
+                                                <i
+                                                    class="fa-solid fa-location-dot"
+                                                ></i>
+                                                <p class="line-clamp-1">
+                                                    {{ $activity->location }}
+                                                </p>
+                                            </div>
+                                            <div
+                                                class="flex items-center text-xs"
+                                            >
+                                                <i
+                                                    class="fa-solid fa-clock"
+                                                ></i>
+                                                <p class="w-10">
+                                                    {{ $activity->total_hour }}
+                                                    ชม.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 text-xs text-gray-500">
+                                            <i
+                                                class="fa-solid fa-users mr-1"
+                                            ></i>
+                                            ผู้เข้าร่วม
+                                            {{ $activity->participants_count ?? 0 }}/{{ $activity->accept_amount }}
+                                            คน
+                                        </div>
+                                        <div class="mb-3 text-xs text-gray-500">
+                                            <i
+                                                class="fa-solid fa-calendar-days"
+                                            ></i>
+                                            {{ thaiDate($activity->start_time) }}
+                                        </div>
+                                    </div>
+                                </section>
+                                <section class="flex flex-col gap-2">
+                                    <a
+                                        href="{{ route("admin.activity.checkin", $activity->id) }}"
+                                        class="w-full rounded-xl bg-green-500/80 py-2 text-center text-sm text-white transition-colors hover:bg-green-600/80 sm:text-base"
+                                    >
+                                        เช็คชื่อกิจกรรม
+                                    </a>
+
                                     @php
-                                        $statusColors = [
-                                            'pending' => 'bg-yellow-500',
-                                            'ongoing' => 'bg-blue-500',
-                                            'finished' => 'bg-gray-500'
-                                        ];
-                                        $statusTexts = [
-                                            'pending' => 'รอดำเนินการ',
-                                            'ongoing' => 'กำลังดำเนินการ',
-                                            'finished' => 'เสร็จสิ้น'
-                                        ];
+                                        $hasStarted = $activity->start_time && now() >= $activity->start_time;
+                                        $isOngoing = $activity->status === "ongoing";
+                                        $isNotFinished = $activity->status !== "finished";
+                                        $canFinish = ($hasStarted || $isOngoing) && $isNotFinished;
                                     @endphp
 
-                                    <div class="{{ $statusColors[$activity->status] ?? 'bg-gray-500' }}">
-                                        {{ $statusTexts[$activity->status] ?? $activity->status }}
-                                    </div>
-
-                                    @if($activity->is_expired && $activity->status !== 'finished')
-                                        <div class="bg-red-500">
-                                            หมดเขต
-                                        </div>
-                                    @endif
-
-                                    <div class="bg-green-500">
-                                        #{{ $activity->user->faculty ?? "ไม่ทราบคณะ" }}
-                                    </div>
-                                </div>
-                                <div>
-                                    <h6 class="text-gray-600">
-                                        {{ $activity->name_th }}
-                                    </h6>
-                                    <p class="line-clamp-3 text-gray-600">
-                                        {{ $activity->description }}
-                                    </p>
-                                </div>
-                                <div>
-                                    <div
-                                        class="mb-3 flex items-center justify-between text-sm text-gray-500"
-                                    >
-                                        <div class="flex items-center">
+                                    @if ($canFinish)
+                                        <form
+                                            action="{{ route("activity.finish", $activity->id) }}"
+                                            method="POST"
+                                            onsubmit="return confirmFinish(event, '{{ $activity->name_th }}')"
+                                            class="w-full"
+                                        >
+                                            @csrf
+                                            <button
+                                                type="submit"
+                                                class="w-full animate-pulse rounded-xl bg-blue-500/80 py-2 text-sm text-white transition-colors hover:bg-blue-600/80 sm:text-base"
+                                            >
+                                                เสร็จสิ้นกิจกรรม
+                                            </button>
+                                        </form>
+                                    @elseif ($activity->status === "finished")
+                                        <div
+                                            class="w-full rounded-xl bg-gray-400 py-2 text-center text-sm text-white sm:text-base"
+                                        >
                                             <i
-                                                class="fa-solid fa-location-dot"
+                                                class="fa-solid fa-check mr-1"
                                             ></i>
-                                            <p class="line-clamp-1">
-                                                {{ $activity->location }}
-                                            </p>
+                                            กิจกรรมเสร็จสิ้นแล้ว
                                         </div>
-                                        <div class="flex items-center text-xs">
-                                            <i class="fa-solid fa-clock"></i>
-                                            <p class=" w-10">
-
-                                                {{ $activity->total_hour }} ชม.
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 text-xs text-gray-500">
-                                        <i class="fa-solid fa-users mr-1"></i>
-                                        ผู้เข้าร่วม {{ $activity->participants_count ?? 0 }}/{{ $activity->accept_amount }} คน
-                                    </div>
-                                    <div class="mb-3 text-xs text-gray-500">
-                                        <i
-                                            class="fa-solid fa-calendar-days"
-                                        ></i>
-                                        {{ thaiDate($activity->start_time) }}
-                                    </div>
-                                </div>
-                            </section>
-                            <section class="flex flex-col gap-2">
-                                <!-- Checkin Button -->
-                                <a
-                                    href="{{ route("admin.activity.checkin", $activity->id) }}"
-                                    class="w-full rounded-xl bg-green-500/80 py-2 text-center text-sm text-white transition-colors hover:bg-green-600/80 sm:text-base"
-                                >
-                                    เช็คชื่อกิจกรรม
-                                </a>
-
-                                @php
-                                    $isExpired = $activity->start_time && now() > $activity->start_time;
-                                    $isNotFinished = $activity->status !== 'finished';
-                                @endphp
-
-                                @if($isExpired && $isNotFinished)
-                                    <form
-                                        action="{{ route('activity.finish', $activity->id) }}"
-                                        method="POST"
-                                        onsubmit="return confirmFinish(event, '{{ $activity->name_th }}')"
-                                        class="w-full"
-                                    >
-                                        @csrf
-                                        <button
-                                            type="submit"
-                                            class="w-full rounded-xl bg-blue-500/80 py-2 text-sm text-white transition-colors hover:bg-blue-600/80 sm:text-base animate-pulse"
-                                        >
-                                            เสร็จสิ้นกิจกรรม
-                                        </button>
-                                    </form>
-                                @elseif($activity->status === 'finished')
-                                    <div class="w-full rounded-xl bg-gray-400 py-2 text-center text-sm text-white sm:text-base">
-                                        <i class="fa-solid fa-check mr-1"></i>
-                                        กิจกรรมเสร็จสิ้นแล้ว
-                                    </div>
-                                @endif
-
-                                <div class="flex gap-2 sm:gap-5">
-                                    @if($activity->status === 'finished')
-                                        <button
-                                            class="w-1/2 rounded-xl bg-gray-400 py-2 text-sm text-white cursor-not-allowed sm:text-base"
-                                            disabled
-                                        >
-                                            แก้ไขไม่ได้
-                                        </button>
                                     @else
-                                        <button
-                                            class="w-1/2 rounded-xl bg-amber-400/80 py-2 text-sm text-white sm:text-base"
-                                            onclick="openEditModal({{ $activity->toJson() }})"
+                                        <div
+                                            class="w-full rounded-xl bg-yellow-400/80 py-2 text-center text-sm text-white sm:text-base"
                                         >
-                                            แก้ไขข้อมูล
-                                        </button>
+                                            @if ($activity->status === "pending")
+                                                รอเริ่มกิจกรรม
+                                            @else
+                                                    ยังไม่สามารถเสร็จสิ้นได้
+                                            @endif
+                                        </div>
                                     @endif
 
-                                    <form
-                                        class="w-1/2"
-                                        action="{{ route("activity.delete", $activity->id) }}"
-                                        method="POST"
-                                        onsubmit="return confirmDelete(event)"
-                                    >
-                                        @csrf
-                                        @method("DELETE")
-                                        <button
-                                            type="submit"
-                                            class="w-full rounded-xl border border-red-400 py-2 text-sm text-red-400 shadow sm:text-base {{ $activity->status === 'finished' ? 'opacity-50 cursor-not-allowed' : '' }}"
-                                            {{ $activity->status === 'finished' ? 'disabled' : '' }}
+                                    <div class="flex gap-2 sm:gap-5">
+                                        @if ($activity->status === "finished")
+                                            <button
+                                                class="w-1/2 cursor-not-allowed rounded-xl bg-gray-400 py-2 text-sm text-white sm:text-base"
+                                                disabled
+                                            >
+                                                แก้ไขไม่ได้
+                                            </button>
+                                        @else
+                                            <button
+                                                class="w-1/2 rounded-xl bg-amber-400/80 py-2 text-sm text-white sm:text-base"
+                                                onclick="openEditModal({{ $activity->toJson() }})"
+                                            >
+                                                แก้ไขข้อมูล
+                                            </button>
+                                        @endif
+
+                                        <form
+                                            class="w-1/2"
+                                            action="{{ route("activity.delete", $activity->id) }}"
+                                            method="POST"
+                                            onsubmit="return confirmDelete(event)"
                                         >
-                                            ลบข้อมูล
-                                        </button>
-                                    </form>
-                                </div>
-                            </section>
+                                            @csrf
+                                            @method("DELETE")
+                                            <button
+                                                type="submit"
+                                                class="{{ $activity->status === "finished" ? "cursor-not-allowed opacity-50" : "" }} w-full rounded-xl border border-red-400 py-2 text-sm text-red-400 shadow sm:text-base"
+                                                {{ $activity->status === "finished" ? "disabled" : "" }}
+                                            >
+                                                ลบข้อมูล
+                                            </button>
+                                        </form>
+                                    </div>
+                                </section>
+                            </div>
                         </div>
-                    </div>
                     @endforeach
-                 @endif
-            </div>
+                </div>
+            @endif
         </main>
 
         <dialog id="my_modal_1" class="modal">

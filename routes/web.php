@@ -149,9 +149,8 @@ Route::get('/admin/checkin', function() {
 })->name('admin.checkin');
 
 
-Route::get('/admin/event' , [ActivityController::class, "showAdminActivity"])->name('admin.events');
-
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/event' , [ActivityController::class, "showAdminActivity"])->name('admin.events');
     Route::get('/admin/activities/{activity}/checkin', [CheckinController::class, 'show'])->name('admin.activity.checkin');
     Route::post('/admin/activities/{activity}/checkin', [CheckinController::class, 'checkin'])->name('admin.activity.checkin.store');
     Route::post('/admin/activities/{activity}/checkin/undo', [CheckinController::class, 'undoCheckin'])->name('admin.activity.checkin.undo');
@@ -166,5 +165,3 @@ Route::get('/activities', [ActivityController::class, "showUserActivity"])->name
 Route::post('/activities/register', [ActivityController::class, "registerActivity"])->name('activities.register')->middleware('auth');
 Route::post('/activities/cancel', [ActivityController::class, "cancelRegistration"])->name('activities.cancel')->middleware('auth');
 Route::get('/detail/{id}', [ActivityController::class, "showActivityDetail"])->name('activity.detail');
-
-
