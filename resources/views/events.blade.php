@@ -52,7 +52,15 @@
                                 $firstActivity = $rec->first();
                             @endphp
 
-                            @if (isset($firstActivity->is_registered) && $firstActivity->is_registered)
+                            @if ($firstActivity->status === "finished")
+                                <button
+                                    class="cursor-not-allowed rounded-xl bg-gray-500 px-6 py-2 text-nowrap text-white shadow-lg"
+                                    disabled
+                                >
+                                    <i class="fa-solid fa-check mr-1"></i>
+                                    กิจกรรมเสร็จสิ้น
+                                </button>
+                            @elseif (isset($firstActivity->is_registered) && $firstActivity->is_registered)
                                 <button
                                     class="cursor-not-allowed rounded-xl bg-emerald-400 px-6 py-2 text-nowrap text-white shadow-lg"
                                     disabled
@@ -209,17 +217,98 @@
                                 <select
                                     name=""
                                     id="tagFilter"
-                                    class="w-50 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
+                                    class="w-72 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
                                     onchange="filterActivities()"
                                 >
                                     <option value=""># แท็ก</option>
-                                    <option value="เกษตรศาสตร์">
-                                        เกษตรศาสตร์
-                                    </option>
-                                    <option value="คอมพิวเตอร์">
-                                        คอมพิวเตอร์
-                                    </option>
-                                    <option value="วิศวกรรม">วิศวกรรม</option>
+                                    <optgroup label="วิทยาศาสตร์เทคโนโลยี">
+                                        <option value="คณะเกษตรศาสตร์">
+                                            คณะเกษตรศาสตร์
+                                        </option>
+                                        <option value="คณะเทคโนโลยี">
+                                            คณะเทคโนโลยี
+                                        </option>
+                                        <option value="คณะวิศวกรรมศาสตร์">
+                                            คณะวิศวกรรมศาสตร์
+                                        </option>
+                                        <option value="คณะวิทยาศาสตร์">
+                                            คณะวิทยาศาสตร์
+                                        </option>
+                                        <option value="คณะสถาปัตยกรรมศาสตร์">
+                                            คณะสถาปัตยกรรมศาสตร์
+                                        </option>
+                                        <option value="วิทยาลัยการคอมพิวเตอร์">
+                                            วิทยาลัยการคอมพิวเตอร์
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="วิทยาศาสตร์สุขภาพ">
+                                        <option value="คณะพยาบาลศาสตร์">
+                                            คณะพยาบาลศาสตร์
+                                        </option>
+                                        <option value="คณะแพทยศาสตร์">
+                                            คณะแพทยศาสตร์
+                                        </option>
+                                        <option value="คณะเทคนิคการแพทย์">
+                                            คณะเทคนิคการแพทย์
+                                        </option>
+                                        <option value="คณะสาธารณสุขศาสตร์">
+                                            คณะสาธารณสุขศาสตร์
+                                        </option>
+                                        <option value="คณะทันตแพทยศาสตร์">
+                                            คณะทันตแพทยศาสตร์
+                                        </option>
+                                        <option value="คณะเภสัชศาสตร์">
+                                            คณะเภสัชศาสตร์
+                                        </option>
+                                        <option value="คณะสัตวแพทยศาสตร์">
+                                            คณะสัตวแพทยศาสตร์
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="มนุษยศาสตร์และสังคมศาสตร์">
+                                        <option value="คณะศึกษาศาสตร์">
+                                            คณะศึกษาศาสตร์
+                                        </option>
+                                        <option
+                                            value="คณะมนุษยศาสตร์และสังคมศาสตร์"
+                                        >
+                                            คณะมนุษยศาสตร์และสังคมศาสตร์
+                                        </option>
+                                        <option
+                                            value="คณะบริหารธุรกิจและการบัญชี"
+                                        >
+                                            คณะบริหารธุรกิจและการบัญชี
+                                        </option>
+                                        <option value="คณะศิลปกรรมศาสตร์">
+                                            คณะศิลปกรรมศาสตร์
+                                        </option>
+                                        <option value="คณะเศรษฐศาสตร์">
+                                            คณะเศรษฐศาสตร์
+                                        </option>
+                                        <option value="คณะนิติศาสตร์">
+                                            คณะนิติศาสตร์
+                                        </option>
+                                        <option
+                                            value="วิทยาลัยการปกครองท้องถิ่น"
+                                        >
+                                            วิทยาลัยการปกครองท้องถิ่น
+                                        </option>
+                                        <option
+                                            value="วิทยาลัยบัณฑิตศึกษาการจัดการ"
+                                        >
+                                            วิทยาลัยบัณฑิตศึกษาการจัดการ
+                                        </option>
+                                    </optgroup>
+                                    <optgroup label="สหสาขาวิชา">
+                                        <option value="บัณฑิตวิทยาลัย">
+                                            บัณฑิตวิทยาลัย
+                                        </option>
+                                        <option value="วิทยาลัยนานาชาติ">
+                                            วิทยาลัยนานาชาติ
+                                        </option>
+                                        <option value="คณะสหวิทยาการ">
+                                            คณะสหวิทยาการ
+                                        </option>
+                                    </optgroup>
                                 </select>
                                 <select
                                     name=""
@@ -242,11 +331,22 @@
                         id="activitiesGrid"
                     >
                         @forelse ($rec as $activity)
+                            @php
+                                $cardTags = [];
+                                if ($activity->tags) {
+                                    if (is_string($activity->tags)) {
+                                        $cardTags = json_decode($activity->tags, true) ?: [];
+                                    } elseif (is_array($activity->tags)) {
+                                        $cardTags = $activity->tags;
+                                    }
+                                }
+                            @endphp
+
                             <div
                                 class="activity-card overflow-hidden rounded-lg bg-white shadow-md"
                                 data-status="{{ $activity->status }}"
                                 data-search="{{ strtolower($activity->name_th . " " . $activity->description . " " . $activity->location) }}"
-                                data-tags="{{ $activity->tags && is_array($activity->tags) ? implode(",", $activity->tags) : "" }}"
+                                data-tags="{{ ! empty($cardTags) ? implode(",", $cardTags) : "" }}"
                             >
                                 @if ($activity->image_file_name)
                                     <img
@@ -267,47 +367,80 @@
                                     >
                                         {{ $activity->name_th }}
                                     </h4>
-                                    <div class="mb-2 flex items-center gap-2">
-                                        @if ($activity->tags && is_array($activity->tags))
-                                            @foreach (array_slice($activity->tags, 0, 2) as $tag)
-                                                <span
-                                                    class="rounded-full bg-green-100 px-2 py-1 text-xs text-green-800"
-                                                >
-                                                    #{{ $tag }}
-                                                </span>
-                                            @endforeach
-                                        @else
-                                            <span
-                                                class="rounded-full bg-blue-400 px-2 py-1 text-xs text-white"
-                                            >
-                                                #วิทยาลัยการคอมพิวเตอร์
-                                            </span>
-                                            <span
-                                                class="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800"
-                                            >
-                                                ปี 1-4
-                                            </span>
-                                        @endif
-
+                                    <!-- Status Badge -->
+                                    <div
+                                        class="mb-2 flex items-center justify-between"
+                                    >
                                         @php
                                             $statusColors = [
-                                                "pending" => "bg-yellow-100 text-yellow-800",
-                                                "ongoing" => "bg-green-100 text-green-800",
-                                                "finished" => "bg-gray-100 text-gray-800",
+                                                "pending" => "border-yellow-200 bg-yellow-100 text-yellow-800",
+                                                "ongoing" => "border-blue-200 bg-blue-100 text-blue-800",
+                                                "finished" => "border-gray-200 bg-gray-100 text-gray-800",
                                             ];
                                             $statusTexts = [
                                                 "pending" => "รอดำเนินการ",
                                                 "ongoing" => "กำลังดำเนินการ",
                                                 "finished" => "เสร็จสิ้น",
                                             ];
+                                            $statusIcons = [
+                                                "pending" => "fa-clock",
+                                                "ongoing" => "fa-play",
+                                                "finished" => "fa-check-circle",
+                                            ];
                                         @endphp
 
                                         <span
-                                            class="{{ $statusColors[$activity->status] ?? "bg-gray-100 text-gray-800" }} rounded-full px-2 py-1 text-xs"
+                                            class="{{ $statusColors[$activity->status] ?? "bg-gray-100 text-gray-800 border-gray-200" }} inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium"
                                         >
+                                            <i
+                                                class="fa-solid {{ $statusIcons[$activity->status] ?? "fa-question" }} mr-1"
+                                            ></i>
                                             {{ $statusTexts[$activity->status] ?? $activity->status }}
                                         </span>
+
+                                        @if ($activity->status === "finished")
+                                            <span class="text-xs text-gray-500">
+                                                <i
+                                                    class="fa-solid fa-flag-checkered mr-1"
+                                                ></i>
+                                                สิ้นสุดแล้ว
+                                            </span>
+                                        @endif
                                     </div>
+
+                                    <!-- Tags -->
+                                    @php
+                                        $activityTags = [];
+                                        if ($activity->tags) {
+                                            if (is_string($activity->tags)) {
+                                                $activityTags = json_decode($activity->tags, true) ?: [];
+                                            } elseif (is_array($activity->tags)) {
+                                                $activityTags = $activity->tags;
+                                            }
+                                        }
+                                    @endphp
+
+                                    @if (! empty($activityTags))
+                                        <div class="mb-2 flex flex-wrap gap-2">
+                                            @foreach (array_slice($activityTags, 0, 3) as $tag)
+                                                <div
+                                                    class="rounded-full bg-green-500 px-2 py-1 text-xs text-white"
+                                                >
+                                                    #{{ $tag }}
+                                                </div>
+                                            @endforeach
+
+                                            @if (count($activityTags) > 3)
+                                                <div
+                                                    class="rounded-full bg-gray-400 px-2 py-1 text-xs text-white"
+                                                >
+                                                    +{{ count($activityTags) - 3 }}
+                                                    อื่นๆ
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+
                                     <p class="mb-3 text-sm text-gray-600">
                                         {{ Str::limit($activity->description ?: "ไม่มีรายละเอียด", 120) }}
                                     </p>
@@ -338,13 +471,54 @@
                                         {{ $activity->participants_count ?? 0 }}/{{ $activity->accept_amount }}
                                         คน
                                     </div>
+                                    @if (isset($activity->is_registration_closed) && $activity->is_registration_closed)
+                                        <div
+                                            class="mb-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2"
+                                        >
+                                            <div class="flex items-center">
+                                                <svg
+                                                    class="mr-2 h-4 w-4 text-red-500"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"
+                                                    ></path>
+                                                </svg>
+                                                <span
+                                                    class="text-sm font-medium text-red-800"
+                                                >
+                                                    หมดเวลารับสมัคร
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <div class="flex gap-2">
-                                        @if (isset($activity->is_registered) && $activity->is_registered)
+                                        @if ($activity->status === "finished")
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-gray-500 px-4 py-2 text-white"
+                                                disabled
+                                            >
+                                                กิจกรรมเสร็จสิ้น
+                                            </button>
+                                        @elseif (isset($activity->is_registered) && $activity->is_registered)
                                             <button
                                                 class="flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white"
                                                 disabled
                                             >
                                                 สมัครแล้ว
+                                            </button>
+                                        @elseif (isset($activity->is_registration_closed) && $activity->is_registration_closed)
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
+                                                disabled
+                                            >
+                                                หมดเวลารับสมัคร
                                             </button>
                                         @elseif (($activity->participants_count ?? 0) >= $activity->accept_amount)
                                             <button
@@ -477,58 +651,74 @@
             }
         }
 
-        function filterActivities(status) {
-            const cards = document.querySelectorAll('.activity-card');
-
-            cards.forEach((card) => {
-                if (status === '' || card.dataset.status === status) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
         function searchActivities() {
             const searchTerm = document
                 .getElementById('searchInput')
                 .value.toLowerCase();
-            const cards = document.querySelectorAll('.activity-card');
-
-            cards.forEach((card) => {
-                const searchData = card.dataset.search;
-                if (searchData.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            filterActivities();
+            applyAllFilters(searchTerm);
         }
 
         function filterActivities() {
+            const searchTerm = document
+                .getElementById('searchInput')
+                .value.toLowerCase();
+            applyAllFilters(searchTerm);
+        }
+
+        function applyAllFilters(searchTerm = '') {
             const statusFilter = document.getElementById('statusFilter').value;
             const tagFilter = document.getElementById('tagFilter').value;
             const cards = document.querySelectorAll('.activity-card');
 
+            let visibleCount = 0;
+
             cards.forEach((card) => {
                 let showCard = true;
+                const searchData = card.dataset.search || '';
+                const cardStatus = card.dataset.status || '';
+                const cardTags = card.dataset.tags || '';
 
-                if (card.style.display === 'none') {
-                    return;
-                }
-
-                if (statusFilter && card.dataset.status !== statusFilter) {
+                // Apply search filter
+                if (searchTerm && !searchData.includes(searchTerm)) {
                     showCard = false;
                 }
 
-                if (tagFilter && !card.dataset.tags.includes(tagFilter)) {
+                // Apply status filter
+                if (statusFilter && cardStatus !== statusFilter) {
+                    showCard = false;
+                }
+
+                // Apply tag filter
+                if (tagFilter && !cardTags.includes(tagFilter)) {
                     showCard = false;
                 }
 
                 card.style.display = showCard ? 'block' : 'none';
+                if (showCard) visibleCount++;
             });
+
+            // Show/hide no results message
+            const noResultsMsg = document.getElementById('noResultsMessage');
+            if (visibleCount === 0) {
+                if (!noResultsMsg) {
+                    const gridContainer = document.getElementById('activitiesGrid');
+                    const noResults = document.createElement('div');
+                    noResults.id = 'noResultsMessage';
+                    noResults.className = 'col-span-full py-12 text-center';
+                    noResults.innerHTML = `
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">ไม่พบกิจกรรม</h3>
+                        <p class="mt-1 text-sm text-gray-500">ไม่พบกิจกรรมที่ตรงกับเงื่อนไขการค้นหา</p>
+                    `;
+                    gridContainer.appendChild(noResults);
+                }
+            } else {
+                if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
+            }
         }
 
         // Carousel data for text overlay
@@ -602,7 +792,9 @@
             if (buttonsContainer && data.id) {
                 let buttonHTML = '';
 
-                if (data.is_registered) {
+                if (data.status === "finished") {
+                    buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-gray-500 px-6 py-2 text-nowrap text-white" disabled><i class="fa-solid fa-check mr-1"></i>กิจกรรมเสร็จสิ้น</button>';
+                } else if (data.is_registered) {
                     buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-emerald-400 px-6 py-2 text-nowrap text-white" disabled>สมัครแล้ว</button>';
                 } else if (data.participants_count >= data.accept_amount) {
                     buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-red-500 px-6 py-2 text-nowrap text-white" disabled>เต็มแล้ว</button>';
@@ -733,6 +925,25 @@
                     this.style.transform = 'translateY(0)';
                 });
             });
+
+            // Initialize filters from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchParam = urlParams.get('search');
+            const tagParam = urlParams.get('tag');
+            const statusParam = urlParams.get('status');
+
+            if (searchParam) {
+                document.getElementById('searchInput').value = searchParam;
+            }
+            if (tagParam) {
+                document.getElementById('tagFilter').value = tagParam;
+            }
+            if (statusParam) {
+                document.getElementById('statusFilter').value = statusParam;
+            }
+
+            // Apply initial filters
+            applyAllFilters(searchParam || '');
         });
     </script>
 
@@ -875,6 +1086,49 @@
 
         .w-50 {
             width: 12.5rem;
+        }
+
+        /* Optgroup styling */
+        optgroup {
+            font-weight: bold;
+            color: #374151;
+            background-color: #f9fafb;
+        }
+
+        optgroup option {
+            font-weight: normal;
+            color: #6b7280;
+            padding-left: 1rem;
+        }
+
+        select option {
+            padding: 0.5rem 0.75rem;
+        }
+
+        /* Status and Tags styling */
+        .activity-card .status-badge {
+            animation: none;
+        }
+
+        .activity-card[data-status='finished'] {
+            opacity: 0.85;
+        }
+
+        .activity-card[data-status='finished'] .status-badge {
+            background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
+        }
+
+        .activity-card[data-status='ongoing'] .status-badge {
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+        }
+
+        .activity-card[data-status='pending'] .status-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+        }
+
+        /* Tag styling - simple badges like admin */
+        .tag-badge {
+            transition: none;
         }
     </style>
 @endsection

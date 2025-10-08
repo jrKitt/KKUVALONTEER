@@ -13,22 +13,29 @@
         <div class="mx-auto max-w-4xl px-4 py-8">
             <!-- Header -->
             <div class="mb-6 rounded-lg bg-white p-6 shadow-sm">
-                <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <h1 class="text-3xl font-bold text-gray-900">{{ $activity->name_th }}</h1>
+                <div
+                    class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
+                >
+                    <h1 class="text-3xl font-bold text-gray-900">
+                        {{ $activity->name_th }}
+                    </h1>
                     <div class="flex items-center gap-2">
                         <span class="text-sm text-gray-500">ผู้เข้าร่วม:</span>
                         <div
-                            class="{{ ($activity->participants_count ?? 0) >= $activity->accept_amount ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }} inline-flex items-center rounded-full px-3 py-1 text-sm font-medium">
+                            class="{{ ($activity->participants_count ?? 0) >= $activity->accept_amount ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800" }} inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
+                        >
                             {{ $activity->participants_count ?? 0 }}/{{ $activity->accept_amount }}
                         </div>
                     </div>
                 </div>
 
                 <!-- Tags -->
-                @if ($activity->tags && is_array($activity->tags))
+                @if ($activity->tags && is_array($activity->tags) && count($activity->tags) > 0)
                     <div class="mt-4 flex flex-wrap gap-2">
                         @foreach ($activity->tags as $tag)
-                            <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+                            <span
+                                class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800"
+                            >
                                 #{{ $tag }}
                             </span>
                         @endforeach
@@ -41,31 +48,51 @@
                 <!-- Image -->
                 <div class="overflow-hidden rounded-lg bg-white shadow-sm">
                     @if ($activity->image_file_name)
-                        <img src="{{ asset('uploads/activities/' . $activity->image_file_name) }}" alt="{{ $activity->name_th }}"
-                            class="h-64 w-full object-cover" />
+                        <img
+                            src="{{ asset("uploads/activities/" . $activity->image_file_name) }}"
+                            alt="{{ $activity->name_th }}"
+                            class="h-64 w-full object-cover"
+                        />
                     @else
-                        <img src="{{ asset('images/family.png') }}" alt="{{ $activity->name_th }}"
-                            class="h-64 w-full object-cover" />
+                        <img
+                            src="{{ asset("images/family.png") }}"
+                            alt="{{ $activity->name_th }}"
+                            class="h-64 w-full object-cover"
+                        />
                     @endif
                 </div>
 
                 <!-- Details -->
                 <div class="rounded-lg bg-white p-6 shadow-sm">
-                    <h3 class="mb-4 text-xl font-bold text-gray-900">รายละเอียดกิจกรรม</h3>
+                    <h3 class="mb-4 text-xl font-bold text-gray-900">
+                        รายละเอียดกิจกรรม
+                    </h3>
                     <div class="space-y-4">
                         <div class="flex items-center text-gray-600">
-                            <i class="fa-solid fa-location-dot mr-3 w-5 text-blue-500"></i>
-                            <span>{{ $activity->location ?: 'ไม่ระบุสถานที่' }}</span>
+                            <i
+                                class="fa-solid fa-location-dot mr-3 w-5 text-blue-500"
+                            ></i>
+                            <span>
+                                {{ $activity->location ?: "ไม่ระบุสถานที่" }}
+                            </span>
                         </div>
 
                         <div class="flex items-center text-gray-600">
-                            <i class="fa-solid fa-clock mr-3 w-5 text-green-500"></i>
-                            <span>{{ $activity->total_hour ?? 0 }} ชั่วโมง</span>
+                            <i
+                                class="fa-solid fa-clock mr-3 w-5 text-green-500"
+                            ></i>
+                            <span>
+                                {{ $activity->total_hour ?? 0 }} ชั่วโมง
+                            </span>
                         </div>
 
                         <div class="flex items-center text-gray-600">
-                            <i class="fa-solid fa-calendar-days mr-3 w-5 text-purple-500"></i>
-                            <span>{{ $activity->start_time ? $activity->start_time->format('d M Y') : 'ไม่ระบุวันที่' }}</span>
+                            <i
+                                class="fa-solid fa-calendar-days mr-3 w-5 text-purple-500"
+                            ></i>
+                            <span>
+                                {{ $activity->start_time ? $activity->start_time->format("d M Y") : "ไม่ระบุวันที่" }}
+                            </span>
                         </div>
                     </div>
 
@@ -87,37 +114,52 @@
             <div class="mb-8 rounded-lg bg-white p-6 shadow-sm">
                 <div class="flex flex-col justify-center gap-3 sm:flex-row">
                     @if (isset($activity->is_registered) && $activity->is_registered)
-                        <button type="button"
-                            class="cursor-not-allowed rounded-lg bg-green-500 px-8 py-3 font-medium text-white" disabled>
+                        <button
+                            type="button"
+                            class="cursor-not-allowed rounded-lg bg-green-500 px-8 py-3 font-medium text-white"
+                            disabled
+                        >
                             ✓ สมัครแล้ว
                         </button>
                     @elseif (($activity->participants_count ?? 0) >= $activity->accept_amount)
-                        <button type="button" class="cursor-not-allowed rounded-lg bg-red-500 px-8 py-3 font-medium text-white"
-                            disabled>
+                        <button
+                            type="button"
+                            class="cursor-not-allowed rounded-lg bg-red-500 px-8 py-3 font-medium text-white"
+                            disabled
+                        >
                             เต็มแล้ว
                         </button>
-                    @elseif ($activity->status === 'pending' || $activity->status === 'ongoing')
+                    @elseif ($activity->status === "pending" || $activity->status === "ongoing")
                         @auth
-                            <button type="button"
-                                class="active:scale-90 transition-all cursor-pointer rounded-md bg-cyan-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-cyan-500"
-                                onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')">
+                            <button
+                                type="button"
+                                class="cursor-pointer rounded-md bg-cyan-400 px-10 py-2 text-lg text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
+                                onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
+                            >
                                 สมัครเข้าร่วม
                             </button>
                         @else
-                            <a href="{{ route('login') }}"
-                                class="active:scale-90 transition-all cursor-pointer rounded-md bg-cyan-400 px-10 py-2 text-lg text-white shadow-lg hover:bg-cyan-500 text-center inline-block">
+                            <a
+                                href="{{ route("login") }}"
+                                class="inline-block cursor-pointer rounded-md bg-cyan-400 px-10 py-2 text-center text-lg text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
+                            >
                                 เข้าสู่ระบบเพื่อสมัคร
                             </a>
                         @endauth
                     @else
-                        <button type="button" class="cursor-not-allowed rounded-lg bg-gray-400 px-8 py-3 font-medium text-white"
-                            disabled>
+                        <button
+                            type="button"
+                            class="cursor-not-allowed rounded-lg bg-gray-400 px-8 py-3 font-medium text-white"
+                            disabled
+                        >
                             ปิดการสมัคร
                         </button>
                     @endif
-                    <button type="button"
-                        class="active:scale-90 transition-all cursor-pointer rounded-md border border-blue-300 px-10 py-2 text-lg text-blue-300 shadow-lg hover:bg-blue-300 hover:text-white"
-                        onclick="window.history.back()">
+                    <button
+                        type="button"
+                        class="cursor-pointer rounded-md border border-blue-300 px-10 py-2 text-lg text-blue-300 shadow-lg transition-all hover:bg-blue-300 hover:text-white active:scale-90"
+                        onclick="window.history.back()"
+                    >
                         กลับ
                     </button>
                 </div>
@@ -126,113 +168,156 @@
             <!-- Other activity -->
             <div>
                 <h1 class="mt-5 text-4xl font-bold">กิจกรรมอื่นๆ</h1>
-                <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div
+                    class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                >
                     @php
-                        $otherActivities = App\Models\Activity::where('id', '!=', $activity->id)
-                            ->orderBy('created_at', 'desc')
+                        $otherActivities = App\Models\Activity::where("id", "!=", $activity->id)
+                            ->orderBy("created_at", "desc")
                             ->limit(4)
                             ->get();
                     @endphp
 
                     @foreach ($otherActivities as $otherActivity)
-                        <div class="overflow-hidden rounded-lg border border-gray-200 transition-shadow hover:shadow-md">
+                        <div
+                            class="overflow-hidden rounded-lg border border-gray-200 transition-shadow hover:shadow-md"
+                        >
                             <!-- Image -->
                             <div class="h-48 overflow-hidden">
                                 @if ($otherActivity->image_file_name)
-                                    <img src="{{ asset('uploads/activities/' . $otherActivity->image_file_name) }}"
-                                        alt="{{ $otherActivity->name_th }}" class="h-full w-full object-cover" />
+                                    <img
+                                        src="{{ asset("uploads/activities/" . $otherActivity->image_file_name) }}"
+                                        alt="{{ $otherActivity->name_th }}"
+                                        class="h-full w-full object-cover"
+                                    />
                                 @else
-                                    <img src="{{ asset('images/family.png') }}" alt="{{ $otherActivity->name_th }}"
-                                        class="h-full w-full object-cover" />
+                                    <img
+                                        src="{{ asset("images/family.png") }}"
+                                        alt="{{ $otherActivity->name_th }}"
+                                        class="h-full w-full object-cover"
+                                    />
                                 @endif
                             </div>
 
                             <!-- Content -->
-                            <div class="p-4 flex flex-col justify-between h-full">
+                            <div
+                                class="flex h-full flex-col justify-between p-4"
+                            >
                                 <div>
-                                    <h3 class="mb-2 line-clamp-2 font-medium text-gray-900">
+                                    <h3
+                                        class="mb-2 line-clamp-2 font-medium text-gray-900"
+                                    >
                                         {{ $otherActivity->name_th }}
                                     </h3>
 
                                     <!-- Tags -->
-                                    <div class="mb-3 flex flex-wrap gap-1">
-                                        @if ($otherActivity->tags && is_array($otherActivity->tags))
+                                    @if ($otherActivity->tags && is_array($otherActivity->tags) && count($otherActivity->tags) > 0)
+                                        <div class="mb-3 flex flex-wrap gap-1">
                                             @foreach (array_slice($otherActivity->tags, 0, 2) as $tag)
                                                 <span
-                                                    class="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800">#{{ $tag }}</span>
+                                                    class="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800"
+                                                >
+                                                    #{{ $tag }}
+                                                </span>
                                             @endforeach
-                                        @else
-                                            <span
-                                                class="rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800">#กิจกรรม</span>
-                                        @endif
-                                    </div>
+                                        </div>
+                                    @endif
 
                                     <!-- Info -->
-                                    <div class="mt-2 line-clamp-3 text-xs text-gray-500">
-                                        {{ Str::limit($otherActivity->description ?: 'ไม่มีรายละเอียด') }}
+                                    <div
+                                        class="mt-2 line-clamp-3 text-xs text-gray-500"
+                                    >
+                                        {{ Str::limit($otherActivity->description ?: "ไม่มีรายละเอียด") }}
                                     </div>
 
-                                    <div class="grid grid-cols-2 mt-3 text-xs text-gray-600">
+                                    <div
+                                        class="mt-3 grid grid-cols-2 text-xs text-gray-600"
+                                    >
                                         <div class="flex items-center">
-                                            <i class="fa-solid fa-location-dot mr-2 w-4"></i>
-                                            {{ Str::limit($otherActivity->location ?: 'ไม่ระบุ', 20) }}
+                                            <i
+                                                class="fa-solid fa-location-dot mr-2 w-4"
+                                            ></i>
+                                            {{ Str::limit($otherActivity->location ?: "ไม่ระบุ", 20) }}
                                         </div>
                                         <div class="flex items-center">
-                                            <i class="fa-solid fa-clock mr-2 w-4"></i>
-                                            {{ $otherActivity->total_hour ?? 0 }} ชั่วโมง
+                                            <i
+                                                class="fa-solid fa-clock mr-2 w-4"
+                                            ></i>
+                                            {{ $otherActivity->total_hour ?? 0 }}
+                                            ชั่วโมง
                                         </div>
                                         <div class="flex items-center">
-                                            <i class="fa-solid fa-calendar-days mr-2 w-4"></i>
-                                            {{ $otherActivity->start_time ? $otherActivity->start_time->format('d M Y') : 'ไม่ระบุ' }}
+                                            <i
+                                                class="fa-solid fa-calendar-days mr-2 w-4"
+                                            ></i>
+                                            {{ $otherActivity->start_time ? $otherActivity->start_time->format("d M Y") : "ไม่ระบุ" }}
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="mt-3 flex justify-end space-x-3 px-1 py-1 text-xs text-nowrap">
+                                <div
+                                    class="mt-3 flex justify-end space-x-3 px-1 py-1 text-xs text-nowrap"
+                                >
                                     @php
                                         $otherActivity->participants_count = App\Models\ActivityParticipant::where(
-                                            'activity_id',
+                                            "activity_id",
                                             $otherActivity->id,
                                         )->count();
                                         $otherActivity->is_registered = auth()->check()
-                                            ? App\Models\ActivityParticipant::where('activity_id', $otherActivity->id)
-                                                ->where('user_id', auth()->id())
+                                            ? App\Models\ActivityParticipant::where("activity_id", $otherActivity->id)
+                                                ->where("user_id", auth()->id())
                                                 ->exists()
                                             : false;
                                     @endphp
 
                                     @if ($otherActivity->is_registered)
-                                        <button type="button"
+                                        <button
+                                            type="button"
                                             class="flex-1 cursor-not-allowed rounded bg-green-500 px-3 py-2 text-sm text-white"
-                                            disabled>✓ สมัครแล้ว</button>
+                                            disabled
+                                        >
+                                            ✓ สมัครแล้ว
+                                        </button>
                                     @elseif ($otherActivity->participants_count >= $otherActivity->accept_amount)
-                                        <button type="button"
+                                        <button
+                                            type="button"
                                             class="flex-1 cursor-not-allowed rounded bg-red-500 px-3 py-2 text-sm text-white"
-                                            disabled>เต็มแล้ว</button>
-                                    @elseif ($otherActivity->status === 'pending' || $otherActivity->status === 'ongoing')
+                                            disabled
+                                        >
+                                            เต็มแล้ว
+                                        </button>
+                                    @elseif ($otherActivity->status === "pending" || $otherActivity->status === "ongoing")
                                         @auth
-                                            <button type="button"
+                                            <button
+                                                type="button"
                                                 class="cursor-pointer rounded-md bg-cyan-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
-                                                onclick="registerForActivity({{ $otherActivity->id }}, '{{ $otherActivity->name_th }}')">
+                                                onclick="registerForActivity({{ $otherActivity->id }}, '{{ $otherActivity->name_th }}')"
+                                            >
                                                 สมัคร
                                             </button>
                                         @else
-                                            <a href="{{ route('login') }}"
-                                                class="cursor-pointer rounded-md bg-cyan-400 px-6 py-1 text-lg text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90 text-center inline-block">
+                                            <a
+                                                href="{{ route("login") }}"
+                                                class="inline-block cursor-pointer rounded-md bg-cyan-400 px-6 py-1 text-center text-lg text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
+                                            >
                                                 เข้าสู่ระบบ
                                             </a>
                                         @endauth
                                     @else
-                                        <button type="button"
+                                        <button
+                                            type="button"
                                             class="flex-1 cursor-not-allowed rounded bg-gray-400 px-3 py-2 text-sm text-white"
-                                            disabled>
+                                            disabled
+                                        >
                                             ปิดสมัคร
                                         </button>
                                     @endif
 
-                                    <button type="button"
+                                    <button
+                                        type="button"
                                         class="cursor-pointer rounded-md border border-blue-300 px-6 py-1 text-lg text-blue-300 shadow-lg transition-all hover:bg-blue-200 hover:text-white active:scale-90"
-                                        onclick="window.location.href='/detail/{{ $otherActivity->id }}'">
+                                        onclick="window.location.href='/detail/{{ $otherActivity->id }}'"
+                                    >
                                         ดูเพิ่ม
                                     </button>
                                 </div>
@@ -244,7 +329,6 @@
         </div>
     </div>
 @endsection
-
 
 @section("scripts")
     <script>
@@ -329,7 +413,9 @@
                     }
 
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error(
+                            `HTTP error! status: ${response.status}`,
+                        );
                     }
 
                     return response.json();
@@ -351,7 +437,11 @@
                     } else if (data && data.message) {
                         showAlert('error', 'เกิดข้อผิดพลาด!', data.message);
                     } else {
-                        showAlert('error', 'เกิดข้อผิดพลาด!', 'ไม่สามารถลงทะเบียนได้');
+                        showAlert(
+                            'error',
+                            'เกิดข้อผิดพลาด!',
+                            'ไม่สามารถลงทะเบียนได้',
+                        );
                     }
                 })
                 .catch((error) => {

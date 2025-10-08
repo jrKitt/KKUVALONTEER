@@ -65,6 +65,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/image', [ProfileController::class, 'deleteProfileImage'])->name('profile.image.delete');
     Route::resource('goals', \App\Http\Controllers\GoalController::class);
     Route::post('/goals/update-progress', [\App\Http\Controllers\GoalController::class, 'updateProgress'])->name('goals.updateProgress');
+    Route::post('/goals/{goal}/complete', [\App\Http\Controllers\GoalController::class, 'completeGoal'])->name('goals.complete');
+    Route::get('/goals/{goal}/certificate', [\App\Http\Controllers\GoalController::class, 'generateCertificate'])->name('goals.certificate');
 
     Route::get('/debug/goals', function() {
         $user = \Auth::user();
@@ -157,6 +159,7 @@ Route::middleware('auth')->group(function () {
     Route::post("/activity" , [ActivityController::class, "createActivity"] )->name("activity.create");
     Route::put('/activity/{id}', [ActivityController::class, 'updateActivity'])->name('activity.update');
     Route::delete('/activity/{id}', [ActivityController::class, 'deleteActivity'])->name('activity.delete');
+    Route::post('/activity/{id}/finish', [ActivityController::class, 'finishActivity'])->name('activity.finish');
 });
 
 Route::get('/activities', [ActivityController::class, "showUserActivity"])->name('user.activities');

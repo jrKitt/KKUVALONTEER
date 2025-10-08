@@ -301,7 +301,7 @@
                                     <div
                                         class="mb-4 flex flex-wrap items-center gap-2"
                                     >
-                                        @if (isset($activity->tags) && is_array($activity->tags))
+                                        @if (isset($activity->tags) && is_array($activity->tags) && count($activity->tags) > 0)
                                             @foreach (array_slice($activity->tags, 0, 3) as $tag)
                                                 <span
                                                     class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
@@ -309,12 +309,6 @@
                                                     {{ $tag }}
                                                 </span>
                                             @endforeach
-                                        @else
-                                            <span
-                                                class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
-                                            >
-                                                #กิจกรรมอาสา
-                                            </span>
                                         @endif
                                     </div>
 

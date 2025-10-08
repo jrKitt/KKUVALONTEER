@@ -77,14 +77,33 @@ class GoalController extends Controller
             'custom' => 'กำหนดเอง'
         ];
 
-        $categories = [
-            'academic' => 'กิจกรรมวิชาการ',
-            'social_service' => 'บริการสังคม',
-            'sports' => 'กีฬา',
-            'cultural' => 'ศิลปวัฒนธรรม',
-            'environment' => 'สิ่งแวดล้อม',
-            'other' => 'อื่นๆ'
-        ];
+        // Get dynamic categories from existing activities
+        $activityTags = \App\Models\Activity::whereNotNull('tags')
+            ->pluck('tags')
+            ->map(function ($tags) {
+                if (is_string($tags)) {
+                    return json_decode($tags, true) ?: [];
+                }
+                return is_array($tags) ? $tags : [];
+            })
+            ->flatten()
+            ->unique()
+            ->sort()
+            ->values();
+
+        $categories = $activityTags->mapWithKeys(function ($tag) {
+            return [$tag => $tag];
+        })->toArray();
+
+        // Add some default categories if no activities exist
+        if (empty($categories)) {
+            $categories = [
+                'คณะบริหารธุรกิจและการบัญชี' => 'คณะบริหารธุรกิจและการบัญชี',
+                'คณะศึกษาศาสตร์' => 'คณะศึกษาศาสตร์',
+                'วิทยาลัยการคอมพิวเตอร์' => 'วิทยาลัยการคอมพิวเตอร์',
+                'กิจกรรมทั่วไป' => 'กิจกรรมทั่วไป'
+            ];
+        }
 
         return view('goals.create', compact('goalTypes', 'periodTypes', 'categories'));
     }
@@ -147,12 +166,33 @@ class GoalController extends Controller
             'custom' => 'กำหนดเอง'
         ];
 
-        $categories = [
-            'academic' => 'กิจกรรมวิชาการ',
-            'social_service' => 'บริการสังคม',
-            'environment' => 'สิ่งแวดล้อม',
-            'other' => 'อื่นๆ'
-        ];
+        // Get dynamic categories from existing activities
+        $activityTags = \App\Models\Activity::whereNotNull('tags')
+            ->pluck('tags')
+            ->map(function ($tags) {
+                if (is_string($tags)) {
+                    return json_decode($tags, true) ?: [];
+                }
+                return is_array($tags) ? $tags : [];
+            })
+            ->flatten()
+            ->unique()
+            ->sort()
+            ->values();
+
+        $categories = $activityTags->mapWithKeys(function ($tag) {
+            return [$tag => $tag];
+        })->toArray();
+
+        // Add some default categories if no activities exist
+        if (empty($categories)) {
+            $categories = [
+                'คณะบริหารธุรกิจและการบัญชี' => 'คณะบริหารธุรกิจและการบัญชี',
+                'คณะศึกษาศาสตร์' => 'คณะศึกษาศาสตร์',
+                'วิทยาลัยการคอมพิวเตอร์' => 'วิทยาลัยการคอมพิวเตอร์',
+                'กิจกรรมทั่วไป' => 'กิจกรรมทั่วไป'
+            ];
+        }
 
         return view('goals.edit', compact('goal', 'goalTypes', 'periodTypes', 'categories'));
     }
@@ -206,5 +246,36 @@ class GoalController extends Controller
             'message' => 'Progress updated successfully',
             'updated_goals' => $goals->count()
         ]);
+    }
+
+    public function completeGoal(VolunteerGoal $goal)
+    {
+        $this->authorize('update', $goal);
+
+        // Check if goal hours are met or exceeded
+        if ($goal->current_hours >= $goal->target_hours) {
+            $goal->update([
+                'is_achieved' => true,
+                'achieved_at' => Carbon::now(),
+                'is_active' => false
+            ]);
+
+            return redirect()->back()->with('success', 'เป้าหมายเสร็จสิ้นเรียบร้อยแล้ว! คุณสามารถดาวน์โหลดเอกสารรับรองได้');
+        }
+
+        return redirect()->back()->with('error', 'ยังไม่สามารถเสร็จสิ้นเป้าหมายได้ เนื่องจากชั่วโมงยังไม่ครบตามเป้าหมาย');
+    }
+
+    public function generateCertificate(VolunteerGoal $goal)
+    {
+        $this->authorize('view', $goal);
+
+        if (!$goal->is_achieved) {
+            return redirect()->back()->with('error', 'ไม่สามารถออกเอกสารรับรองได้ เนื่องจากเป้าหมายยังไม่เสร็จสิ้น');
+        }
+
+        $user = $goal->user;
+
+        return view('goals.certificate', compact('goal', 'user'));
     }
 }

@@ -249,7 +249,7 @@
                                 ค้นหา
                             </button>
 
-                          
+
                         </form>
                     </section>
                 </div>
@@ -261,6 +261,14 @@
             <script>
                 function confirmDelete(e) {
                     if (!confirm('ยืนยันการลบกิจกรรมนี้หรือไม่?')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                    return true;
+                }
+
+                function confirmFinish(e, activityName) {
+                    if (!confirm(`ยืนยันการเสร็จสิ้นกิจกรรม "${activityName}" หรือไม่?\n\nเมื่อจบกิจกรรมแล้วจะไม่สามารถแก้ไขได้`)) {
                         e.preventDefault();
                         return false;
                     }
@@ -303,11 +311,32 @@
                                 <div
                                     class="] flex gap-2 [&_div]:rounded-full [&_div]:px-2 [&_div]:py-1 [&_div]:text-sm [&_div]:text-white"
                                 >
-                                    <div class="bg-green-500">
-                                        #
-                                        {{ $activity->user->faculty ?? "ไม่ทราบคณะ" }}
+                                    @php
+                                        $statusColors = [
+                                            'pending' => 'bg-yellow-500',
+                                            'ongoing' => 'bg-blue-500',
+                                            'finished' => 'bg-gray-500'
+                                        ];
+                                        $statusTexts = [
+                                            'pending' => 'รอดำเนินการ',
+                                            'ongoing' => 'กำลังดำเนินการ',
+                                            'finished' => 'เสร็จสิ้น'
+                                        ];
+                                    @endphp
+
+                                    <div class="{{ $statusColors[$activity->status] ?? 'bg-gray-500' }}">
+                                        {{ $statusTexts[$activity->status] ?? $activity->status }}
                                     </div>
-                                    {{-- <div class="bg-gray-400">#กลางแจ้ง</div> --}}
+
+                                    @if($activity->is_expired && $activity->status !== 'finished')
+                                        <div class="bg-red-500">
+                                            หมดเขต
+                                        </div>
+                                    @endif
+
+                                    <div class="bg-green-500">
+                                        #{{ $activity->user->faculty ?? "ไม่ทราบคณะ" }}
+                                    </div>
                                 </div>
                                 <div>
                                     <h6 class="text-gray-600">
@@ -338,6 +367,10 @@
                                         </div>
                                     </div>
                                     <div class="mb-3 text-xs text-gray-500">
+                                        <i class="fa-solid fa-users mr-1"></i>
+                                        ผู้เข้าร่วม {{ $activity->participants_count ?? 0 }}/{{ $activity->accept_amount }} คน
+                                    </div>
+                                    <div class="mb-3 text-xs text-gray-500">
                                         <i
                                             class="fa-solid fa-calendar-days"
                                         ></i>
@@ -354,13 +387,50 @@
                                     เช็คชื่อกิจกรรม
                                 </a>
 
-                                <div class="flex gap-2 sm:gap-5">
-                                    <button
-                                        class="w-1/2 rounded-xl bg-amber-400/80 py-2 text-sm text-white sm:text-base"
-                                        onclick="openEditModal({{ $activity->toJson() }})"
+                                @php
+                                    $isExpired = $activity->start_time && now() > $activity->start_time;
+                                    $isNotFinished = $activity->status !== 'finished';
+                                @endphp
+
+                                @if($isExpired && $isNotFinished)
+                                    <form
+                                        action="{{ route('activity.finish', $activity->id) }}"
+                                        method="POST"
+                                        onsubmit="return confirmFinish(event, '{{ $activity->name_th }}')"
+                                        class="w-full"
                                     >
-                                        แก้ไขข้อมูล
-                                    </button>
+                                        @csrf
+                                        <button
+                                            type="submit"
+                                            class="w-full rounded-xl bg-blue-500/80 py-2 text-sm text-white transition-colors hover:bg-blue-600/80 sm:text-base animate-pulse"
+                                        >
+                                            เสร็จสิ้นกิจกรรม
+                                        </button>
+                                    </form>
+                                @elseif($activity->status === 'finished')
+                                    <div class="w-full rounded-xl bg-gray-400 py-2 text-center text-sm text-white sm:text-base">
+                                        <i class="fa-solid fa-check mr-1"></i>
+                                        กิจกรรมเสร็จสิ้นแล้ว
+                                    </div>
+                                @endif
+
+                                <div class="flex gap-2 sm:gap-5">
+                                    @if($activity->status === 'finished')
+                                        <button
+                                            class="w-1/2 rounded-xl bg-gray-400 py-2 text-sm text-white cursor-not-allowed sm:text-base"
+                                            disabled
+                                        >
+                                            แก้ไขไม่ได้
+                                        </button>
+                                    @else
+                                        <button
+                                            class="w-1/2 rounded-xl bg-amber-400/80 py-2 text-sm text-white sm:text-base"
+                                            onclick="openEditModal({{ $activity->toJson() }})"
+                                        >
+                                            แก้ไขข้อมูล
+                                        </button>
+                                    @endif
+
                                     <form
                                         class="w-1/2"
                                         action="{{ route("activity.delete", $activity->id) }}"
@@ -371,7 +441,8 @@
                                         @method("DELETE")
                                         <button
                                             type="submit"
-                                            class="w-full rounded-xl border border-red-400 py-2 text-sm text-red-400 shadow sm:text-base"
+                                            class="w-full rounded-xl border border-red-400 py-2 text-sm text-red-400 shadow sm:text-base {{ $activity->status === 'finished' ? 'opacity-50 cursor-not-allowed' : '' }}"
+                                            {{ $activity->status === 'finished' ? 'disabled' : '' }}
                                         >
                                             ลบข้อมูล
                                         </button>

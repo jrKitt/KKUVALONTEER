@@ -7,6 +7,60 @@
 @section("layout-content")
     <div class="min-h-screen bg-gray-50">
         <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            @if (session("success"))
+                <div
+                    class="mb-6 rounded-lg border border-green-200 bg-green-50 p-4"
+                >
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg
+                                class="h-5 w-5 text-green-400"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"
+                                />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-green-800">
+                                {{ session("success") }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if (session("error"))
+                <div
+                    class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4"
+                >
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg
+                                class="h-5 w-5 text-red-400"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd"
+                                />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium text-red-800">
+                                {{ session("error") }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <!-- Header -->
             <div
                 class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between"
@@ -242,9 +296,23 @@
                                                 ชั่วโมง
                                             </span>
                                             <span>
-                                                เหลือ
-                                                {{ $goal->remaining_hours }}
-                                                ชั่วโมง
+                                                @if ($goal->current_hours >= $goal->target_hours)
+                                                    <span
+                                                        class="font-semibold text-green-600"
+                                                    >
+                                                        @if ($goal->current_hours > $goal->target_hours)
+                                                            เกิน
+                                                            {{ $goal->current_hours - $goal->target_hours }}
+                                                            ชั่วโมง
+                                                        @else
+                                                                ครบเป้าหมายแล้ว
+                                                        @endif
+                                                    </span>
+                                                @else
+                                                    เหลือ
+                                                    {{ $goal->remaining_hours }}
+                                                    ชั่วโมง
+                                                @endif
                                             </span>
                                         </div>
                                         <div
@@ -291,18 +359,38 @@
 
                                     <!-- Actions -->
                                     <div class="flex gap-2">
-                                        <a
-                                            href="{{ route("goals.show", $goal) }}"
-                                            class="flex-1 rounded-lg bg-gray-100 px-4 py-2 text-center text-gray-700 transition-colors duration-200 hover:bg-gray-200"
-                                        >
-                                            ดูรายละเอียด
-                                        </a>
-                                        <a
-                                            href="{{ route("goals.edit", $goal) }}"
-                                            class="rounded-lg border border-emerald-500 px-4 py-2 text-emerald-500 transition-colors duration-200 hover:bg-emerald-500 hover:text-white"
-                                        >
-                                            แก้ไข
-                                        </a>
+                                        @if ($goal->current_hours >= $goal->target_hours && ! $goal->is_achieved)
+                                            <form
+                                                action="{{ route("goals.complete", $goal) }}"
+                                                method="POST"
+                                                class="flex-1"
+                                            >
+                                                @csrf
+                                                <button
+                                                    type="submit"
+                                                    class="w-full rounded-lg bg-green-500 px-4 py-2 text-center text-white transition-colors duration-200 hover:bg-green-600"
+                                                    onclick="return confirm('ยืนยันการเสร็จสิ้นเป้าหมายนี้หรือไม่?')"
+                                                >
+                                                    เสร็จสิ้น
+                                                </button>
+                                            </form>
+                                        @else
+                                            <a
+                                                href="{{ route("goals.show", $goal) }}"
+                                                class="flex-1 rounded-lg bg-gray-100 px-4 py-2 text-center text-gray-700 transition-colors duration-200 hover:bg-gray-200"
+                                            >
+                                                ดูรายละเอียด
+                                            </a>
+                                        @endif
+
+                                        @if (! $goal->is_achieved)
+                                            <a
+                                                href="{{ route("goals.edit", $goal) }}"
+                                                class="rounded-lg border border-emerald-500 px-4 py-2 text-emerald-500 transition-colors duration-200 hover:bg-emerald-500 hover:text-white"
+                                            >
+                                                แก้ไข
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -479,12 +567,22 @@
                                         </div>
                                     </div>
 
-                                    <a
-                                        href="{{ route("goals.show", $goal) }}"
-                                        class="block rounded-lg bg-green-100 px-4 py-2 text-center text-green-700 transition-colors duration-200 hover:bg-green-200"
-                                    >
-                                        ดูรายละเอียด
-                                    </a>
+                                    <div class="flex gap-2">
+                                        <a
+                                            href="{{ route("goals.show", $goal) }}"
+                                            class="flex-1 rounded-lg bg-green-100 px-4 py-2 text-center text-green-700 transition-colors duration-200 hover:bg-green-200"
+                                        >
+                                            ดูรายละเอียด
+                                        </a>
+                                        <a
+                                            href="{{ route("goals.certificate", $goal) }}"
+                                            class="rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-emerald-600"
+                                            target="_blank"
+                                        >
+                                            <i class="fas fa-download mr-1"></i>
+                                            เอกสาร
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         @endforeach

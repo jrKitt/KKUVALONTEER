@@ -15,6 +15,12 @@ class ActivityController extends Controller
     ->when($request->search, fn($q) => $q->where('name_th', 'like', "%{$request->search}%"))
     ->get();
 
+    foreach ($rec as $activity) {
+        $activity->is_expired = $activity->start_time && now() > $activity->start_time;
+        $activity->can_finish = $activity->is_expired && $activity->status !== 'finished';
+        $activity->participants_count = $activity->participants()->count();
+    }
+
     return view("admin/admin-event", compact("rec"));
 }
 
@@ -25,14 +31,15 @@ class ActivityController extends Controller
         $query->where('name_th', 'like', '%' . $request->search . '%');
     }
 
+    if ($request->filled('tag')) {
+        $query->whereJsonContains('tags', $request->tag);
+    }
+
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
     $rec = $query->get();
-
-     $user = User::find(auth()->id());
-
-        $rec = $rec->filter(function ($activity) use ($user) {
-            return $activity->user && $activity->user->faculty === $user->faculty;
-        });
-
 
     if (auth()->check()) {
         $userRegistrations = ActivityParticipant::where('user_id', auth()->id())
@@ -42,6 +49,19 @@ class ActivityController extends Controller
         foreach ($rec as $activity) {
             $activity->is_registered = in_array($activity->id, $userRegistrations);
             $activity->participants_count = $activity->participants()->count();
+
+            $activity->is_registration_closed = false;
+            if ($activity->start_time && now() > $activity->start_time) {
+                $activity->is_registration_closed = true;
+            }
+        }
+    } else {
+        foreach ($rec as $activity) {
+            $activity->participants_count = $activity->participants()->count();
+            $activity->is_registration_closed = false;
+            if ($activity->start_time && now() > $activity->start_time) {
+                $activity->is_registration_closed = true;
+            }
         }
     }
 
@@ -96,6 +116,13 @@ class ActivityController extends Controller
 
     public function updateActivity(Request $req, $id)
     {
+        $activity = Activity::findOrFail($id);
+
+        // Check if activity is finished - prevent editing
+        if ($activity->status === 'finished') {
+            return redirect()->back()->with('error', 'ไม่สามารถแก้ไขกิจกรรมที่เสร็จสิ้นแล้วได้');
+        }
+
         $req->validate([
             'activity_name' => 'required|string|max:255',
             'des' => 'nullable|string',
@@ -108,9 +135,6 @@ class ActivityController extends Controller
             'tags' => 'nullable|array',
             'tags.*' => 'string|max:50',
         ]);
-
-
-        $activity = Activity::findOrFail($id);
         $activity->name_th = $req->input('activity_name');
         $activity->description = $req->input('des');
         $activity->location = $req->input('location');
@@ -270,8 +294,22 @@ class ActivityController extends Controller
     public function getAdminDashboard() {
         $recs = ActivityParticipant::with('user')->get();
 
-        
+
 
         return view("admin/admin-dashboard" ,compact('recs'));
-    } 
+    }
+
+    public function finishActivity($id) {
+        $activity = Activity::findOrFail($id);
+
+        // Check if user has permission to finish this activity (admin or creator)
+        if (!auth()->user()->is_admin && $activity->create_by !== auth()->id()) {
+            return redirect()->back()->with('error', 'คุณไม่มีสิทธิ์ในการจบกิจกรรมนี้');
+        }
+
+        $activity->status = 'finished';
+        $activity->save();
+
+        return redirect()->back()->with('success', 'จบกิจกรรม "' . $activity->name_th . '" เรียบร้อยแล้ว');
+    }
 }
