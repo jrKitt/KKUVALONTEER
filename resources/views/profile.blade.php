@@ -141,12 +141,13 @@
                                 Faculty
                             </label>
                             <input
-                                disabled
+                                {{-- disabled --}}
+                                readonly
                                 type="text"
                                 id="faculty"
                                 name="faculty"
                                 value="{{ old("faculty", $user->faculty) }}"
-                                class="@error("faculty") @enderror w-full cursor-not-allowed appearance-none rounded-lg border-gray-300 border-red-500 bg-gray-100 px-3 py-2 text-sm leading-tight text-gray-900 shadow-md focus:outline-none sm:px-5 sm:text-base"
+                                class="@error("faculty") @enderror w-full cursor-not-allowed appearance-none rounded-lg border-gray-300 bg-gray-100 px-3 py-2 text-sm leading-tight text-gray-900 shadow-md focus:outline-none sm:px-5 sm:text-base text-zinc-600"
                             />
                             @error("faculty")
                                 <span class="mt-1 text-xs text-red-500">

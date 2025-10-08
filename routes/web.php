@@ -22,7 +22,9 @@ use Illuminate\Routing\RouteRegistrar;
 |
 */
 
-Route::get('/', [AuthController::class, 'showLogin'])->name('auth.login');
+Route::get('/', function () {
+    return redirect('/dashboard');
+});
 
 Route::get('/home', function () {
     return redirect('/dashboard');
@@ -111,14 +113,6 @@ Route::middleware('auth')->group(function () {
     })->name('debug.goals');
 });
 
-Route::get('/admin/dashboard' , [ActivityController::class, "getAdminDashboard"])->name('admin.dashboard');
-
-
-
-Route::get('/admin' , function(){
-    return view('admin/index');
-});
-
 Route::get('/admin/checkin', function() {
     $event = (object) [
         'id' => 1,
@@ -149,7 +143,10 @@ Route::get('/admin/checkin', function() {
 })->name('admin.checkin');
 
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {Route::get('/admin/dashboard' , [ActivityController::class, "getAdminDashboard"])->name('admin.dashboard');
+Route::get('/admin' , function(){
+    return view('admin/index');
+});
     Route::get('/admin/event' , [ActivityController::class, "showAdminActivity"])->name('admin.events');
     Route::get('/admin/activities/{activity}/checkin', [CheckinController::class, 'show'])->name('admin.activity.checkin');
     Route::post('/admin/activities/{activity}/checkin', [CheckinController::class, 'checkin'])->name('admin.activity.checkin.store');
