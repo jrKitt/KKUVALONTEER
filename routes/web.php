@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('goals', \App\Http\Controllers\GoalController::class);
     Route::post('/goals/update-progress', [\App\Http\Controllers\GoalController::class, 'updateProgress'])->name('goals.updateProgress');
     Route::post('/goals/{goal}/complete', [\App\Http\Controllers\GoalController::class, 'completeGoal'])->name('goals.complete');
+    Route::post('/goals/complete', [\App\Http\Controllers\GoalController::class, 'completeGoalFromDashboard'])->name('goals.complete.dashboard');
     Route::get('/goals/{goal}/certificate', [\App\Http\Controllers\GoalController::class, 'generateCertificate'])->name('goals.certificate');
 
     Route::get('/debug/goals', function() {

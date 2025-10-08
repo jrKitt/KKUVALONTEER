@@ -124,9 +124,18 @@
                                     $allTags = [];
                                     foreach ($rec as $activity) {
                                         if ($activity->tags) {
-                                            $tags = json_decode($activity->tags, true);
-                                            if (is_array($tags)) {
-                                                $allTags = array_merge($allTags, $tags);
+                                            // แก้ไขการ decode โดยใช้ JSON_UNESCAPED_UNICODE
+                                            $decodedTags = json_decode($activity->tags, true, 512, JSON_UNESCAPED_UNICODE);
+                                            if (is_array($decodedTags)) {
+                                                foreach ($decodedTags as $tag) {
+                                                    // ทำการ decode unicode escape sequences
+                                                    $cleanTag = json_decode('"' . $tag . '"');
+                                                    if ($cleanTag) {
+                                                        $allTags[] = $cleanTag;
+                                                    } else {
+                                                        $allTags[] = $tag;
+                                                    }
+                                                }
                                             }
                                         }
                                     }

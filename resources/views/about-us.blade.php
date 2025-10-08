@@ -15,9 +15,6 @@
                     <div class="text-4xl font-bold max-sm:text-xl">
                         {{ $totalHours ?? 0 }} ชั่วโมง
                     </div>
-                    <div class="text-xl max-sm:text-sm">
-                        เป้าหมาย 1200 ชั่วโมง
-                    </div>
                 </div>
             </div>
 

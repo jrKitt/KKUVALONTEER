@@ -47,7 +47,7 @@
             tagEl.innerHTML = `
                             <p class="text-xs">${tag}</p>
                             <button type="button" class="text-xs text-red-500" onclick="removeTag(${index})">x</button>
-                            <input type="hidden" name="tag[]" value="${tag}">
+                            <input type="hidden" name="tags[]" value="${tag}">
                         `;
             container.appendChild(tagEl);
         });
@@ -87,8 +87,20 @@
 
         editTags = [];
         try {
-            editTags = JSON.parse(activity.tags || '[]');
-        } catch (e) {}
+            const rawTags = JSON.parse(activity.tags || '[]');
+            if (Array.isArray(rawTags)) {
+                editTags = rawTags.map((tag) => {
+                    // ถอดรหัส Unicode escape sequences
+                    try {
+                        return JSON.parse('"' + tag + '"');
+                    } catch (e) {
+                        return tag;
+                    }
+                });
+            }
+        } catch (e) {
+            console.error('Error parsing tags:', e);
+        }
 
         renderEditTags();
         edit_modal.showModal();
@@ -312,10 +324,8 @@
                     class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 pb-6 sm:grid-cols-2 lg:grid-cols-3"
                 >
                     @foreach ($filtered as $activity)
-                        <div
-                            class="w-full rounded-xl shadow-md flex flex-col"
-                        >
-                            <div class="p-4 flex flex-col justify-between grow">
+                        <div class="flex w-full flex-col rounded-xl shadow-md">
+                            <div class="flex grow flex-col justify-between p-4">
                                 <div>
                                     <section>
                                         <div
@@ -370,10 +380,6 @@
                                                     หมดเขต
                                                 </div>
                                             @endif
-
-                                            <div class="bg-green-500">
-                                                #{{ $activity->user->faculty ?? "ไม่ทราบคณะ" }}
-                                            </div>
                                         </div>
                                         <div>
                                             <h6 class="text-gray-600">
@@ -385,6 +391,47 @@
                                                 {{ $activity->description }}
                                             </p>
                                         </div>
+
+                                        @php
+                                            $activityTags = [];
+                                            if ($activity->tags) {
+                                                $decodedTags = json_decode($activity->tags, true);
+                                                if (is_array($decodedTags)) {
+                                                    foreach ($decodedTags as $tag) {
+                                                        $cleanTag = json_decode('"' . $tag . '"');
+                                                        if ($cleanTag) {
+                                                            $activityTags[] = $cleanTag;
+                                                        } else {
+                                                            $activityTags[] = $tag;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+
+                                        @if (! empty($activityTags))
+                                            <div
+                                                class="mb-2 flex flex-wrap gap-1"
+                                            >
+                                                @foreach (array_slice($activityTags, 0, 3) as $tag)
+                                                    <span
+                                                        class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800"
+                                                    >
+                                                        #{{ $tag }}
+                                                    </span>
+                                                @endforeach
+
+                                                @if (count($activityTags) > 3)
+                                                    <span
+                                                        class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800"
+                                                    >
+                                                        +{{ count($activityTags) - 3 }}
+                                                        อื่นๆ
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        @endif
+
                                         <div>
                                             <div
                                                 class="mb-3 flex items-center justify-between text-sm text-gray-500"
@@ -432,7 +479,7 @@
                                 </div>
 
                                 <section
-                                    class="flex grow flex-col gap-2 justify-end"
+                                    class="flex grow flex-col justify-end gap-2"
                                 >
                                     <a
                                         href="{{ route("admin.activity.checkin", $activity->id) }}"
@@ -631,6 +678,7 @@
                                         id="tag-input"
                                         class="flex-1 rounded-md border border-gray-400 px-4 py-2"
                                         placeholder="ชื่อแท็ก..."
+                                        onkeypress="if(event.key==='Enter'){event.preventDefault();addTag();}"
                                     />
                                     <button
                                         type="button"
@@ -803,6 +851,7 @@
                                         id="edit-tag-input"
                                         class="flex-1 rounded-md border border-gray-400 px-4 py-2"
                                         placeholder="ชื่อแท็ก..."
+                                        onkeypress="if(event.key==='Enter'){event.preventDefault();addEditTag();}"
                                     />
                                     <button
                                         type="button"
@@ -875,8 +924,7 @@
     </div>
 
     <script>
-        let tags = [];
-
+        // File name update functions
         const updateFileName = (input) => {
             const fileName =
                 input.files.length > 0
@@ -891,65 +939,18 @@
             }
         };
 
-        function addTag() {
-            const tagInput = document.getElementById('tagInput');
-            const tagValue = tagInput.value.trim();
+        const updateEditFileName = (input) => {
+            const fileName =
+                input.files.length > 0
+                    ? input.files[0].name
+                    : 'ยังไม่ได้เลือกไฟล์';
+            document.getElementById('edit-file-name').textContent = fileName;
 
-            if (tagValue && !tags.includes(tagValue)) {
-                tags.push(tagValue);
-                updateTagsDisplay();
-                tagInput.value = '';
+            if (input.files.length > 0) {
+                const fileSize = (input.files[0].size / 1024 / 1024).toFixed(2);
+                document.getElementById('edit-file-name').textContent =
+                    `${fileName} (${fileSize} MB)`;
             }
-        }
-
-        function removeTag(index) {
-            tags.splice(index, 1);
-            updateTagsDisplay();
-        }
-
-        function handleTagKeyPress(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                addTag();
-            }
-        }
-
-        function updateTagsDisplay() {
-            const container = document.getElementById('tagsContainer');
-            container.innerHTML = '';
-
-            tags.forEach((tag, index) => {
-                const tagElement = document.createElement('span');
-                tagElement.className =
-                    'inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-800';
-                tagElement.innerHTML = `
-                    ${tag}
-                    <button type="button" onclick="removeTag(${index})" class="ml-2 text-blue-600 hover:text-blue-800">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                `;
-                container.appendChild(tagElement);
-            });
-
-            updateHiddenTagInputs();
-        }
-
-        function updateHiddenTagInputs() {
-            const existingInputs = document.querySelectorAll(
-                'input[name="tags[]"]',
-            );
-            existingInputs.forEach((input) => input.remove());
-
-            const form = document.querySelector('form');
-            tags.forEach((tag) => {
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'tags[]';
-                hiddenInput.value = tag;
-                form.appendChild(hiddenInput);
-            });
-        }
+        };
     </script>
 @endsection
