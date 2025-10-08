@@ -343,7 +343,7 @@
                             @endphp
 
                             <div
-                                class="activity-card overflow-hidden rounded-lg bg-white shadow-md"
+                                class="activity-card overflow-hidden rounded-lg bg-white shadow-md flex flex-col justify-between"
                                 data-status="{{ $activity->status }}"
                                 data-search="{{ strtolower($activity->name_th . " " . $activity->description . " " . $activity->location) }}"
                                 data-tags="{{ ! empty($cardTags) ? implode(",", $cardTags) : "" }}"
@@ -361,7 +361,7 @@
                                         class="h-48 w-full object-cover"
                                     />
                                 @endif
-                                <div class="p-4">
+                                <div class="p-4 grow">
                                     <h4
                                         class="mb-2 font-semibold text-gray-900"
                                     >
@@ -498,66 +498,67 @@
                                         </div>
                                     @endif
 
-                                    <div class="flex gap-2">
-                                        @if ($activity->status === "finished")
-                                            <button
-                                                class="flex-1 cursor-not-allowed rounded-lg bg-gray-500 px-4 py-2 text-white"
-                                                disabled
-                                            >
-                                                กิจกรรมเสร็จสิ้น
-                                            </button>
-                                        @elseif (isset($activity->is_registered) && $activity->is_registered)
-                                            <button
-                                                class="flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white"
-                                                disabled
-                                            >
-                                                สมัครแล้ว
-                                            </button>
-                                        @elseif (isset($activity->is_registration_closed) && $activity->is_registration_closed)
-                                            <button
-                                                class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
-                                                disabled
-                                            >
-                                                หมดเวลารับสมัคร
-                                            </button>
-                                        @elseif (($activity->participants_count ?? 0) >= $activity->accept_amount)
-                                            <button
-                                                class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
-                                                disabled
-                                            >
-                                                เต็มแล้ว
-                                            </button>
-                                        @elseif ($activity->status === "pending" || $activity->status === "ongoing")
-                                            @auth
-                                                <button
-                                                    class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-white transition-colors hover:bg-cyan-500"
-                                                    onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
-                                                >
-                                                    สมัครเลย
-                                                </button>
-                                            @else
-                                                <a
-                                                    href="{{ route("login") }}"
-                                                    class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-center text-white transition-colors hover:bg-cyan-500"
-                                                >
-                                                    เข้าสู่ระบบเพื่อสมัคร
-                                                </a>
-                                            @endauth
-                                        @else
-                                            <button
-                                                class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-white"
-                                                disabled
-                                            >
-                                                ปิดการสมัคร
-                                            </button>
-                                        @endif
-                                        <a
-                                            href="{{ route("activity.detail", $activity->id) }}"
-                                            class="rounded-lg border border-blue-500 px-4 py-2 text-blue-500 transition-colors hover:bg-blue-50"
+                                </div>
+
+                                <div class="flex gap-2 m-4">
+                                    @if ($activity->status === "finished")
+                                        <button
+                                            class="flex-1 cursor-not-allowed rounded-lg bg-gray-500 px-4 py-2 text-white"
+                                            disabled
                                         >
-                                            ดูรายละเอียด
-                                        </a>
-                                    </div>
+                                            กิจกรรมเสร็จสิ้น
+                                        </button>
+                                    @elseif (isset($activity->is_registered) && $activity->is_registered)
+                                        <button
+                                            class="flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white"
+                                            disabled
+                                        >
+                                            สมัครแล้ว
+                                        </button>
+                                    @elseif (isset($activity->is_registration_closed) && $activity->is_registration_closed)
+                                        <button
+                                            class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
+                                            disabled
+                                        >
+                                            หมดเวลารับสมัคร
+                                        </button>
+                                    @elseif (($activity->participants_count ?? 0) >= $activity->accept_amount)
+                                        <button
+                                            class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
+                                            disabled
+                                        >
+                                            เต็มแล้ว
+                                        </button>
+                                    @elseif ($activity->status === "pending" || $activity->status === "ongoing")
+                                        @auth
+                                            <button
+                                                class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-white transition-colors hover:bg-cyan-500"
+                                                onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
+                                            >
+                                                สมัครเลย
+                                            </button>
+                                        @else
+                                            <a
+                                                href="{{ route("login") }}"
+                                                class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-center text-white transition-colors hover:bg-cyan-500"
+                                            >
+                                                เข้าสู่ระบบเพื่อสมัคร
+                                            </a>
+                                        @endauth
+                                    @else
+                                        <button
+                                            class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-white"
+                                            disabled
+                                        >
+                                            ปิดการสมัคร
+                                        </button>
+                                    @endif
+                                    <a
+                                        href="{{ route("activity.detail", $activity->id) }}"
+                                        class="rounded-lg border border-blue-500 px-4 py-2 text-blue-500 transition-colors hover:bg-blue-50"
+                                    >
+                                        ดูรายละเอียด
+                                    </a>
                                 </div>
                             </div>
                         @empty
