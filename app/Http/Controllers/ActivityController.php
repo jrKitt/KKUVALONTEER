@@ -301,7 +301,7 @@ class ActivityController extends Controller
         $activity = Activity::findOrFail($id);
 
         // Check if user has permission to finish this activity (admin or creator)
-        if (!auth()->user()->is_admin && $activity->create_by !== auth()->id()) {
+        if (!auth()->user()->isAdmin() && $activity->create_by !== auth()->id()) {
             return redirect()->back()->with('error', 'คุณไม่มีสิทธิ์ในการจบกิจกรรมนี้');
         }
 

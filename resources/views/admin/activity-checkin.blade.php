@@ -11,25 +11,7 @@
                 </h1>
                 <p class="mt-2 text-gray-600">{{ $activity->name_th }}</p>
             </div>
-            <a
-                href="{{ route("admin.events") }}"
-                class="btn btn-outline btn-sm"
-            >
-                <svg
-                    class="mr-2 h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                    />
-                </svg>
-                กลับ
-            </a>
+            <a href="{{ route("admin.events") }}" class="btn btn-md">กลับ</a>
         </div>
 
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
@@ -168,26 +150,23 @@
                     <div class="flex flex-wrap gap-3">
                         <button
                             onclick="selectAll()"
-                            class="btn btn-outline btn-sm"
+                            class="btn btn-sm"
+                            style="
+                                background-color: #06d42f;
+                                border-color: #06d42f;
+                                color: white;
+                            "
                         >
-                            <svg
-                                class="mr-2 h-4 w-4"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                                />
-                            </svg>
                             เลือกทั้งหมด
                         </button>
                         <button
                             onclick="deselectAll()"
-                            class="btn btn-outline btn-sm"
+                            class="btn btn-sm"
+                            style="
+                                background-color: #d40606;
+                                border-color: #d40606;
+                                color: white;
+                            "
                         >
                             ยกเลิกการเลือก
                         </button>
