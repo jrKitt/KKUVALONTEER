@@ -174,16 +174,28 @@ class ActivityController extends Controller
             $userId = auth()->id();
 
             if (!$userId) {
-                return response()->json(['success' => false, 'message' => 'กรุณาเข้าสู่ระบบก่อน']);
+                return redirect()->route('login')->with([
+                    'alert_type' => 'warning',
+                    'alert_title' => 'กรุณาเข้าสู่ระบบ',
+                    'alert_message' => 'กรุณาเข้าสู่ระบบก่อนสมัครกิจกรรม'
+                ]);
             }
 
             $activity = Activity::find($activityId);
             if (!$activity) {
-                return response()->json(['success' => false, 'message' => 'ไม่พบกิจกรรมนี้']);
+                return redirect()->back()->with([
+                    'alert_type' => 'error',
+                    'alert_title' => 'เกิดข้อผิดพลาด!',
+                    'alert_message' => 'ไม่พบกิจกรรมนี้'
+                ]);
             }
 
             if ($activity->status !== 'pending' && $activity->status !== 'ongoing') {
-                return response()->json(['success' => false, 'message' => 'กิจกรรมนี้ปิดรับสมัครแล้ว']);
+                return redirect()->back()->with([
+                    'alert_type' => 'warning',
+                    'alert_title' => 'ไม่สามารถสมัครได้',
+                    'alert_message' => 'กิจกรรมนี้ปิดรับสมัครแล้ว'
+                ]);
             }
 
             $existingRegistration = ActivityParticipant::where('activity_id', $activityId)
@@ -191,12 +203,20 @@ class ActivityController extends Controller
                 ->first();
 
             if ($existingRegistration) {
-                return response()->json(['success' => false, 'message' => 'คุณได้สมัครกิจกรรมนี้แล้ว']);
+                return redirect()->back()->with([
+                    'alert_type' => 'info',
+                    'alert_title' => 'แจ้งเตือน',
+                    'alert_message' => 'คุณได้สมัครกิจกรรมนี้แล้ว'
+                ]);
             }
 
             $currentParticipants = ActivityParticipant::where('activity_id', $activityId)->count();
             if ($currentParticipants >= $activity->accept_amount) {
-                return response()->json(['success' => false, 'message' => 'กิจกรรมนี้เต็มแล้ว']);
+                return redirect()->back()->with([
+                    'alert_type' => 'warning',
+                    'alert_title' => 'กิจกรรมเต็ม',
+                    'alert_message' => 'กิจกรรมนี้เต็มแล้ว'
+                ]);
             }
 
             $participant = ActivityParticipant::create([
@@ -207,19 +227,24 @@ class ActivityController extends Controller
             ]);
 
             if (!$participant) {
-                return response()->json(['success' => false, 'message' => 'ไม่สามารถลงทะเบียนได้ กรุณาลองใหม่']);
+                return redirect()->back()->with([
+                    'alert_type' => 'error',
+                    'alert_title' => 'เกิดข้อผิดพลาด!',
+                    'alert_message' => 'ไม่สามารถลงทะเบียนได้ กรุณาลองใหม่'
+                ]);
             }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'ลงทะเบียนสำเร็จ',
-                'activity' => $activity
+            return redirect()->back()->with([
+                'alert_type' => 'success',
+                'alert_title' => 'ลงทะเบียนสำเร็จ!',
+                'alert_message' => 'คุณได้สมัครเข้าร่วมกิจกรรม "' . $activity->name_th . '" เรียบร้อยแล้ว'
             ]);
         } catch (\Exception $e) {
             \Log::error('Registration error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง'
+            return redirect()->back()->with([
+                'alert_type' => 'error',
+                'alert_title' => 'เกิดข้อผิดพลาด!',
+                'alert_message' => 'เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง'
             ]);
         }
     }

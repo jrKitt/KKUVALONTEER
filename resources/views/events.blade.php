@@ -76,12 +76,13 @@
                                 </button>
                             @elseif ($firstActivity->status === "pending" || $firstActivity->status === "ongoing")
                                 @auth
-                                    <button
-                                        class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
-                                        onclick="registerForActivity({{ $firstActivity->id }}, '{{ $firstActivity->name_th }}')"
+                                    <a
+                                        href="{{ route("activities.register") }}"
+                                        onclick="event.preventDefault(); registerActivity({{ $firstActivity->id }});"
+                                        class="inline-block cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-center text-nowrap text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
                                     >
                                         สมัครเข้าร่วม
-                                    </button>
+                                    </a>
                                 @else
                                     <a
                                         href="{{ route("login") }}"
@@ -105,12 +106,33 @@
                                 รายละเอียด
                             </a>
                         @else
-                            <button
-                                class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
-                                onclick="registerForActivity({{ $firstActivity->id }}, '{{ $firstActivity->name_th }}')"
-                            >
-                                สมัครเข้าร่วม
-                            </button>
+                            @auth
+                                <form
+                                    method="POST"
+                                    action="{{ route("activities.register") }}"
+                                    style="display: inline"
+                                >
+                                    @csrf
+                                    <input
+                                        type="hidden"
+                                        name="activity_id"
+                                        value="1"
+                                    />
+                                    <button
+                                        type="submit"
+                                        class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
+                                    >
+                                        สมัครเข้าร่วม
+                                    </button>
+                                </form>
+                            @else
+                                <a
+                                    href="{{ route("login") }}"
+                                    class="inline-block cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-center text-nowrap text-white shadow-lg transition-all hover:bg-cyan-500 active:scale-90"
+                                >
+                                    เข้าสู่ระบบเพื่อสมัคร
+                                </a>
+                            @endauth
                             <button
                                 class="cursor-pointer rounded-xl bg-white px-6 py-2 text-sky-400 shadow-lg transition-all hover:bg-gray-300 active:scale-90"
                             >
@@ -625,12 +647,27 @@
                                             </button>
                                         @elseif ($activity->status === "pending" || $activity->status === "ongoing")
                                             @auth
-                                                <button
-                                                    class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-white transition-colors hover:bg-cyan-500"
-                                                    onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
+                                                <form
+                                                    method="POST"
+                                                    action="{{ route("activities.register") }}"
+                                                    style="
+                                                        display: inline;
+                                                        width: 100%;
+                                                    "
                                                 >
-                                                    สมัครเลย
-                                                </button>
+                                                    @csrf
+                                                    <input
+                                                        type="hidden"
+                                                        name="activity_id"
+                                                        value="{{ $activity->id }}"
+                                                    />
+                                                    <button
+                                                        type="submit"
+                                                        class="w-full flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-white transition-colors hover:bg-cyan-500"
+                                                    >
+                                                        สมัครเลย
+                                                    </button>
+                                                </form>
                                             @else
                                                 <a
                                                     href="{{ route("login") }}"
@@ -691,6 +728,8 @@
 @section("scripts")
     <script>
         const activitiesData = @json($rec);
+
+
 
         function showAlert(type, title, message) {
             const alertId = 'alert-' + type + '-' + Date.now();
@@ -969,7 +1008,7 @@
                     buttonHTML = '<button class="cursor-not-allowed rounded-xl bg-red-500 px-6 py-2 text-nowrap text-white" disabled>เต็มแล้ว</button>';
                 } else if (data.status === "pending" || data.status === "ongoing") {
                     @auth
-                        buttonHTML = `<button class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white hover:bg-cyan-500" onclick="registerForActivity(${data.id}, '${data.title}')">สมัครเข้าร่วม</button>`;
+                        buttonHTML = `<form method="POST" action="{{ route('activities.register') }}" style="display: inline;"><input type="hidden" name="_token" value="{{ csrf_token() }}"><input type="hidden" name="activity_id" value="${data.id}"><button type="submit" class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white hover:bg-cyan-500">สมัครเข้าร่วม</button></form>`;
                     @else
                         buttonHTML = `<a href="{{ route('login') }}" class="cursor-pointer rounded-xl bg-cyan-400 px-6 py-2 text-nowrap text-white hover:bg-cyan-500 text-center inline-block">เข้าสู่ระบบเพื่อสมัคร</a>`;
                     @endauth
@@ -987,99 +1026,7 @@
             updateCarouselText();
         }, 5000);
 
-        function registerForActivity(activityId, activityName) {
-            @guest
-                window.location.href = '{{ route("login") }}';
-                return;
-            @endguest
-
-            const activity = activitiesData.find((a) => a.id === activityId);
-            if (!activity) return;
-
-            const button = event.target;
-            const originalText = button.textContent;
-            button.textContent = 'กำลังสมัคร...';
-            button.disabled = true;
-
-            fetch('/activities/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute('content'),
-                },
-                body: JSON.stringify({
-                    activity_id: activityId,
-                }),
-            })
-                .then((response) => {
-                    if (response.redirected) {
-                        window.location.href = response.url;
-                        return;
-                    }
-
-                    if (!response.ok) {
-                        if (response.status === 401) {
-                            window.location.href = '/login';
-                            return;
-                        }
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    return response.json();
-                })
-                .then((data) => {
-                    if (data && data.success) {
-                        showAlert(
-                            'success',
-                            'ลงทะเบียนสำเร็จ!',
-                            `คุณได้สมัครเข้าร่วมกิจกรรม "${activity.name_th}" เรียบร้อยแล้ว`,
-                        );
-
-                        button.textContent = 'สมัครแล้ว';
-                        button.className =
-                            'flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white';
-                        button.disabled = true;
-
-                        const participantsElement = button
-                            .closest('.activity-card')
-                            .querySelector('i.fa-users')?.parentElement;
-                        if (participantsElement) {
-                            const currentText = participantsElement.textContent;
-                            const match = currentText.match(/(\d+)\/(\d+)/);
-                            if (match) {
-                                const newCount = parseInt(match[1]) + 1;
-                                participantsElement.innerHTML = `<i class="fa-solid fa-users mr-1"></i>รับสมัคร ${newCount}/${match[2]} คน`;
-                            }
-                        }
-
-                        return;
-                    } else if (data && data.message) {
-                        showAlert('error', 'เกิดข้อผิดพลาด!', data.message);
-                    } else {
-                        showAlert('error', 'เกิดข้อผิดพลาด!', 'ไม่สามารถลงทะเบียนได้');
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    showAlert(
-                        'error',
-                        'เกิดข้อผิดพลาด!',
-                        'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่อและลองใหม่',
-                    );
-                })
-                .finally(() => {
-                    if (button.textContent === 'กำลังสมัคร...') {
-                        button.textContent = originalText;
-                        button.disabled = false;
-                    }
-                });
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
-
-
             applyAllFilters();
 
             const cards = document.querySelectorAll('.activity-card');

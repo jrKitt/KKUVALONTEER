@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="csrf-token" content="test-token">
+    <title>Debug Button Test</title>
+</head>
+
+<body>
+    <h1>Debug Button Test</h1>
+
+    <button onclick="testRegister()">Test Register Function</button>
+
+    <script>
+        const activitiesData = [
+            { id: 1, name_th: 'Test Activity' }
+        ];
+
+        function testRegister() {
+            console.log('Test button clicked');
+            alert('Button is working!');
+        }
+
+        function registerForActivity(activityId, activityName) {
+            console.log('registerForActivity called with:', { activityId, activityName });
+
+            const activity = activitiesData.find((a) => a.id === activityId);
+            console.log('Found activity:', activity);
+
+            if (!activity) {
+                console.log('Activity not found:', activityId, 'Available activities:', activitiesData);
+                alert('Activity not found!');
+                return;
+            }
+
+            alert('Registration function called successfully!');
+        }
+    </script>
+</body>
+
+</html>

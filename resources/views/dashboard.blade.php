@@ -391,8 +391,9 @@
                                     </a>
                                     @if ($activity->status === "registered")
                                         <button
+                                            type="button"
                                             class="cursor-pointer rounded-lg border border-red-600 px-4 py-2 font-medium text-red-600 transition-all hover:bg-red-50 active:scale-90"
-                                            onclick="cancelRegistration({{ $activity->id }})"
+                                            onclick="cancelRegistration({{ $activity->id }}); return false;"
                                         >
                                             ยกเลิก
                                         </button>
@@ -415,7 +416,7 @@
                 >
                     @foreach ($upcomingEvents as $event)
                         <div
-                            class="overflow-hidden rounded-xl bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl flex flex-col justify-between"
+                            class="flex flex-col justify-between overflow-hidden rounded-xl bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl"
                         >
                             <div class="relative">
                                 <img
@@ -441,7 +442,7 @@
                                     </div>
                                 @endif
                             </div>
-                            <div class="p-6 grow">
+                            <div class="grow p-6">
                                 <h4
                                     class="mb-3 text-lg leading-tight font-bold text-gray-900"
                                 >
@@ -514,10 +515,9 @@
                                         {{ $event["hours"] }}
                                     </div>
                                 </div>
-
                             </div>
 
-                            <div class="flex gap-2 m-4">
+                            <div class="m-4 flex gap-2">
                                 @if ($event["is_registered"])
                                     <button
                                         class="flex-1 cursor-not-allowed rounded-lg bg-green-500 px-4 py-2 text-center font-medium text-white"
@@ -533,12 +533,22 @@
                                         เต็มแล้ว
                                     </button>
                                 @elseif ($event["can_register"])
-                                    <button
-                                        class="flex-1 cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
-                                        onclick="registerForActivity({{ $event["id"] }}, '{{ $event["title"] }}')"
-                                    >
-                                        สมัครเลย
-                                    </button>
+                                    @auth
+                                        <a
+                                            href="{{ route("activities.register") }}"
+                                            onclick="event.preventDefault(); registerActivity({{ $event["id"] }});"
+                                            class="flex-1 inline-block cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
+                                        >
+                                            สมัครเลย
+                                        </a>
+                                    @else
+                                        <a
+                                            href="{{ route("login") }}"
+                                            class="flex-1 inline-block cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
+                                        >
+                                            เข้าสู่ระบบเพื่อสมัคร
+                                        </a>
+                                    @endauth
                                 @else
                                     <button
                                         class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-center font-medium text-white"
@@ -562,8 +572,42 @@
     </div>
 @endsection
 
-@push("scripts")
+@section("scripts")
+    @parent
     <script>
+        function registerActivity(activityId) {
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                if (!csrfToken) {
+                    showAlert('error', 'ข้อผิดพลาด!', 'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่');
+                    return;
+                }
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '{{ route("activities.register") }}';
+                form.style.display = 'none';
+
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = csrfToken.getAttribute('content');
+
+                const activityInput = document.createElement('input');
+                activityInput.type = 'hidden';
+                activityInput.name = 'activity_id';
+                activityInput.value = activityId;
+
+                form.appendChild(csrfInput);
+                form.appendChild(activityInput);
+                document.body.appendChild(form);
+                form.submit();
+            } catch (err) {
+                console.error('registerActivity failed', err);
+                showAlert('error', 'ข้อผิดพลาด!', 'เกิดข้อผิดพลาดภายใน โปรดลองอีกครั้ง');
+            }
+        }
+
         function showAlert(type, title, message) {
             const alertId = 'alert-' + type + '-' + Date.now();
             const alertHTML = `
@@ -620,182 +664,277 @@
         }
 
         function registerForActivity(activityId, activityName) {
-            console.log('Registering for activity:', activityId, activityName);
+            console.log(
+                'registerForActivity called with:',
+                activityId,
+                activityName,
+            );
+            try {
+                if (
+                    !confirm(
+                        `คุณต้องการสมัครกิจกรรม "${activityName}" หรือไม่?`,
+                    )
+                ) {
+                    return;
+                }
 
-            if (!confirm(`คุณต้องการสมัครกิจกรรม "${activityName}" หรือไม่?`)) {
-                return;
-            }
-
-            console.log('Starting registration process...');
-
-            const csrfToken = document.querySelector('meta[name="csrf-token"]');
-            if (!csrfToken) {
-                console.error('CSRF token not found');
-                showAlert(
-                    'error',
-                    'ข้อผิดพลาด!',
-                    'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่',
+                const csrfToken = document.querySelector(
+                    'meta[name="csrf-token"]',
                 );
-                return;
-            }
+                if (!csrfToken) {
+                    showAlert(
+                        'error',
+                        'ข้อผิดพลาด!',
+                        'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่',
+                    );
+                    return;
+                }
 
-            console.log('CSRF token found');
-
-            // Disable the button during the request
-            const button = event.target;
-            const originalText = button.textContent;
-            button.textContent = 'กำลังสมัคร...';
-            button.disabled = true;
-
-            fetch('/activities/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
-                },
-                body: JSON.stringify({
-                    activity_id: activityId,
-                }),
-            })
-                .then((response) => {
-                    console.log('Response status:', response.status);
-
-                    // Check if response is redirecting (usually means not authenticated)
-                    if (response.redirected) {
-                        window.location.href = response.url;
-                        return;
+                let button = null;
+                const eventObj = window.event || null;
+                if (eventObj && eventObj.target) {
+                    button = eventObj.target;
+                    if (button && !['BUTTON', 'A'].includes(button.tagName)) {
+                        button = button.closest('button, a');
                     }
+                }
 
-                    if (!response.ok) {
-                        if (response.status === 401) {
-                            // Not authenticated - redirect to login
-                            window.location.href = '/login';
+                if (!button || !(button instanceof Element)) {
+                    const active = document.activeElement;
+                    if (
+                        active &&
+                        (active.tagName === 'BUTTON' || active.tagName === 'A')
+                    ) {
+                        button = active;
+                    }
+                }
+                if (!button || !(button instanceof Element)) {
+                    try {
+                        button =
+                            document.querySelector(
+                                `[onclick*="registerForActivity(${activityId}"]`,
+                            ) || null;
+                    } catch (e) {
+                        button = null;
+                    }
+                }
+
+                const originalText = button ? button.textContent : null;
+                if (button) {
+                    button.textContent = 'กำลังสมัคร...';
+                    try {
+                        button.disabled = true;
+                    } catch (e) {}
+                }
+
+                console.log(
+                    'Sending registration request for activity:',
+                    activityId,
+                );
+                fetch('/activities/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+                    },
+                    body: JSON.stringify({ activity_id: activityId }),
+                })
+                    .then((response) => {
+                        if (response.redirected) {
+                            window.location.href = response.url;
                             return;
                         }
-                        throw new Error(
-                            `HTTP error! status: ${response.status}`,
-                        );
-                    }
-
-                    return response.json();
-                })
-                .then((data) => {
-                    console.log('Response data:', data);
-                    if (data && data.success) {
-                        showAlert(
-                            'success',
-                            'ลงทะเบียนสำเร็จ!',
-                            `คุณได้สมัครเข้าร่วมกิจกรรม "${activityName}" เรียบร้อยแล้ว`,
-                        );
-
-                        // Update button state
-                        button.textContent = 'สมัครแล้ว';
-                        button.className =
-                            'flex-1 cursor-not-allowed rounded-lg bg-green-500 px-4 py-2 text-center font-medium text-white';
-                        button.disabled = true;
-
-                        return;
-                    } else if (data && data.message) {
-                        showAlert('error', 'เกิดข้อผิดพลาด!', data.message);
-                    } else {
+                        if (!response.ok) {
+                            if (response.status === 401) {
+                                window.location.href = '/login';
+                                return;
+                            }
+                            throw new Error(
+                                `HTTP error! status: ${response.status}`,
+                            );
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        if (data && data.success) {
+                            showAlert(
+                                'success',
+                                'ลงทะเบียนสำเร็จ!',
+                                `คุณได้สมัครเข้าร่วมกิจกรรม "${activityName}" เรียบร้อยแล้ว`,
+                            );
+                            if (button) {
+                                button.textContent = 'สมัครแล้ว';
+                                button.className =
+                                    'flex-1 cursor-not-allowed rounded-lg bg-green-500 px-4 py-2 text-center font-medium text-white';
+                                try {
+                                    button.disabled = true;
+                                } catch (e) {}
+                            }
+                            return;
+                        } else if (data && data.message) {
+                            showAlert('error', 'เกิดข้อผิดพลาด!', data.message);
+                        } else {
+                            showAlert(
+                                'error',
+                                'เกิดข้อผิดพลาด!',
+                                'ไม่สามารถลงทะเบียนได้',
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
                         showAlert(
                             'error',
                             'เกิดข้อผิดพลาด!',
-                            'ไม่สามารถลงทะเบียนได้',
+                            'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่อและลองใหม่',
                         );
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    showAlert(
-                        'error',
-                        'เกิดข้อผิดพลาด!',
-                        'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ กรุณาตรวจสอบการเชื่อมต่อและลองใหม่',
-                    );
-                })
-                .finally(() => {
-                    // Restore button if it still shows "กำลังสมัคร..."
-                    if (button.textContent === 'กำลังสมัคร...') {
-                        button.textContent = originalText;
-                        button.disabled = false;
-                    }
-                });
+                    })
+                    .finally(() => {
+                        if (
+                            button &&
+                            originalText &&
+                            button.textContent === 'กำลังสมัคร...'
+                        ) {
+                            button.textContent = originalText;
+                            try {
+                                button.disabled = false;
+                            } catch (e) {}
+                        }
+                    });
+            } catch (err) {
+                console.error('registerForActivity failed', err);
+                showAlert(
+                    'error',
+                    'ข้อผิดพลาด!',
+                    'เกิดข้อผิดพลาดภายใน โปรดลองอีกครั้ง',
+                );
+            }
         }
 
         function cancelRegistration(activityId) {
-            if (!confirm('คุณต้องการยกเลิกการสมัครกิจกรรมนี้หรือไม่?')) {
-                return;
-            }
+            try {
+                if (!confirm('คุณต้องการยกเลิกการสมัครกิจกรรมนี้หรือไม่?')) {
+                    return;
+                }
 
-            const csrfToken = document.querySelector('meta[name="csrf-token"]');
-            if (!csrfToken) {
-                showAlert(
-                    'error',
-                    'ข้อผิดพลาด!',
-                    'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่',
+                const csrfToken = document.querySelector(
+                    'meta[name="csrf-token"]',
                 );
-                return;
-            }
+                if (!csrfToken) {
+                    showAlert(
+                        'error',
+                        'ข้อผิดพลาด!',
+                        'ไม่พบ CSRF token กรุณาโหลดหน้าใหม่',
+                    );
+                    return;
+                }
 
-            const button = event.target;
-            const originalText = button.textContent;
-            button.textContent = 'กำลังยกเลิก...';
-            button.disabled = true;
-
-            fetch('/activities/cancel', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
-                },
-                body: JSON.stringify({
-                    activity_id: activityId,
-                }),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        if (response.status === 401) {
-                            window.location.href = '/login';
-                            return;
-                        }
-                        throw new Error(
-                            `HTTP error! status: ${response.status}`,
-                        );
+                let button = null;
+                const eventObj = window.event || null;
+                if (eventObj && eventObj.target) {
+                    button = eventObj.target;
+                    if (button && !['BUTTON', 'A'].includes(button.tagName)) {
+                        button = button.closest('button, a');
                     }
-                    return response.json();
+                }
+                if (!button || !(button instanceof Element)) {
+                    const active = document.activeElement;
+                    if (
+                        active &&
+                        (active.tagName === 'BUTTON' || active.tagName === 'A')
+                    ) {
+                        button = active;
+                    }
+                }
+                if (!button || !(button instanceof Element)) {
+                    try {
+                        button =
+                            document.querySelector(
+                                `[onclick*="cancelRegistration(${activityId}"]`,
+                            ) || null;
+                    } catch (e) {
+                        button = null;
+                    }
+                }
+
+                const originalText = button ? button.textContent : null;
+                if (button) {
+                    button.textContent = 'กำลังยกเลิก...';
+                    try {
+                        button.disabled = true;
+                    } catch (e) {
+                        /* ignore */
+                    }
+                }
+
+                fetch('/activities/cancel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+                    },
+                    body: JSON.stringify({ activity_id: activityId }),
                 })
-                .then((data) => {
-                    if (data && data.success) {
-                        showAlert(
-                            'success',
-                            'ยกเลิกสำเร็จ!',
-                            'ยกเลิกการสมัครกิจกรรมเรียบร้อยแล้ว',
-                        );
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1500);
-                    } else {
+                    .then((response) => {
+                        if (!response.ok) {
+                            if (response.status === 401) {
+                                window.location.href = '/login';
+                                return;
+                            }
+                            throw new Error(
+                                `HTTP error! status: ${response.status}`,
+                            );
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        if (data && data.success) {
+                            showAlert(
+                                'success',
+                                'ยกเลิกสำเร็จ!',
+                                'ยกเลิกการสมัครกิจกรรมเรียบร้อยแล้ว',
+                            );
+                            setTimeout(() => {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            showAlert(
+                                'error',
+                                'เกิดข้อผิดพลาด!',
+                                data.message || 'ไม่สามารถยกเลิกการสมัครได้',
+                            );
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
                         showAlert(
                             'error',
                             'เกิดข้อผิดพลาด!',
-                            data.message || 'ไม่สามารถยกเลิกการสมัครได้',
+                            'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
                         );
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    showAlert(
-                        'error',
-                        'เกิดข้อผิดพลาด!',
-                        'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้',
-                    );
-                })
-                .finally(() => {
-                    if (button.textContent === 'กำลังยกเลิก...') {
-                        button.textContent = originalText;
-                        button.disabled = false;
-                    }
-                });
+                    })
+                    .finally(() => {
+                        if (
+                            button &&
+                            originalText &&
+                            button.textContent === 'กำลังยกเลิก...'
+                        ) {
+                            button.textContent = originalText;
+                            try {
+                                button.disabled = false;
+                            } catch (e) {
+                                /* ignore */
+                            }
+                        }
+                    });
+            } catch (err) {
+                console.error('cancelRegistration failed', err);
+                showAlert(
+                    'error',
+                    'ข้อผิดพลาด!',
+                    'เกิดข้อผิดพลาดภายใน โปรดลองอีกครั้ง',
+                );
+            }
         }
     </script>
 
@@ -822,4 +961,4 @@
             border-left: 4px solid #3b82f6;
         }
     </style>
-@endpush
+@endsection
