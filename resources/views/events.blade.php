@@ -198,131 +198,227 @@
                     <div
                         class="my-6 flex items-center justify-between max-md:flex-col"
                     >
-                        <h3
-                            class="mb-6 text-3xl font-bold text-gray-900 md:text-4xl"
-                        >
-                            กิจกรรมทั้งหมด
-                        </h3>
+                        <div>
+                            <h3
+                                class="mb-2 text-3xl font-bold text-gray-900 md:text-4xl"
+                            >
+                                กิจกรรมทั้งหมด
+                            </h3>
+                            <p class="text-sm text-gray-600" id="resultsInfo">
+                                พบ {{ $rec->count() }} กิจกรรม
+                            </p>
+                        </div>
                         <div class="flex flex-col items-end gap-5">
-                            <div>
+                            <div class="relative">
                                 <input
                                     type="search"
-                                    class="w-70 rounded-xl border border-gray-400 px-2 py-1"
-                                    placeholder="ค้นหา"
+                                    class="w-70 rounded-xl border border-gray-400 px-4 py-2 pr-10"
+                                    placeholder="ค้นหาชื่อกิจกรรม, สถานที่, หรือรายละเอียด"
                                     id="searchInput"
-                                    onkeyup="searchActivities()"
+                                    value="{{ request("search") }}"
+                                    oninput="searchActivities()"
                                 />
+                                <i
+                                    class="fa-solid fa-search absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-400"
+                                ></i>
                             </div>
-                            <div class="flex gap-5 max-md:flex-col">
+                            <div class="flex gap-3 max-md:flex-col">
                                 <select
-                                    name=""
+                                    name="tag"
                                     id="tagFilter"
                                     class="w-72 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
                                     onchange="filterActivities()"
                                 >
                                     <option value=""># แท็ก</option>
                                     <optgroup label="วิทยาศาสตร์เทคโนโลยี">
-                                        <option value="คณะเกษตรศาสตร์">
+                                        <option
+                                            value="คณะเกษตรศาสตร์"
+                                            {{ request("tag") == "คณะเกษตรศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะเกษตรศาสตร์
                                         </option>
-                                        <option value="คณะเทคโนโลยี">
+                                        <option
+                                            value="คณะเทคโนโลยี"
+                                            {{ request("tag") == "คณะเทคโนโลยี" ? "selected" : "" }}
+                                        >
                                             คณะเทคโนโลยี
                                         </option>
-                                        <option value="คณะวิศวกรรมศาสตร์">
+                                        <option
+                                            value="คณะวิศวกรรมศาสตร์"
+                                            {{ request("tag") == "คณะวิศวกรรมศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะวิศวกรรมศาสตร์
                                         </option>
-                                        <option value="คณะวิทยาศาสตร์">
+                                        <option
+                                            value="คณะวิทยาศาสตร์"
+                                            {{ request("tag") == "คณะวิทยาศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะวิทยาศาสตร์
                                         </option>
-                                        <option value="คณะสถาปัตยกรรมศาสตร์">
+                                        <option
+                                            value="คณะสถาปัตยกรรมศาสตร์"
+                                            {{ request("tag") == "คณะสถาปัตยกรรมศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะสถาปัตยกรรมศาสตร์
                                         </option>
-                                        <option value="วิทยาลัยการคอมพิวเตอร์">
+                                        <option
+                                            value="วิทยาลัยการคอมพิวเตอร์"
+                                            {{ request("tag") == "วิทยาลัยการคอมพิวเตอร์" ? "selected" : "" }}
+                                        >
                                             วิทยาลัยการคอมพิวเตอร์
                                         </option>
                                     </optgroup>
                                     <optgroup label="วิทยาศาสตร์สุขภาพ">
-                                        <option value="คณะพยาบาลศาสตร์">
+                                        <option
+                                            value="คณะพยาบาลศาสตร์"
+                                            {{ request("tag") == "คณะพยาบาลศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะพยาบาลศาสตร์
                                         </option>
-                                        <option value="คณะแพทยศาสตร์">
+                                        <option
+                                            value="คณะแพทยศาสตร์"
+                                            {{ request("tag") == "คณะแพทยศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะแพทยศาสตร์
                                         </option>
-                                        <option value="คณะเทคนิคการแพทย์">
+                                        <option
+                                            value="คณะเทคนิคการแพทย์"
+                                            {{ request("tag") == "คณะเทคนิคการแพทย์" ? "selected" : "" }}
+                                        >
                                             คณะเทคนิคการแพทย์
                                         </option>
-                                        <option value="คณะสาธารณสุขศาสตร์">
+                                        <option
+                                            value="คณะสาธารณสุขศาสตร์"
+                                            {{ request("tag") == "คณะสาธารณสุขศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะสาธารณสุขศาสตร์
                                         </option>
-                                        <option value="คณะทันตแพทยศาสตร์">
+                                        <option
+                                            value="คณะทันตแพทยศาสตร์"
+                                            {{ request("tag") == "คณะทันตแพทยศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะทันตแพทยศาสตร์
                                         </option>
-                                        <option value="คณะเภสัชศาสตร์">
+                                        <option
+                                            value="คณะเภสัชศาสตร์"
+                                            {{ request("tag") == "คณะเภสัชศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะเภสัชศาสตร์
                                         </option>
-                                        <option value="คณะสัตวแพทยศาสตร์">
+                                        <option
+                                            value="คณะสัตวแพทยศาสตร์"
+                                            {{ request("tag") == "คณะสัตวแพทยศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะสัตวแพทยศาสตร์
                                         </option>
                                     </optgroup>
                                     <optgroup label="มนุษยศาสตร์และสังคมศาสตร์">
-                                        <option value="คณะศึกษาศาสตร์">
+                                        <option
+                                            value="คณะศึกษาศาสตร์"
+                                            {{ request("tag") == "คณะศึกษาศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะศึกษาศาสตร์
                                         </option>
                                         <option
                                             value="คณะมนุษยศาสตร์และสังคมศาสตร์"
+                                            {{ request("tag") == "คณะมนุษยศาสตร์และสังคมศาสตร์" ? "selected" : "" }}
                                         >
                                             คณะมนุษยศาสตร์และสังคมศาสตร์
                                         </option>
                                         <option
                                             value="คณะบริหารธุรกิจและการบัญชี"
+                                            {{ request("tag") == "คณะบริหารธุรกิจและการบัญชี" ? "selected" : "" }}
                                         >
                                             คณะบริหารธุรกิจและการบัญชี
                                         </option>
-                                        <option value="คณะศิลปกรรมศาสตร์">
+                                        <option
+                                            value="คณะศิลปกรรมศาสตร์"
+                                            {{ request("tag") == "คณะศิลปกรรมศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะศิลปกรรมศาสตร์
                                         </option>
-                                        <option value="คณะเศรษฐศาสตร์">
+                                        <option
+                                            value="คณะเศรษฐศาสตร์"
+                                            {{ request("tag") == "คณะเศรษฐศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะเศรษฐศาสตร์
                                         </option>
-                                        <option value="คณะนิติศาสตร์">
+                                        <option
+                                            value="คณะนิติศาสตร์"
+                                            {{ request("tag") == "คณะนิติศาสตร์" ? "selected" : "" }}
+                                        >
                                             คณะนิติศาสตร์
                                         </option>
                                         <option
                                             value="วิทยาลัยการปกครองท้องถิ่น"
+                                            {{ request("tag") == "วิทยาลัยการปกครองท้องถิ่น" ? "selected" : "" }}
                                         >
                                             วิทยาลัยการปกครองท้องถิ่น
                                         </option>
                                         <option
                                             value="วิทยาลัยบัณฑิตศึกษาการจัดการ"
+                                            {{ request("tag") == "วิทยาลัยบัณฑิตศึกษาการจัดการ" ? "selected" : "" }}
                                         >
                                             วิทยาลัยบัณฑิตศึกษาการจัดการ
                                         </option>
                                     </optgroup>
                                     <optgroup label="สหสาขาวิชา">
-                                        <option value="บัณฑิตวิทยาลัย">
+                                        <option
+                                            value="บัณฑิตวิทยาลัย"
+                                            {{ request("tag") == "บัณฑิตวิทยาลัย" ? "selected" : "" }}
+                                        >
                                             บัณฑิตวิทยาลัย
                                         </option>
-                                        <option value="วิทยาลัยนานาชาติ">
+                                        <option
+                                            value="วิทยาลัยนานาชาติ"
+                                            {{ request("tag") == "วิทยาลัยนานาชาติ" ? "selected" : "" }}
+                                        >
                                             วิทยาลัยนานาชาติ
                                         </option>
-                                        <option value="คณะสหวิทยาการ">
+                                        <option
+                                            value="คณะสหวิทยาการ"
+                                            {{ request("tag") == "คณะสหวิทยาการ" ? "selected" : "" }}
+                                        >
                                             คณะสหวิทยาการ
                                         </option>
                                     </optgroup>
                                 </select>
                                 <select
-                                    name=""
+                                    name="status"
                                     id="statusFilter"
                                     class="w-50 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
                                     onchange="filterActivities()"
                                 >
                                     <option value="">สถานะ</option>
-                                    <option value="pending">รอดำเนินการ</option>
-                                    <option value="ongoing">
+                                    <option
+                                        value="pending"
+                                        {{ request("status") == "pending" ? "selected" : "" }}
+                                    >
+                                        รอดำเนินการ
+                                    </option>
+                                    <option
+                                        value="ongoing"
+                                        {{ request("status") == "ongoing" ? "selected" : "" }}
+                                    >
                                         กำลังดำเนินการ
                                     </option>
-                                    <option value="finished">เสร็จสิ้น</option>
+                                    <option
+                                        value="finished"
+                                        {{ request("status") == "finished" ? "selected" : "" }}
+                                    >
+                                        เสร็จสิ้น
+                                    </option>
                                 </select>
+                                <button
+                                    id="clearButton"
+                                    onclick="clearFilters()"
+                                    class="rounded-xl border border-gray-400 px-4 py-1 text-gray-600 transition-colors hover:bg-gray-50"
+                                    title="ล้างตัวกรอง"
+                                    style="display: none"
+                                >
+                                    <i class="fa-solid fa-times"></i>
+                                    ล้าง
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -343,7 +439,7 @@
                             @endphp
 
                             <div
-                                class="activity-card overflow-hidden rounded-lg bg-white shadow-md flex flex-col justify-between"
+                                class="activity-card overflow-hidden rounded-lg bg-white shadow-md"
                                 data-status="{{ $activity->status }}"
                                 data-search="{{ strtolower($activity->name_th . " " . $activity->description . " " . $activity->location) }}"
                                 data-tags="{{ ! empty($cardTags) ? implode(",", $cardTags) : "" }}"
@@ -361,7 +457,7 @@
                                         class="h-48 w-full object-cover"
                                     />
                                 @endif
-                                <div class="p-4 grow">
+                                <div class="p-4">
                                     <h4
                                         class="mb-2 font-semibold text-gray-900"
                                     >
@@ -498,67 +594,66 @@
                                         </div>
                                     @endif
 
-                                </div>
-
-                                <div class="flex gap-2 m-4">
-                                    @if ($activity->status === "finished")
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-gray-500 px-4 py-2 text-white"
-                                            disabled
-                                        >
-                                            กิจกรรมเสร็จสิ้น
-                                        </button>
-                                    @elseif (isset($activity->is_registered) && $activity->is_registered)
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white"
-                                            disabled
-                                        >
-                                            สมัครแล้ว
-                                        </button>
-                                    @elseif (isset($activity->is_registration_closed) && $activity->is_registration_closed)
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
-                                            disabled
-                                        >
-                                            หมดเวลารับสมัคร
-                                        </button>
-                                    @elseif (($activity->participants_count ?? 0) >= $activity->accept_amount)
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
-                                            disabled
-                                        >
-                                            เต็มแล้ว
-                                        </button>
-                                    @elseif ($activity->status === "pending" || $activity->status === "ongoing")
-                                        @auth
+                                    <div class="flex gap-2">
+                                        @if ($activity->status === "finished")
                                             <button
-                                                class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-white transition-colors hover:bg-cyan-500"
-                                                onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-gray-500 px-4 py-2 text-white"
+                                                disabled
                                             >
-                                                สมัครเลย
+                                                กิจกรรมเสร็จสิ้น
                                             </button>
-                                        @else
-                                            <a
-                                                href="{{ route("login") }}"
-                                                class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-center text-white transition-colors hover:bg-cyan-500"
+                                        @elseif (isset($activity->is_registered) && $activity->is_registered)
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white"
+                                                disabled
                                             >
-                                                เข้าสู่ระบบเพื่อสมัคร
-                                            </a>
-                                        @endauth
-                                    @else
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-white"
-                                            disabled
+                                                สมัครแล้ว
+                                            </button>
+                                        @elseif (isset($activity->is_registration_closed) && $activity->is_registration_closed)
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
+                                                disabled
+                                            >
+                                                หมดเวลารับสมัคร
+                                            </button>
+                                        @elseif (($activity->participants_count ?? 0) >= $activity->accept_amount)
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-white"
+                                                disabled
+                                            >
+                                                เต็มแล้ว
+                                            </button>
+                                        @elseif ($activity->status === "pending" || $activity->status === "ongoing")
+                                            @auth
+                                                <button
+                                                    class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-white transition-colors hover:bg-cyan-500"
+                                                    onclick="registerForActivity({{ $activity->id }}, '{{ $activity->name_th }}')"
+                                                >
+                                                    สมัครเลย
+                                                </button>
+                                            @else
+                                                <a
+                                                    href="{{ route("login") }}"
+                                                    class="flex-1 rounded-lg bg-cyan-400 px-4 py-2 text-center text-white transition-colors hover:bg-cyan-500"
+                                                >
+                                                    เข้าสู่ระบบเพื่อสมัคร
+                                                </a>
+                                            @endauth
+                                        @else
+                                            <button
+                                                class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-white"
+                                                disabled
+                                            >
+                                                ปิดการสมัคร
+                                            </button>
+                                        @endif
+                                        <a
+                                            href="{{ route("activity.detail", $activity->id) }}"
+                                            class="rounded-lg border border-blue-500 px-4 py-2 text-blue-500 transition-colors hover:bg-blue-50"
                                         >
-                                            ปิดการสมัคร
-                                        </button>
-                                    @endif
-                                    <a
-                                        href="{{ route("activity.detail", $activity->id) }}"
-                                        class="rounded-lg border border-blue-500 px-4 py-2 text-blue-500 transition-colors hover:bg-blue-50"
-                                    >
-                                        ดูรายละเอียด
-                                    </a>
+                                            ดูรายละเอียด
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         @empty
@@ -658,20 +753,21 @@
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
                 applyAllFilters();
-            }, 300);
+            }, 300); // ดีเลย์ 300ms
         }
 
         function filterActivities() {
             applyAllFilters();
         }
 
-        function applyAllFilters(searchTerm = '') {
-            if (!searchTerm) {
-                searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            }
+        function applyAllFilters() {
+
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             const statusFilter = document.getElementById('statusFilter').value;
-            const tagFilter = document.getElementById('tagFilter').value.toLowerCase();
+            const tagFilter = document.getElementById('tagFilter').value;
             const cards = document.querySelectorAll('.activity-card');
+
+
 
             let visibleCount = 0;
             let statusCounts = {
@@ -684,16 +780,11 @@
                 let showCard = true;
                 const searchData = card.dataset.search || '';
                 const cardStatus = card.dataset.status || '';
-                const cardTags = (card.dataset.tags || '').toLowerCase();
+                const cardTags = card.dataset.tags || '';
 
-                // Apply search filter - ค้นหาใน name, description, location และ tags
-                if (searchTerm) {
-                    const searchInTags = cardTags.split(',').some(tag =>
-                        tag.trim().includes(searchTerm)
-                    );
-                    if (!searchData.includes(searchTerm) && !searchInTags) {
-                        showCard = false;
-                    }
+                // Apply search filter
+                if (searchTerm && !searchData.includes(searchTerm)) {
+                    showCard = false;
                 }
 
                 // Apply status filter
@@ -701,12 +792,9 @@
                     showCard = false;
                 }
 
-                // Apply tag filter - ค้นหาแบบแม่นยำ
-                if (tagFilter) {
-                    const tagsArray = cardTags.split(',').map(t => t.trim());
-                    if (!tagsArray.some(tag => tag === tagFilter)) {
-                        showCard = false;
-                    }
+                // Apply tag filter
+                if (tagFilter && !cardTags.includes(tagFilter)) {
+                    showCard = false;
                 }
 
                 if (showCard) {
@@ -716,27 +804,20 @@
                     }
                 }
 
-                // Add smooth transition
+
+
                 if (showCard) {
-                    card.style.display = 'block';
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(10px)';
-                    setTimeout(() => {
-                        card.style.transition = 'all 0.3s ease';
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, 50);
+                    card.classList.remove('hidden-card');
+                    card.classList.add('visible-card');
+
                 } else {
-                    card.style.transition = 'all 0.2s ease';
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateY(-10px)';
-                    setTimeout(() => {
-                        card.style.display = 'none';
-                    }, 200);
+                    card.classList.remove('visible-card');
+                    card.classList.add('hidden-card');
+
                 }
             });
 
-            // Show/hide no results message
+
             updateResultsMessage(visibleCount, searchTerm, statusFilter, tagFilter, statusCounts);
         }
 
@@ -745,13 +826,11 @@
             const resultsInfo = document.getElementById('resultsInfo');
             const clearButton = document.getElementById('clearButton');
 
-            // Show/hide clear button
             const hasFilters = searchTerm || statusFilter || tagFilter;
             if (clearButton) {
                 clearButton.style.display = hasFilters ? 'block' : 'none';
             }
 
-            // Update results count
             if (resultsInfo) {
                 let filterText = '';
                 if (hasFilters) {
@@ -783,7 +862,6 @@
                 resultsInfo.innerHTML = `${filterText}พบ <span class="font-semibold text-gray-800">${visibleCount}</span> กิจกรรม${statusInfo}`;
             }
 
-            // Show/hide no results message
             if (visibleCount === 0) {
                 if (!noResultsMsg) {
                     const gridContainer = document.getElementById('activitiesGrid');
@@ -813,7 +891,6 @@
             applyAllFilters();
         }
 
-        // Carousel data for text overlay
         const carouselData = [
             @if ($rec->isNotEmpty())
                 @foreach ($rec->take(3) as $index => $activity)
@@ -905,14 +982,12 @@
             }
         }
 
-        // Update carousel text every 5 seconds (matching the slide timing)
         setInterval(() => {
             currentSlide = (currentSlide + 1) % 3;
             updateCarouselText();
         }, 5000);
 
         function registerForActivity(activityId, activityName) {
-            // Check if user is authenticated (simple client-side check)
             @guest
                 window.location.href = '{{ route("login") }}';
                 return;
@@ -939,7 +1014,6 @@
                 }),
             })
                 .then((response) => {
-                    // Check if response is redirecting (usually means not authenticated)
                     if (response.redirected) {
                         window.location.href = response.url;
                         return;
@@ -947,7 +1021,6 @@
 
                     if (!response.ok) {
                         if (response.status === 401) {
-                            // Not authenticated - redirect to login
                             window.location.href = '/login';
                             return;
                         }
@@ -969,7 +1042,6 @@
                             'flex-1 cursor-not-allowed rounded-lg bg-emerald-400 px-4 py-2 text-white';
                         button.disabled = true;
 
-                        // Update participant count
                         const participantsElement = button
                             .closest('.activity-card')
                             .querySelector('i.fa-users')?.parentElement;
@@ -1006,6 +1078,10 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+
+
+            applyAllFilters();
+
             const cards = document.querySelectorAll('.activity-card');
 
             cards.forEach((card) => {
@@ -1018,7 +1094,6 @@
                 });
             });
 
-            // Initialize filters and results display
             applyAllFilters();
         });
     </script>
@@ -1039,7 +1114,17 @@
         }
 
         .activity-card {
-            transition: transform 0.2s ease-in-out;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .activity-card.hidden-card {
+            display: none !important;
+        }
+
+        .activity-card.visible-card {
+            display: block !important;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .alert-modern {
@@ -1202,7 +1287,6 @@
             background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
         }
 
-        /* Tag styling - simple badges like admin */
         .tag-badge {
             transition: none;
         }
