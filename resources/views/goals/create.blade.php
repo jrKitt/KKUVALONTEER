@@ -40,7 +40,7 @@
             </div>
 
             <!-- Form -->
-            <div class="overflow-hidden rounded-xl border bg-white shadow-sm">
+            <div class="overflow-hidden rounded-xl bg-white shadow-lg">
                 <form
                     action="{{ route("goals.store") }}"
                     method="POST"
