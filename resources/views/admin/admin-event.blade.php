@@ -583,10 +583,10 @@
                 <div
                     class="modal-box w-11/12 max-w-5xl rounded-xl [&_input]:text-lg [&_label]:text-lg [&_textarea]:text-lg"
                 >
-                    <div class="card">
+                    <div class="card my-4">
                         <div class="card-title mb-4">สร้างกิจกรรมใหม่่</div>
                         <hr class="text-gray-300" />
-                        <div class="card-body grid grid-cols-12 gap-5">
+                        <div class="card-body h-150 overflow-auto grid grid-cols-12 gap-5">
                             <div class="fieldset col-span-6 max-md:col-span-12">
                                 <label class="">ชื่อกิจกรรม</label>
                                 <input
