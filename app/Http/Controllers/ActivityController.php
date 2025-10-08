@@ -28,7 +28,12 @@ class ActivityController extends Controller
     $query = Activity::with('user')->orderBy('created_at', 'desc');
 
     if ($request->filled('search')) {
-        $query->where('name_th', 'like', '%' . $request->search . '%');
+        $searchTerm = $request->search;
+        $query->where(function($q) use ($searchTerm) {
+            $q->where('name_th', 'like', '%' . $searchTerm . '%')
+              ->orWhere('description', 'like', '%' . $searchTerm . '%')
+              ->orWhere('location', 'like', '%' . $searchTerm . '%');
+        });
     }
 
     if ($request->filled('tag')) {
@@ -307,7 +312,6 @@ class ActivityController extends Controller
     public function finishActivity($id) {
         $activity = Activity::findOrFail($id);
 
-        // Check if user has permission to finish this activity (admin or creator)
         if (!auth()->user()->isAdmin() && $activity->create_by !== auth()->id()) {
             return redirect()->back()->with('error', 'คุณไม่มีสิทธิ์ในการจบกิจกรรมนี้');
         }

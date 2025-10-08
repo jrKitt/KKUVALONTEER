@@ -51,22 +51,8 @@
                                     onchange="filterActivities()"
                                 >
                                     <option value="">สถานะทั้งหมด</option>
-                                    <option value="registered">
-                                        สมัครแล้ว
-                                    </option>
-                                    <option value="completed">เสร็จสิ้น</option>
-                                </select>
-                                <select
-                                    name=""
-                                    id="progressFilter"
-                                    class="w-50 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
-                                    onchange="filterActivities()"
-                                >
-                                    <option value="">ความคืบหน้า</option>
-                                    <option value="0-25">0-25%</option>
-                                    <option value="26-50">26-50%</option>
-                                    <option value="51-75">51-75%</option>
-                                    <option value="76-100">76-100%</option>
+                                    <option value="pending">สมัครแล้ว</option>
+                                    <option value="finished">เสร็จสิ้น</option>
                                 </select>
                             </div>
                         </div>
@@ -84,7 +70,7 @@
                                 data-search="{{ strtolower($activity->name . " " . ($activity->description ?? "")) }}"
                             >
                                 <div
-                                    class="flex items-center gap-5 max-lg:flex-col w-full justify-between"
+                                    class="flex w-full items-center justify-between gap-5 max-lg:flex-col"
                                 >
                                     <section class="w-fit">
                                         @if ($activity->image_file_name)
@@ -119,9 +105,9 @@
                                                 <div
                                                     class="@if ($activity->status === "checked_in")
                                                         text-green-600
-                                                    @elseif ($activity->status === "completed")
+                                                    @elseif ($activity->status === "finished")
                                                         text-purple-600
-                                                    @elseif ($activity->status === "registered")
+                                                    @elseif ($activity->status === "pending")
                                                         text-blue-600
                                                     @else
                                                         text-gray-600
@@ -129,9 +115,9 @@
                                                 >
                                                     @if ($activity->status === "checked_in")
                                                         เช็คชื่อแล้ว
-                                                    @elseif ($activity->status === "completed")
+                                                    @elseif ($activity->status === "finished")
                                                         เสร็จสิ้น
-                                                    @elseif ($activity->status === "registered")
+                                                    @elseif ($activity->status === "pending")
                                                         ลงทะเบียนแล้ว
                                                     @else
                                                             รอดำเนินการ
@@ -304,7 +290,6 @@
     </div>
 
     <script>
-        // Search and filter functionality
         function searchActivities() {
             const searchTerm = document
                 .getElementById('searchInput')
@@ -328,17 +313,14 @@
 
                 let showCard = true;
 
-                // Search filter
                 if (searchTerm && !searchText.includes(searchTerm)) {
                     showCard = false;
                 }
 
-                // Status filter
                 if (statusFilter && statusFilter !== status) {
                     showCard = false;
                 }
 
-                // Progress filter
                 if (progressFilter) {
                     switch (progressFilter) {
                         case '0-25':
@@ -361,7 +343,6 @@
                 card.style.display = showCard ? 'flex' : 'none';
             });
 
-            // Check if no results
             const visibleCards = Array.from(activityCards).filter(
                 (card) => card.style.display !== 'none',
             );
@@ -392,7 +373,6 @@
             }
         }
 
-        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('searchInput');
             if (searchInput) {

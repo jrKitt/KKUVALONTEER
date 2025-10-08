@@ -652,36 +652,48 @@
             }
         }
 
+        let searchTimeout;
+
         function searchActivities() {
-            const searchTerm = document
-                .getElementById('searchInput')
-                .value.toLowerCase();
-            applyAllFilters(searchTerm);
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                applyAllFilters();
+            }, 300);
         }
 
         function filterActivities() {
-            const searchTerm = document
-                .getElementById('searchInput')
-                .value.toLowerCase();
-            applyAllFilters(searchTerm);
+            applyAllFilters();
         }
 
         function applyAllFilters(searchTerm = '') {
+            if (!searchTerm) {
+                searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            }
             const statusFilter = document.getElementById('statusFilter').value;
-            const tagFilter = document.getElementById('tagFilter').value;
+            const tagFilter = document.getElementById('tagFilter').value.toLowerCase();
             const cards = document.querySelectorAll('.activity-card');
 
             let visibleCount = 0;
+            let statusCounts = {
+                'pending': 0,
+                'ongoing': 0,
+                'finished': 0
+            };
 
             cards.forEach((card) => {
                 let showCard = true;
                 const searchData = card.dataset.search || '';
                 const cardStatus = card.dataset.status || '';
-                const cardTags = card.dataset.tags || '';
+                const cardTags = (card.dataset.tags || '').toLowerCase();
 
-                // Apply search filter
-                if (searchTerm && !searchData.includes(searchTerm)) {
-                    showCard = false;
+                // Apply search filter - ค้นหาใน name, description, location และ tags
+                if (searchTerm) {
+                    const searchInTags = cardTags.split(',').some(tag =>
+                        tag.trim().includes(searchTerm)
+                    );
+                    if (!searchData.includes(searchTerm) && !searchInTags) {
+                        showCard = false;
+                    }
                 }
 
                 // Apply status filter
@@ -689,17 +701,89 @@
                     showCard = false;
                 }
 
-                // Apply tag filter
-                if (tagFilter && !cardTags.includes(tagFilter)) {
-                    showCard = false;
+                // Apply tag filter - ค้นหาแบบแม่นยำ
+                if (tagFilter) {
+                    const tagsArray = cardTags.split(',').map(t => t.trim());
+                    if (!tagsArray.some(tag => tag === tagFilter)) {
+                        showCard = false;
+                    }
                 }
 
-                card.style.display = showCard ? 'block' : 'none';
-                if (showCard) visibleCount++;
+                if (showCard) {
+                    visibleCount++;
+                    if (statusCounts.hasOwnProperty(cardStatus)) {
+                        statusCounts[cardStatus]++;
+                    }
+                }
+
+                // Add smooth transition
+                if (showCard) {
+                    card.style.display = 'block';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(10px)';
+                    setTimeout(() => {
+                        card.style.transition = 'all 0.3s ease';
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 50);
+                } else {
+                    card.style.transition = 'all 0.2s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(-10px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 200);
+                }
             });
 
             // Show/hide no results message
+            updateResultsMessage(visibleCount, searchTerm, statusFilter, tagFilter, statusCounts);
+        }
+
+        function updateResultsMessage(visibleCount, searchTerm, statusFilter, tagFilter, statusCounts) {
             const noResultsMsg = document.getElementById('noResultsMessage');
+            const resultsInfo = document.getElementById('resultsInfo');
+            const clearButton = document.getElementById('clearButton');
+
+            // Show/hide clear button
+            const hasFilters = searchTerm || statusFilter || tagFilter;
+            if (clearButton) {
+                clearButton.style.display = hasFilters ? 'block' : 'none';
+            }
+
+            // Update results count
+            if (resultsInfo) {
+                let filterText = '';
+                if (hasFilters) {
+                    const filters = [];
+                    if (searchTerm) filters.push(`<span class="font-medium text-blue-600">ค้นหา: "${searchTerm}"</span>`);
+                    if (tagFilter) filters.push(`<span class="font-medium text-green-600">แท็ก: ${tagFilter}</span>`);
+                    if (statusFilter) {
+                        const statusTexts = {
+                            'pending': 'รอดำเนินการ',
+                            'ongoing': 'กำลังดำเนินการ',
+                            'finished': 'เสร็จสิ้น'
+                        };
+                        filters.push(`<span class="font-medium text-orange-600">สถานะ: ${statusTexts[statusFilter] || statusFilter}</span>`);
+                    }
+                    filterText = filters.join(' | ') + ' | ';
+                }
+
+                let statusInfo = '';
+                if (!statusFilter && visibleCount > 0) {
+                    const statusDisplay = [];
+                    if (statusCounts.pending > 0) statusDisplay.push(`<span class="text-yellow-600">${statusCounts.pending} รออนุมัติ</span>`);
+                    if (statusCounts.ongoing > 0) statusDisplay.push(`<span class="text-blue-600">${statusCounts.ongoing} ดำเนินการ</span>`);
+                    if (statusCounts.finished > 0) statusDisplay.push(`<span class="text-gray-600">${statusCounts.finished} เสร็จสิ้น</span>`);
+                    if (statusDisplay.length > 0) {
+                        statusInfo = ` (${statusDisplay.join(', ')})`;
+                    }
+                }
+
+                resultsInfo.innerHTML = `${filterText}พบ <span class="font-semibold text-gray-800">${visibleCount}</span> กิจกรรม${statusInfo}`;
+            }
+
+            // Show/hide no results message
             if (visibleCount === 0) {
                 if (!noResultsMsg) {
                     const gridContainer = document.getElementById('activitiesGrid');
@@ -711,7 +795,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                         <h3 class="mt-2 text-sm font-medium text-gray-900">ไม่พบกิจกรรม</h3>
-                        <p class="mt-1 text-sm text-gray-500">ไม่พบกิจกรรมที่ตรงกับเงื่อนไขการค้นหา</p>
+                        <p class="mt-1 text-sm text-gray-500">ลองปรับเปลี่ยนคำค้นหาหรือเงื่อนไขการกรอง</p>
                     `;
                     gridContainer.appendChild(noResults);
                 }
@@ -720,6 +804,13 @@
                     noResultsMsg.remove();
                 }
             }
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('tagFilter').value = '';
+            applyAllFilters();
         }
 
         // Carousel data for text overlay
@@ -927,24 +1018,8 @@
                 });
             });
 
-            // Initialize filters from URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const searchParam = urlParams.get('search');
-            const tagParam = urlParams.get('tag');
-            const statusParam = urlParams.get('status');
-
-            if (searchParam) {
-                document.getElementById('searchInput').value = searchParam;
-            }
-            if (tagParam) {
-                document.getElementById('tagFilter').value = tagParam;
-            }
-            if (statusParam) {
-                document.getElementById('statusFilter').value = statusParam;
-            }
-
-            // Apply initial filters
-            applyAllFilters(searchParam || '');
+            // Initialize filters and results display
+            applyAllFilters();
         });
     </script>
 
