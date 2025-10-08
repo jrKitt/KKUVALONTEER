@@ -45,9 +45,11 @@
                         >
                             จัดการกิจกรรม
                         </a>
-                        <a href="#" class="text-gray-700 hover:text-blue-600">
+                        {{--
+                            <a href="#" class="text-gray-700 hover:text-blue-600">
                             รายงาน
-                        </a>
+                            </a>
+                        --}}
                     </nav>
                     <div class="flex items-center space-x-4">
                         <div class="dropdown dropdown-bottom dropdown-end">

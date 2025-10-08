@@ -14,7 +14,15 @@
     $colors = ["bg-green-400", "bg-blue-400", "bg-yellow-400", "bg-pink-400", "bg-purple-400", "bg-red-400", "bg-teal-400"];
     $randomColor = $colors[array_rand($colors)];
 
+    $year = request()->get("year", date("Y"));
+    $month = request()->get("month", date("m"));
+    $daysInMonth = date("t", strtotime("$year-$month-01"));
+    $firstDay = date("w", strtotime("$year-$month-01"));
+
     $dates = $activities->map(fn ($a) => \Carbon\Carbon::parse($a->start_time)->format("Y-m-d"))->toArray();
+
+    $prevMonth = date("Y-m", strtotime("$year-$month-01 -1 month"));
+    $nextMonth = date("Y-m", strtotime("$year-$month-01 +1 month"));
 @endphp
 
 @section("layout-content")
@@ -191,51 +199,70 @@
 
                         <div class="flex h-fit w-full justify-center md:w-1/3">
                             <div class="w-full max-w-sm">
-                                <div class="flex items-center gap-3">
+                                {{--
+                                    <div class="flex items-center gap-3">
                                     <div
-                                        class="{{ $randomColor }} mb-2 h-3 w-3 rounded-full"
+                                    class="{{ $randomColor }} mb-2 h-3 w-3 rounded-full"
                                     ></div>
                                     <p class="mb-2 text-xl font-medium">
-                                        วันจัดกิจกรรมตลอดทั้งปี
+                                    วันจัดกิจกรรมตลอดทั้งปี
                                     </p>
-                                </div>
-                                <calendar-date
-                                    class="cally bg-base-100 rounded-box w-full shadow-lg"
-                                    :data="@json($dates)"
-                                    :highlight-dates="@json($dates)"
-                                    locale="th"
+                                    </div>
+                                --}}
+                                <div
+                                    class="w-full overflow-clip rounded-md pb-3 shadow-md"
                                 >
-                                    <svg
-                                        aria-label="Previous"
-                                        class="size-4 fill-current"
-                                        slot="previous"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
+                                    <table
+                                        class="calendar w-full border-gray-300 text-center"
                                     >
-                                        <path
-                                            fill="currentColor"
-                                            d="M15.75 19.5 8.25 12l7.5-7.5"
-                                        ></path>
-                                    </svg>
+                                        <thead>
+                                            <tr
+                                                class="bg-gray-200/80 font-light"
+                                            >
+                                                @foreach (["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"] as $day)
+                                                    <th class="p-2">
+                                                        {{ $day }}
+                                                    </th>
+                                                @endforeach
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php
+                                                $firstDay = date("w", strtotime("$year-$month-01"));
+                                                $day = 1;
+                                            @endphp
 
-                                    <svg
-                                        aria-label="Next"
-                                        class="size-4 fill-current"
-                                        slot="next"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            fill="currentColor"
-                                            d="m8.25 4.5 7.5 7.5-7.5 7.5"
-                                        ></path>
-                                    </svg>
+                                            @for ($i = 0; $i < 5; $i++)
+                                                <tr>
+                                                    @for ($j = 0; $j < 7; $j++)
+                                                        @if ($i === 0 && $j < $firstDay)
+                                                            <td
+                                                                class="p-2"
+                                                            ></td>
+                                                        @elseif ($day > $daysInMonth)
+                                                            <td
+                                                                class="p-2"
+                                                            ></td>
+                                                        @else
+                                                            @php
+                                                                $currentDate = "$year-$month-" . str_pad($day, 2, "0", STR_PAD_LEFT);
+                                                            @endphp
 
-                                    <calendar-month
-                                        :highlight-dates="@json($dates)"
-                                        locale="th"
-                                    ></calendar-month>
-                                </calendar-date>
+                                                            <td
+                                                                class="{{ in_array($currentDate, $dates) ? "bg-green-200 font-semibold" : "" }} p-2"
+                                                            >
+                                                                {{ $day }}
+                                                            </td>
+                                                            @php
+                                                                $day++;
+                                                            @endphp
+                                                        @endif
+                                                    @endfor
+                                                </tr>
+                                            @endfor
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -370,5 +397,8 @@
         const now = new Date();
         document.getElementById('monthName').textContent =
             monthNames[now.getMonth()];
+
+        const activityDates = @json($dates);
+        console.log(activityDates);
     </script>
 @endsection
