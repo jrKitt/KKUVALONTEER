@@ -301,7 +301,7 @@
                                     <div
                                         class="mb-4 flex flex-wrap items-center gap-2"
                                     >
-                                        @if (isset($activity->tags) && is_array($activity->tags) && count($activity->tags) > 0)
+                                        @if (isset($activity->tags) && is_array($activity->tags))
                                             @foreach (array_slice($activity->tags, 0, 3) as $tag)
                                                 <span
                                                     class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
@@ -309,6 +309,12 @@
                                                     {{ $tag }}
                                                 </span>
                                             @endforeach
+                                        @else
+                                            <span
+                                                class="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800"
+                                            >
+                                                #กิจกรรมอาสา
+                                            </span>
                                         @endif
                                     </div>
 
@@ -405,7 +411,7 @@
                 >
                     @foreach ($upcomingEvents as $event)
                         <div
-                            class="overflow-hidden rounded-xl bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl"
+                            class="overflow-hidden rounded-xl bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl flex flex-col justify-between"
                         >
                             <div class="relative">
                                 <img
@@ -431,7 +437,7 @@
                                     </div>
                                 @endif
                             </div>
-                            <div class="p-6">
+                            <div class="p-6 grow">
                                 <h4
                                     class="mb-3 text-lg leading-tight font-bold text-gray-900"
                                 >
@@ -505,43 +511,44 @@
                                     </div>
                                 </div>
 
-                                <div class="flex gap-2">
-                                    @if ($event["is_registered"])
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-green-500 px-4 py-2 text-center font-medium text-white"
-                                            disabled
-                                        >
-                                            สมัครแล้ว
-                                        </button>
-                                    @elseif ($event["is_full"])
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-center font-medium text-white"
-                                            disabled
-                                        >
-                                            เต็มแล้ว
-                                        </button>
-                                    @elseif ($event["can_register"])
-                                        <button
-                                            class="flex-1 cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
-                                            onclick="registerForActivity({{ $event["id"] }}, '{{ $event["title"] }}')"
-                                        >
-                                            สมัครเลย
-                                        </button>
-                                    @else
-                                        <button
-                                            class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-center font-medium text-white"
-                                            disabled
-                                        >
-                                            ปิดรับสมัคร
-                                        </button>
-                                    @endif
-                                    <a
-                                        href="{{ route("activity.detail", $event["id"]) }}"
-                                        class="cursor-pointer rounded-lg border border-cyan-400 px-4 py-2 font-medium text-cyan-600 transition-all hover:bg-cyan-50 active:scale-90"
+                            </div>
+
+                            <div class="flex gap-2 m-4">
+                                @if ($event["is_registered"])
+                                    <button
+                                        class="flex-1 cursor-not-allowed rounded-lg bg-green-500 px-4 py-2 text-center font-medium text-white"
+                                        disabled
                                     >
-                                        ดูรายละเอียด
-                                    </a>
-                                </div>
+                                        สมัครแล้ว
+                                    </button>
+                                @elseif ($event["is_full"])
+                                    <button
+                                        class="flex-1 cursor-not-allowed rounded-lg bg-red-500 px-4 py-2 text-center font-medium text-white"
+                                        disabled
+                                    >
+                                        เต็มแล้ว
+                                    </button>
+                                @elseif ($event["can_register"])
+                                    <button
+                                        class="flex-1 cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 text-center font-medium text-white transition-all hover:bg-cyan-500 active:scale-90"
+                                        onclick="registerForActivity({{ $event["id"] }}, '{{ $event["title"] }}')"
+                                    >
+                                        สมัครเลย
+                                    </button>
+                                @else
+                                    <button
+                                        class="flex-1 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-center font-medium text-white"
+                                        disabled
+                                    >
+                                        ปิดรับสมัคร
+                                    </button>
+                                @endif
+                                <a
+                                    href="{{ route("activity.detail", $event["id"]) }}"
+                                    class="cursor-pointer rounded-lg border border-cyan-400 px-4 py-2 font-medium text-cyan-600 transition-all hover:bg-cyan-50 active:scale-90"
+                                >
+                                    ดูรายละเอียด
+                                </a>
                             </div>
                         </div>
                     @endforeach
