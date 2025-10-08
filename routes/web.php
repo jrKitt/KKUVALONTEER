@@ -22,7 +22,9 @@ use Illuminate\Routing\RouteRegistrar;
 |
 */
 
-Route::get('/', [AuthController::class, 'showLogin'])->name('auth.login');
+Route::get('/', function () {
+    return redirect('/dashboard');
+});
 
 Route::get('/home', function () {
     return redirect('/dashboard');
