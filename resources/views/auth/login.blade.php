@@ -82,22 +82,6 @@
                                 class="w-full rounded-lg border-2 border-gray-300 px-3 sm:px-4 py-3 sm:py-4 text-base sm:text-lg transition-all duration-200 outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-200"
                             />
                         </div>
-
-                        <div class="mt-2 flex items-center gap-3">
-                            <input
-                                type="checkbox"
-                                name="remember"
-                                id="remember"
-                                class="h-5 w-5 rounded text-sky-500 focus:ring-sky-500"
-                            />
-                            <label
-                                for="remember"
-                                class="text-base text-gray-700"
-                            >
-                                จดจำผู้ใช้
-                            </label>
-                        </div>
-
                         <button
                             type="submit"
                             class="mt-4 sm:mt-6 w-full cursor-pointer rounded-lg bg-sky-500 px-4 sm:px-6 py-3 sm:py-4 text-lg sm:text-xl font-semibold text-white shadow-lg transition-all duration-200 hover:bg-sky-600 hover:shadow-xl focus:ring-4 focus:ring-sky-200"
