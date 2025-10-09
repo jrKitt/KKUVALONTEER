@@ -872,9 +872,7 @@
                     button.textContent = 'กำลังยกเลิก...';
                     try {
                         button.disabled = true;
-                    } catch (e) {
-                        /* ignore */
-                    }
+                    } catch (e) {}
                 }
 
                 fetch('/activities/cancel', {
@@ -932,9 +930,7 @@
                             button.textContent = originalText;
                             try {
                                 button.disabled = false;
-                            } catch (e) {
-                                /* ignore */
-                            }
+                            } catch (e) {}
                         }
                     });
             } catch (err) {

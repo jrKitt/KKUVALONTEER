@@ -39,17 +39,19 @@
                                     id="searchInput"
                                 />
                             </div>
-                            <div class="flex gap-5 max-md:flex-col">
+                            {{--
+                                <div class="flex gap-5 max-md:flex-col">
                                 <select
-                                    name=""
-                                    id="statusFilter"
-                                    class="w-50 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
+                                name=""
+                                id="statusFilter"
+                                class="w-50 rounded-xl border border-gray-400 px-2 py-1 max-md:w-70"
                                 >
-                                    <option value="">สถานะทั้งหมด</option>
-                                    <option value="pending">สมัครแล้ว</option>
-                                    <option value="finished">เสร็จสิ้น</option>
+                                <option value="">สถานะทั้งหมด</option>
+                                <option value="pending">สมัครแล้ว</option>
+                                <option value="finished">เสร็จสิ้น</option>
                                 </select>
-                            </div>
+                                </div>
+                            --}}
                         </div>
                     </div>
 

@@ -70,25 +70,25 @@ class ActivityParticipant extends Model
                 return [
                     'class' => 'bg-green-100 text-green-800',
                     'text' => 'เช็คชื่อแล้ว',
-                    'icon' => '✓'
+                    'icon' => ''
                 ];
             case 'registered':
                 return [
                     'class' => 'bg-blue-100 text-blue-800',
                     'text' => 'ลงทะเบียนแล้ว',
-                    'icon' => '📋'
+                    'icon' => ''
                 ];
             case 'completed':
                 return [
                     'class' => 'bg-purple-100 text-purple-800',
                     'text' => 'เสร็จสิ้น',
-                    'icon' => '🏆'
+                    'icon' => ''
                 ];
             default:
                 return [
                     'class' => 'bg-gray-100 text-gray-800',
                     'text' => 'ยังไม่ได้เช็คชื่อ',
-                    'icon' => '⏳'
+                    'icon' => ''
                 ];
         }
     }

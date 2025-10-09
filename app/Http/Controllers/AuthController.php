@@ -88,7 +88,6 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        // Since registration always creates 'student' role, redirect to student dashboard
         return redirect('/dashboard')->with('success', 'สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!');
     }
 

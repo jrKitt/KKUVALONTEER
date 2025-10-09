@@ -18,7 +18,6 @@ class GoalController extends Controller
     {
         $user = Auth::user();
 
-        // Force update all goals before displaying
         $user->volunteerGoals()->get()->each(function($goal) {
             $goal->updateCurrentHours();
         });
@@ -29,7 +28,6 @@ class GoalController extends Controller
             return $goal->is_overdue;
         });
 
-        // Get user's recent activities with checkin status
         $recentActivities = \DB::table('activity_participants')
             ->join('activities', 'activity_participants.activity_id', '=', 'activities.id')
             ->where('activity_participants.user_id', $user->id)
@@ -77,7 +75,6 @@ class GoalController extends Controller
             'custom' => 'กำหนดเอง'
         ];
 
-        // Get dynamic categories from existing activities
         $activityTags = \App\Models\Activity::whereNotNull('tags')
             ->pluck('tags')
             ->map(function ($tags) {
@@ -95,7 +92,6 @@ class GoalController extends Controller
             return [$tag => $tag];
         })->toArray();
 
-        // Add some default categories if no activities exist
         if (empty($categories)) {
             $categories = [
                 'คณะบริหารธุรกิจและการบัญชี' => 'คณะบริหารธุรกิจและการบัญชี',
@@ -166,7 +162,6 @@ class GoalController extends Controller
             'custom' => 'กำหนดเอง'
         ];
 
-        // Get dynamic categories from existing activities
         $activityTags = \App\Models\Activity::whereNotNull('tags')
             ->pluck('tags')
             ->map(function ($tags) {
@@ -184,7 +179,6 @@ class GoalController extends Controller
             return [$tag => $tag];
         })->toArray();
 
-        // Add some default categories if no activities exist
         if (empty($categories)) {
             $categories = [
                 'คณะบริหารธุรกิจและการบัญชี' => 'คณะบริหารธุรกิจและการบัญชี',
@@ -234,7 +228,6 @@ class GoalController extends Controller
     {
         $user = Auth::user();
 
-        // Force update all goals
         $goals = $user->volunteerGoals()->get();
 
         foreach ($goals as $goal) {
@@ -252,7 +245,6 @@ class GoalController extends Controller
     {
         $this->authorize('update', $goal);
 
-        // Check if goal hours are met or exceeded
         if ($goal->current_hours >= $goal->target_hours) {
             $goal->update([
                 'is_achieved' => true,

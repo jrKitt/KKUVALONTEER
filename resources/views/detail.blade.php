@@ -406,7 +406,6 @@
                 }),
             })
                 .then((response) => {
-                    // Check if response is redirecting (usually means not authenticated)
                     if (response.redirected) {
                         window.location.href = response.url;
                         return;
@@ -428,7 +427,6 @@
                             `คุณได้สมัครเข้าร่วมกิจกรรม "${activityName}" เรียบร้อยแล้ว`,
                         );
 
-                        // Reload the page to update registration status
                         setTimeout(() => {
                             window.location.reload();
                         }, 2000);

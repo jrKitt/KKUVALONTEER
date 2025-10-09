@@ -38,7 +38,6 @@ class AboutController extends Controller
 
         $userActivities = $registeredActivities->map(function ($activity) {
 
-            // Determine actual status and progress based on checkin
             $actualStatus = $activity->registration_status;
             $actualHours = 0;
             $progress = 0;
@@ -46,7 +45,7 @@ class AboutController extends Controller
             if ($activity->checked_in) {
                 $actualStatus = 'checked_in';
                 $actualHours = $activity->actual_hours ?? $activity->total_hour;
-                $progress = 100; // Checked in means completed
+                $progress = 100;
             } elseif ($activity->registration_status === 'completed') {
                 $actualStatus = 'completed';
                 $actualHours = $activity->total_hour ?? 0;

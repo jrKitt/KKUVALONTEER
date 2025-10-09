@@ -31,7 +31,6 @@ class DashboardController extends Controller
             ->orderBy('activity_participants.created_at', 'desc')
             ->get();
 
-        // Calculate hours based on actual checkin status
         $totalHours = $registeredActivities->where('registration_status', '!=', 'cancelled')->sum('total_hour');
         $approvedHours = $registeredActivities->where('checked_in', true)->sum(function($activity) {
             return $activity->actual_hours ?? $activity->total_hour;
@@ -40,7 +39,6 @@ class DashboardController extends Controller
         $rejectedHours = $registeredActivities->where('registration_status', 'cancelled')->sum('total_hour');
 
         $recentActivities = $registeredActivities->take(6)->map(function ($activity) {
-            // Determine actual status and hours
             $actualStatus = $activity->registration_status;
             $actualHours = $activity->total_hour ?? 0;
 
